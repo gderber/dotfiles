@@ -1,0 +1,74 @@
+# =============================================================== #
+#
+# PERSONAL $HOME/.bashrc FILE
+#
+# Last modified: Tue Mar 26 2016
+#
+# Code from:
+#
+# http://tldp.org/LDP/abs/html/sample-bashrc.html
+# By Emmanuel Rouat [no-email]
+#
+# Others...
+#
+# =============================================================== #
+
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+
+
+
+
+#------------------------------------------------------------- 
+# Some settings 
+#------------------------------------------------------------- 
+
+
+#ulimit -S -c 0 # Don't want coredumps. 
+#set -o notify 
+#set -o noclobber 
+#set -o ignoreeof 
+
+
+
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
+
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+
+
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+
+
+
+# LESS man page colors (makes Man pages more readable). 
+export LESS_TERMCAP_mb=$'\E[01;31m' 
+export LESS_TERMCAP_md=$'\E[01;31m' 
+export LESS_TERMCAP_me=$'\E[0m' 
+export LESS_TERMCAP_se=$'\E[0m' 
+export LESS_TERMCAP_so=$'\E[01;44;33m' 
+export LESS_TERMCAP_ue=$'\E[0m' 
+export LESS_TERMCAP_us=$'\E[01;32m'
+
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
