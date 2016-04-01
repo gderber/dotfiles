@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # https://github.com/xvoland/Extract/blob/master/extract.sh
 
 # Handy Extract Program
@@ -45,3 +47,48 @@ fuck () {
 	echo "\"fuck\" is not a recognised command"
     fi
 }
+
+up() {
+     local d=""
+     limit=$1
+     for ((i=1 ; i <= limit ; i++))
+     do
+	 d=$d/..
+     done
+     d=$(echo $d | sed 's/^\///')
+     if [ -z "$d" ]; then
+	 d=..
+     fi
+     cd $d
+}
+
+# Inspiration: http://serverfault.com/a/5551 (but basically rewritten)
+fawk() {
+    USAGE="\
+usage:  fawk [<awk_args>] <field_no>
+        Ex: getent passwd | grep andy | fawk -F: 5
+"
+    if [ $# -eq 0 ]; then
+	echo -e "$USAGE" >&2
+	return
+	#exit 1 # whoops! that would quit the shell!
+    fi
+    
+    # bail if the *last* argument isn't a number (source:
+    # http://stackoverflow.com/a/808740)
+    last=${@:(-1)}
+    if ! [ $last -eq $last ] &>/dev/null; then
+	echo "FAWK! Last argument (awk field) must be numeric." >&2
+	echo -e "$USAGE" >&2;
+	return
+    fi
+    
+    if [ $# -gt 1 ]; then
+	# Source:
+	# http://www.cyberciti.biz/faq/linux-unix-bsd-apple-osx-bash-get-last-argument/5F
+	rest=${@:1:$(( $# - 1 ))}
+    else
+	rest='' # just to be sure
+    fi
+    awk $rest "{ print  \$$last }"
+} # fawk
