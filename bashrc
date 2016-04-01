@@ -44,10 +44,11 @@ so ~/.bash/shopt   			# Shopts
 
 ### Interactive ### {{{
 if [[ $- == *i* ]]; then
-	so ~/.bash/prompt			# COMMAND_PROMPT function
-	so ~/.bash/aliases	       		# Alias
-	so ~/.bash/functions	      		# Functions
-	# so ~/.bash/xdisplay
+   # so ~/.bash/colors
+    so ~/.bash/prompt			# COMMAND_PROMPT function
+    so ~/.bash/aliases	       		# Alias
+    so ~/.bash/functions	      		# Functions
+    # so ~/.bash/xdisplay
 fi
 ### End Interactive ### }}}
 
