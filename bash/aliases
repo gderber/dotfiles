@@ -82,3 +82,7 @@ alias debug="set -o nounset; set -o xtrace"
 alias scratch='history -d $((HISTCMD-2)) && history -d $((HISTCMD-1))'
 
 alias die='kill -9 $$'
+
+alias star_wars='telnet towel.blinkenlights.nl'
+
+#alias ______up='ping -i 30 -a 192.168.0.139'
