@@ -92,3 +92,97 @@ usage:  fawk [<awk_args>] <field_no>
     fi
     awk $rest "{ print  \$$last }"
 } # fawk
+
+
+swap() { 
+# Swap 2 filenames around, if they exist (from Uzi's bashrc). 
+    local TMPFILE=tmp.$$ 
+    [ $# -ne 2 ] && 
+    echo "swap: 2 arguments needed" && 
+    return 1 
+    [ ! -e $1 ] && 
+    echo "swap: $1 does not exist" && 
+    return 1 
+
+    [ ! -e $2 ] && 
+    echo "swap: $2 does not exist" && 
+    return 1 
+    
+    mv "$1" $TMPFILE 
+    mv "$2" "$1" 
+    mv $TMPFILE "$2" 
+}
+
+function killps() { # kill by process name
+    local pid pname sig="-TERM" # default signal 
+    if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then 
+	echo "Usage: killps [-SIGNAL] pattern" 
+	return; 
+    fi 
+
+    if [ $# = 2 ]; then 
+	sig=$1 ; 
+    fi 
+
+    for pid in $(my_ps| awk '!/awk/ && $0~pat { print $1 }' pat=${!#} ) 
+    do 
+	pname=$(my_ps | awk '$1~var { print $5 }' var=$pid ) 
+	if ask "Kill process $pid <$pname> with signal $sig?" 
+	then 
+	    kill $sig $pid 
+	fi 
+    done 
+} 
+
+
+function mydf() { # Pretty-print of 'df' output. { 
+    # Inspired by 'dfc' utility. 
+    for fs ; do 
+	if [ ! -d $fs ] 
+	then 
+	    echo -e $fs" :No such file or directory" ; continue 
+	fi 
+
+
+	local info=( $(command df -P $fs | awk 'END{ print $2,$3,$5 }') ) 
+	local free=( $(command df -Pkh $fs | awk 'END{ print $4 }') ) 
+	local nbstars=$(( 20 * ${info[1]} / ${info[0]} )) 
+	local out="[" 
+
+	for ((j=0;j<20;j++)); do 
+	    if [ ${j} -lt ${nbstars} ]; then 
+		out=$out"*" 
+	    else out=$out"-" 
+	    fi 
+	done 
+
+	out=${info[2]}" "$out"] ("$free" free on "$fs")" 
+	echo -e $out 
+    done 
+}
+
+
+function ii() { # Get current host related info. { 
+    echo -e "\nYou are logged on ${BRED}$HOST" 
+    echo -e "\n${BRED}Additionnal information:$DC " ; uname -a 
+    echo -e "\n${BRED}Users logged on:$DC " ; w -hs | cut -d " " -f1 | sort | uniq 
+    echo -e "\n${BRED}Current date :$DC " ; date 
+    echo -e "\n${BRED}Machine stats :$DC " ; uptime 
+    echo -e "\n${BRED}Memory stats :$DC " ; free 
+    echo -e "\n${BRED}Diskspace :$DC " ; mydf / $HOME 
+    echo -e "\n${BRED}Local IP Address :$DC" ; myip 
+    echo -e "\n${BRED}Open connections :$DC "; netstat -pan --inet; 
+    echo 
+}
+
+function ask() { # See 'killps' for example of use. { 
+    echo -n "$@" '[y/n] ' ; read ans 
+    case "$ans" in 
+	y*|Y*) return 0 ;; 
+	*) return 1 ;; 
+    esac
+}
+
+function commoncommands () {
+    history | awk '{a[$2]++}END{for(i in a){print a[i] " " i}}' | sort -rn | head
+}
