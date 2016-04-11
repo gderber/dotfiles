@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # =============================================================== #
 #
 # PERSONAL $HOME/.bashrc FILE
@@ -19,10 +21,6 @@ case $- in
       *) return;;
 esac
 
-
-
-
-
 #------------------------------------------------------------- 
 # Some settings 
 #------------------------------------------------------------- 
@@ -41,15 +39,18 @@ HISTCONTROL=ignoreboth
 
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
+HISTSIZE=2000
 HISTFILESIZE=2000
 
+# Ignore certain commands
+# ?:??   Ignore 1 and 2 character commands
+HISTIGNORE='?:??:history:list:exit:top:clear:pwd:fals[eu]:true'
 
+# Format History
+HISTTIMEFORMAT='%F %T '
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
-
 
 
 # LESS man page colors (makes Man pages more readable). 
