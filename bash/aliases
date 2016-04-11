@@ -86,3 +86,5 @@ alias die='kill -9 $$'
 alias star_wars='telnet towel.blinkenlights.nl'
 
 #alias ______up='ping -i 30 -a 192.168.0.139'
+
+alias dpbx='dbus-launch dropbox start -i'
