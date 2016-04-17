@@ -38,6 +38,14 @@ beep () {
     echo -e -n \\a
 }
 
+function emacs () { 
+    if [ -n $DISPLAY ]; then
+	command emacs "$@" &
+    else
+	emacs
+    fi
+}
+
 hexscroll() { pv -qL 90 /dev/urandom | xxd -c $(( ($COLUMNS-10)*2/7 )); }
 
 fuck () {
@@ -113,6 +121,9 @@ swap() {
     mv $TMPFILE "$2" 
 }
 
+function my_ps() { ps $@ -u $USER -o pid,%cpu,%mem,bsdtime,command ; }
+function pp() { my_ps f | awk '!/awk/ && $0~var' var=${1:-".*"} ; }
+
 function killps() { # kill by process name
     local pid pname sig="-TERM" # default signal 
     if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then 
@@ -184,7 +195,7 @@ function ask() { # See 'killps' for example of use. {
 }
 
 function commoncommands () {
-    history | awk '{a[$2]++}END{for(i in a){print a[i] " " i}}' | sort -rn | head
+    history | awk '{a[$4]++}END{for(i in a){print a[i] " " i}}' | sort -rn | head
 }
 
 function mkdircd () { 
@@ -217,3 +228,49 @@ function _cd {
 
 alias cd='_cd'
 complete -d cd
+
+function myip () {
+    echo $(dig +short myip.opendns.com @resolver1.opendns.com)
+}
+
+function iii () {
+    # Gather Hardware Information
+    CPUTEMPC=` sensors|grep CPU |cut -d: -f2`
+    CPUTEMP=` sensors -f | grep CPU | cut -d: -f2`
+    
+    local DISTROINFO=$(distroinfo)
+    local OSINFO=$(osinfo)
+    local LOGININFO=$(lastlogininfo)
+    local USERSINFO=$(usersinfo)
+    local DATEINFO=$(date "+%Y%m%d %T%Z")
+    local UPTIMEINFO=$(uptimeinfo)
+    local BATTERYINFO=$(batteryinfo)
+    local LOADINFO=$(loadinfo)
+    local MEMINFO=$(meminfo)
+    local SWAPINFO=$(swapinfo)
+    local DISKINFO=$(diskinfo)
+    local CPUINFO=$(cpuinfo)
+    # local CPUTEMPINFO=
+    local DISKTEMPINFO=$(disktempinfo)
+    local IPINFO=$(ipinfo)
+    local LOCATIONINFO=$(locationinfo)
+    local WEATHERINFO=$(weatherinfo)
+
+    printf "Distribution ...: %s %s %s \n" ${DISTROINFO}
+    printf "OS..............: %s %s \n" ${OSINFO}
+    printf "Last Login......: %s %s %s %s at %s from %s \n" ${LOGININFO}
+    echo -e "Logged in Users.: $USERSINFO"
+    printf "Current Time....: %s %s \n" ${DATEINFO}
+    printf "Uptime..........: %s %s %s %s %s %s %s \n" ${UPTIMEINFO}
+    echo -e "Battery status..: ${BATTERYINFO}"
+    printf "Load............: %s %1.2f %2.1f%% %s \n" ${LOADINFO} ${DC}
+    printf "Memory..........: %s %s %2.1f%% %s \n" ${MEMINFO} ${DC}
+    printf "Swap............: %s %s %2.1f%% %s \n" ${SWAPINFO} ${DC}
+    printf "Disk Usage......: %s %s %s %s \n" ${DISKINFO} ${DC}
+    printf "CPU.............: %s %s %s %s %s%s %s %s \n" ${CPUINFO}
+    printf "Temperature.....: CPU: %s %s CORE: MB: GPU: CPU: \n" ${CPUTEMP} ${CPUTEMPC}
+    printf "Temperature.....: SBA: %s    SDB: %s \n" ${DISKTEMPINFO}
+    printf "Ext IP Address..: %s  IP Address: %s \nISP.............: %s %s %s \n" ${IPINFO}
+    printf "Location........: %s, %s %s \n" ${LOCATIONINFO}
+    printf "Weather.........: %s %s ) %s with %s skys and %s humidity." ${WEATHERINFO}
+}
