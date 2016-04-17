@@ -1,0 +1,256 @@
+#!/bin/bash
+
+LOWUSE=50
+MEDUSE=75
+HIGHUSE=90
+ALERTUSE=95
+
+#LOWTEMP=
+#MEDTEMP=
+#HIGHTEMP=
+#ALERTTEMP=
+
+function loadave () {
+    echo $(cat /proc/loadavg | awk '{print $1}')
+}
+
+function loadper () {
+    local LOAD=$(loadave)
+    local CORES=$(grep 'model name' /proc/cpuinfo | wc -l)
+    local LOADPER=$(echo ${LOAD} ${CORES} | awk '{print $1 / $2 * 100}' | cut -d. -f1)
+    echo -ne "${LOADPER}"
+}
+
+function loadcolor () {
+    local LOADCOLOR=""
+    local LOADPER=$(loadper)
+    if [ ${LOADPER} -gt ${HIGHUSE} ]; then 
+	LOADCOLOR="${ALERT}"
+    elif [ ${LOADPER} -gt ${MEDUSE} ]; then 
+	LOADCOLOR="${RED}"
+    elif [ ${LOADPER} -gt ${LOWUSE} ]; then 
+	LOADCOLOR="${BRED}"
+    else 
+	LOADCOLOR="${BLUE}"
+    fi
+    echo -ne "$LOADCOLOR"
+}
+
+function loadinfo () {
+    local LOAD=$(loadave)
+    local LOADPER=$(loadper)
+    local LC=$(loadcolor)
+    echo -ne "${LC} ${LOAD} ${LOADPER}"
+}
+
+function distroinfo () {
+    [ -r /etc/lsb-release ] && . /etc/lsb-release
+
+    if [ -z "$DISTRIB_DESCRIPTION" ] && [ -x /usr/bin/lsb_release ]; then
+        # Fall back to using the very slow lsb_release utility
+        DISTRIB_DESCRIPTION=$(lsb_release -s -d)
+    fi
+    echo -ne "${DISTRIB_DESCRIPTION}"
+}
+
+function osinfo () {
+    KERNEL=$(uname -r)
+    OPERATING_SYSTEM=$(uname -o)
+    echo -ne "${KERNEL} ${OPERATING_SYSTEM}"
+}
+
+function uptimeinfo () {
+    UPTIMEHOURS=$(uptime |cut -d, -f-2|cut -d\  -f4-)
+#    UPTIMEDAYS=$
+    #UPTIME=`awk '{print int($1/86400)" day(s) "int($1%86400/3600)":"int(($1%3600)/60)":`
+    UPRECORDS=$(uprecords| grep -e "   1"|cut -d\| -f1|cut -d\  -f9-|head -n 1)
+    echo -ne "${UPTIMEHOURS} Record: ${UPRECORDS}"
+}
+
+function meminfo () {
+    MEMORY=`free -gh --si | head -n 2 | tail -n 1 | awk {'print $2'}`
+    MEMUSED=`free -gh --si | head -n 2 | tail -n 1 | awk {'print $3'}`
+    MEMFREE=`free -gh --si | head -n 2 | tail -n 1 | awk {'print $4'}`
+    MEMPER=$(free -m | awk '/Mem/ { printf("%3.1f", $3/$2*100) }')
+    MEMPER2=$(echo ${MEMPER} | cut -d. -f1)
+
+    if [ ${MEMPER2} -lt ${MEDUSE} ]; then
+        MC=${GREEN}
+    elif [ ${MEMPER2} -ge ${MEDUSE} ] && [ ${MEMPER2} -lt ${HIGHUSE} ]; then
+        MC=${YELLOW}
+    else MC=${RED}
+    fi
+
+    echo -ne "${MC}${MEMORY} ${MEMUSED}/${MEMFREE} ${MEMPER}"
+}
+
+function swapinfo() {
+    SWAP=`free -gh --si | tail -n 1 |awk {'print  $2'}`
+    SWAPUSED=`free -gh --si | tail -n 1 | awk {'print $3'}`
+    SWAPFREE=`free -gh --si | tail -n 1 | awk {'print $4'}`
+    SWAPPER=$(free -m | awk '/Swap/ { printf("%3.1f", $3/$2*100) }')
+    SWAPPER2=$(echo ${SWAPPER} | cut -d. -f1)
+
+    if [ ${SWAPPER2} -lt ${MEDUSE} ]; then
+        SC=${GREEN}
+    elif [ ${SWAPPER2} -ge ${MEDUSE} ] && [ ${SWAPPER2} -lt ${HIGHUSE} ]; then
+        SC=${YELLOW}
+    else SC=${RED}
+    fi
+
+    echo -ne "${SC}${SWAP} ${SWAPUSED}/${SWAPFREE} ${SWAPPER}"
+}
+
+function diskinfo() {
+    DISK=$(df -h / | awk '{ a = $2 } END { print a }')
+    DISKUSED=$(df -h / | awk '{ a = $3 } END { print a }')
+    DISKFREE=$(df -h / | awk '{ a = $4 } END { print a }')
+    DISKPER=$(df -h / | awk '/\// {print $(NF-1)}')
+#    DISKPER=$(awk '{printf("%3.1f", $1/$2*100) $DISKUSED $DISK }')
+    DISKPER2=$(echo ${DISKPER} | cut -d% -f1)
+
+
+    if [ ${DISKPER2} -lt ${MEDUSE} ]; then
+        HC=${GREEN}
+    elif [ ${DISKPER2} -ge ${MEDUSE} ] && [ ${DISKPER2} -lt ${HIGHUSE} ]; then
+        HC=${YELLOW}
+    else HC=${RED}
+    fi
+
+    echo -ne "${HC}${DISK} ${DISKUSED}/${DISKFREE} ${DISKPER}"
+}
+
+function lastlogininfo () {
+    local USERNAME=$(whoami)
+    LASTDAY=$(lastlog -u ${USERNAME} | tail -n 1| awk '{ printf("%s", $4) }')
+    LASTDATE=$(lastlog -u ${USERNAME} | tail -n 1| awk '{ printf("%s", $6) }')
+    LASTMONTH=$(lastlog -u ${USERNAME} | tail -n 1| awk '{ printf("%s", $5) }')
+    LASTTIME=$(lastlog -u ${USERNAME} | tail -n 1| awk '{ printf("%s", $7) }')
+    LASTYEAR=$(lastlog -u ${USERNAME} | tail -n 1| awk '{ printf("%s", $9) }')
+    LASTFROM=$(lastlog -u ${USERNAME} | tail -n 1| awk '{ printf("%s", $3) }')
+    LASTLOG="${LASTDAY} ${LASTYEAR} ${LASTMONTH} ${LASTDATE} ${LASTTIME} ${LASTFROM}"
+    echo -ne "$LASTLOG"
+}
+
+function usersinfo () {
+    LOGGEDINUSERS=$(w -hs | cut -d " " -f1 | sort | uniq)
+    echo -ne "$LOGGEDINUSERS"
+}
+
+function batteryvariables () {
+    # Batter Power for Laptop
+    BAT_PERCENTAGE=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0| grep -E percentage| awk {'print $2'}|cut -d% -f1)
+    BAT_STATE=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0| grep -E state | awk {'print $2'})
+    BAT_FULL=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep -E to\ full| awk {'print $4 $5'})
+    BAT_EMPTY=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep -E to\ empty| awk {'print $4 $5'})
+}
+
+function batteryinfo () {
+    batteryvariables
+    if [ ${BAT_PERCENTAGE} -lt 5 ]; then 
+	BC=${ALERT} # Battery almost dead (<5%). 
+    elif [ ${BAT_PERCENTAGE} -lt 20 ]; then 
+	BC=${YELLOW} # Battery almost gone
+    else 
+	    BC=${GREEN} # Battery is ok. 
+    fi
+    echo -ne "${BC}${BAT_PERCENTAGE}% ${BAT_STATE} ${BAT_FULL}${BAT_EMPTY}${SDC} "
+}
+
+function cpuinfo () {
+    local CPU=$(cat /proc/cpuinfo | grep 'model name' | head -1 | cut -d':' -f2)
+    echo -ne "${CPU}"
+}
+
+function bat_color () {
+    batteryvariables
+    if [ "$BAT_PERCENTAGE" -lt 100 ]; then
+	echo -ne "${BC}${BAT_PERCENTAGE}% ${BAT_STATE} ${BAT_FULL}${BAT_EMPTY}${SDC} "
+    else
+	echo -ne ""
+    fi
+}
+
+function ipinfo () {
+    EXTIPADDR=$(myip)
+    IPADDR=$(ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}')
+    ISP=$(geoiplookup ${EXTIPADDR} |grep ASN|cut -d: -f2)
+
+    echo -ne "$EXTIPADDR $IPADDR $ISP"
+
+}
+
+function location_zip() {
+    local EXTIPADDR=$(myip)
+    ZIP=$(geoiplookup ${EXTIPADDR}|grep City| awk '{ printf "%s", $10 }'|cut -d, -f1)
+    echo -ne "${ZIP}"
+}
+
+function locationinfo () {
+    local EXTIPADDR=$(myip)
+    local ZIP=$(location_zip)
+    CITY=$(geoiplookup ${EXTIPADDR}|grep City| awk '{ printf "%s", $9 }'|cut -d, -f1)
+    STATE=$(geoiplookup ${EXTIPADDR}|grep City| awk '{ printf "%s", $8 }'|cut -d, -f1)
+
+    echo -ne "${CITY} ${STATE} ${ZIP}"
+
+}
+
+function weatherinfo () {
+    ZIP=$(location_zip)
+    TEMP=$(weather ${ZIP} | grep Temp| awk '{ printf("%s", $2)}')
+    DEGF='\u2109'
+    TEMPC=$(weather ${ZIP} | grep Temp | awk '{ printf("%s", $4)}')
+    DEGC='\u2103'
+    TEMPCOLOR=`weather ${ZIP}|grep Temp|cut -d: -f2|cut -c 2-3`
+    HUMIDITY=`weather ${ZIP}|grep Rel|cut -d: -f2`
+    SKY=`weather ${ZIP}|grep Sky|cut -d: -f2`
+    WIND=`weather ${ZIP}|grep Wind|cut -d: -f2`
+
+    SUPFREEZE="${BCYAN}"
+    FREEZE="${BBLUE}"
+    COLD="${BLUE}"
+    CHILI="${BGREEN}"
+    MILD="${GREEN}"
+    NORMAL="${YELLOW}"
+    WARM="${BYELLOW}"
+    HOT="${BRED}"
+    VHOT="${RED}"
+    DANGER="${ALERT}"
+
+    # Colour progression is important ... 
+    # bold gray -> bold green -> bold yellow -> bold red -> 
+    # black on red -> bold white on red 
+    # 
+    # Then we have to choose the values at which the colours switch, with 
+    # anything past yellow being pretty important. 
+
+    if [ ${TEMPCOLOR} -lt 0 ]; then 
+	TC=$SUPFREEZE
+    elif [ ${TEMPCOLOR} -ge 0 ] && [ ${TEMPCOLOR} -lt 33 ]; then 
+        TC=${FREEZE}
+    elif [ ${TEMPCOLOR} -ge 33 ] && [ ${TEMPCOLOR} -lt 50 ]; then 
+	TC=${COLD}
+    elif [ ${TEMPCOLOR} -ge 50 ] && [ ${TEMPCOLOR} -lt 60 ]; then 
+	TC=${CHILI}
+    elif [ ${TEMPCOLOR} -ge 60 ] && [ ${TEMPCOLOR} -lt 67 ]; then                     TC=${MILD}
+    elif [ ${TEMPCOLOR} -ge 67 ] && [ ${TEMPCOLOR} -lt 76 ]; then 
+	TC=${NORMAL}
+    elif [ ${TEMPCOLOR} -ge 76 ] && [ ${TEMPCOLOR} -lt 85 ]; then
+	TC=${WARM}
+    elif [ ${TEMPCOLOR} -ge 85 ] && [ ${TEMPCOLOR} -lt 92 ]; then
+        TC=${HOT}
+    elif [ ${TEMPCOLOR} -ge 92 ] && [ ${TEMPCOLOR} -lt 100 ]; then
+	TC=${VHOT}
+    else TC=${ALERT}
+    fi
+ 
+    echo -ne "${TC}${TEMP}${DEGF} ${TEMPC}${DEGC} ${DC} ${SKY} ${HUMIDITY}"
+}
+
+function disktempinfo () {
+    local SDATEMP=`/usr/sbin/hddtemp -uf /dev/sda|cut -c 36-`
+    local SDBTEMP=`/usr/sbin/hddtemp -uf /dev/sdb|cut -c 36-`
+
+    echo -ne "$SDATEMP $SDBTEMP"
+}

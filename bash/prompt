@@ -81,7 +81,7 @@ function __prompt_command_off () {
 
     JC=$(job_color)
 
-    PS1="${JC}\\$ ${DC}" 
+    PS1="${JC}\\$ \[${DC}\]" 
 
     unset color_prompt force_color_prompt
 
@@ -108,7 +108,7 @@ function __prompt_command_date () {
     LOADTEXT=$(loadtext)
     JC=$(job_color)
 
-    PS1="[ ${LOADTEXT}]${JC}\\$ ${DC}" 
+    PS1="[ ${LOADTEXT}]${JC}\\$ \[${DC}\]" 
 
     unset color_prompt force_color_prompt
 
@@ -140,7 +140,7 @@ function __prompt_command_basic() {
    
     HOSTTEXT=$(host_color)
 
-    PS1="\n[ ${USERTEXT}${HOSTTEXT} ${FC}]${JC}\\$ ${DC}" 
+    PS1="\n[ ${USERTEXT}${HOSTTEXT} ${FC}]${JC}\\$ \[${DC}\]" 
 
     # Options for xterm
     
@@ -154,7 +154,6 @@ function __prompt_command_basic() {
     esac
     
 }
-
 function __prompt_command_main() {
     EXITSTATUS=$?
     PS1=""
@@ -176,12 +175,50 @@ function __prompt_command_main() {
    
     SMILE=$(last_command)
     HOSTTEXT=$(host_color)
-    EP=$(echo -ne ${DC})
+
+    PS1="\n\
+[ ${USERTEXT}${HOSTTEXT}${LOADTEXT}${BATTERY}${SMILE}${FC}]${JC}\\$ \[${DC}\]" 
+
+    # Options for xterm
     
+    # If this is an xterm set the title to user@host:dir
+    case "$TERM" in
+	xterm*|rxvt*)
+	    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+	    ;;
+	*)
+	    ;;
+    esac
+    
+}
+
+
+
+function __prompt_command_advanced_main() {
+    EXITSTATUS=$?
+    PS1=""
+
+    if [ "$color_prompt" = yes ]; then
+	define_colors
+    fi
+
+    LOADTEXT=$(loadtext)
+    JC=$(job_color)
+
+    USERTEXT=$(usertext)
+
+    DEBIAN_CHROOT=$(__debian_chroot)
+
+    BATTERY=$(bat_color)
+    
+    FC=$(disk_color)
+   
+    SMILE=$(last_command)
+    HOSTTEXT=$(host_color)
 
     PS1="\n\
 ${DEBIAN_CHROOT}\
-[ ${USERTEXT}${HOSTTEXT}${LOADTEXT}${BATTERY}${SMILE}${FC}]${JC}\\$ ${EP}" 
+[ ${USERTEXT}${HOSTTEXT}${LOADTEXT}${BATTERY}${SMILE}${FC}]${JC}\\$ \[${DC}\]" 
 
     # Options for xterm
     
@@ -233,14 +270,12 @@ function __prompt_command_full() {
     
     SCREEN=$(__screen)
 
-    EP=$(echo -ne ${DC})
-
     PS1="\n\
 ${DEBIAN_CHROOT}\
 [ ${USERTEXT}${HOSTTEXT} ] \n\
 [ ${LOADTEXT}${BATTERY}${SMILE}${SCREEN}${BACKGROUND_JOBS}${STOPPED_JOBS}] \n\
 [ ${FC}${BRANCH}] \n\
-${JC}\\$ ${EP}" 
+${JC}\\$ \[${DC}\]" 
 
     # Options for xterm
     
@@ -261,11 +296,11 @@ function usertext () {
     	# Root different color
 	if [ $UID -eq 0 ]; then 
 	    #root user color 
-	    echo -ne "${RED}\u${DC}"
+	    echo -ne "\[${RED}\]\u\[${DC}\]"
 	elif [[ ${USER} != $(logname) ]]; then 
-	    echo -ne "${BYELLOW}\u${DC}" # User is not login user.
+	    echo -ne "\[${BYELLOW}\]\u\[${DC}\]" # User is not login user.
 	else
-	    echo -ne "${GREEN}\u${DC}"
+	    echo -ne "\[${GREEN}\]\u\[${DC}\]"
 	fi
     else
 	echo -ne "\u"
@@ -279,33 +314,21 @@ function loadtext() {
     local CORES=$(grep 'model name' /proc/cpuinfo | wc -l)
     local LOADPER=$(echo ${LOAD} ${CORES} | awk '{print $1 / $2 * 100}' | cut -d. -f1)
 
-    LOADCOLOR=""
+    LOADCOLOR=$(loadcolor)
 
-    if [ "$color_prompt" = yes ]; then
-	if [ ${LOADPER} -gt 90 ]; then 
-	    LOADCOLOR="${ALERT}"
-	elif [ ${LOADPER} -gt 75 ]; then 
-	    LOADCOLOR="${RED}"
-	elif [ ${LOADPER} -gt 50 ]; then 
-	    LOADCOLOR="${BRED}"
-	else 
-	    LOADCOLOR="${BLUE}"
-	fi
-    fi
-
-    if [ ${LOADPER} -gt 90 ]; then
+    if [ ${LOADPER} -gt ${HIGHUSE} ]; then
 	SYMBOL=$'\u2622'
-    elif [ ${LOADPER} -gt 75 ]; then
+    elif [ ${LOADPER} -gt ${MEDUSE} ]; then
 	SYMBOL=$'\u26a0'
-    elif [ ${LOADPER} -gt 50 ]; then
+    elif [ ${LOADPER} -gt ${LOWUSE} ]; then
 	SYMBOL=$'\u2699'
     else
 	SYMBOL=$'\u2603'
     fi
     if [ "${MODE}" = "full" ] || [ "${MODE}" = "date" ]; then
-	echo -ne "${LOADCOLOR}\A ${SYMBOL} ${DC}"
+	echo -ne "\[${LOADCOLOR}\]\A ${SYMBOL} \[${DC}\]"
     else
-	echo -ne "${LOADCOLOR}${SYMBOL} ${DC}"
+	echo -ne "\[${LOADCOLOR}\]${SYMBOL} \[${DC}\]"
     fi
 }
 
@@ -313,37 +336,37 @@ function loadtext() {
 function background_jobs () {
     local BKGJBS=$(jobs -r | wc -l | tr -d ' ')
     if [ ${BKGJBS} -gt 2 ]; then
-	echo -ne "${RED}bg:${BKGJBS}${DC} "
+	echo -ne "\[${RED}\]bg:${BKGJBS}\[${DC}\] "
     elif [ ${BKGJBS} -gt 0 ]; then
-	echo -ne "${YELLOW}bg:${BKGJBS}${DC} "
+	echo -ne "\[${YELLOW}\]bg:${BKGJBS}\[${DC}\] "
     fi
 }
 
 function stopped_jobs () {
     local STPJBS=$(jobs -s | wc -l | tr -d ' ')
     if [ ${STPJBS} -gt 2 ]; then
-	echo -ne "${RED}stp:${STPJBS}${DC} "
+	echo -ne "\[${RED}\]stp:${STPJBS}\[${DC}\] "
     elif [ ${STPJBS} -gt 0 ]; then
-	echo -ne "${YELLOW}stp:${STPJBS}${DC} "
+	echo -ne "\[${YELLOW}\]stp:${STPJBS}\[${DC}\] "
     fi
 }
 
 # Returns a color according to running/suspended jobs. 
 function job_color() { 
     if [ $(jobs -s | wc -l) -gt "0" ]; then 
-	echo -en "${BYELLOW}"
+	echo -en "\[${BYELLOW}\]"
     elif [ $(jobs -r | wc -l) -gt "0" ] ; then 
 	echo -en "${BCYAN}" 
     elif [ $(jobs -r | wc -l) -gt "0" ] && [ $(jobs -s | wc -l) -gt "0" ]; then 
-	echo -en "${RED}"
+	echo -en "\[${RED}\]"
     else
 	if [ $UID -eq 0 ]; then 
 	    #root user color 
-	    echo -ne "${RED}"
+	    echo -ne "\[${RED}\]"
 	elif [[ ${USER} != $(logname) ]]; then 
-	    echo -ne "${BYELLOW}" # User is not login user.
+	    echo -ne "\[${BYELLOW}\]" # User is not login user.
 	else
-	    echo -ne "${GREEN}"
+	    echo -ne "\[${GREEN}\]"
 	fi
     fi 
 }
@@ -352,17 +375,17 @@ function job_color() {
 #Returns a color according to free disk space in $PWD. 
 function disk_color() { 
     if [ ! -w "${PWD}" ] ; then 
-	echo -ne "${RED}\w ${DC} " # No 'write' privilege in the current directory. 
+	echo -ne "\[${RED}\]\w \[${DC}\] " # No 'write' privilege in the current directory. 
     elif [ -s "${PWD}" ] ; then 
 	local used=$(command df -P "$PWD" | awk 'END {print $5} {sub(/%/,"")}') 
-	if [ ${used} -gt 95 ]; then 
-	    echo -ne "${ALERT}\w ${DC} " # Disk almost full (>95%). 
-	elif [ ${used} -gt 90 ]; then 
-	    echo -ne "${BRED}\w ${DC} " # Free disk space almost gone. 
-	else echo -ne "${GREEN}\w ${DC} " # Free disk space is ok. 
+	if [ ${used} -gt ${ALERTUSE} ]; then 
+	    echo -ne "${ALERT}\w \[${DC}\] " # Disk almost full (>95%). 
+	elif [ ${used} -gt ${HIGHUSE} ]; then 
+	    echo -ne "\[${BRED}\]\w \[${DC}\] " # Free disk space almost gone. 
+	else echo -ne "\[${GREEN}\]\w \[${DC}\] " # Free disk space is ok. 
 	fi 
     else 
-	echo -ne "${CYAN}\w ${DC} " # Current directory is size '0' (like /proc, /sys etc). 
+	echo -ne "\[${CYAN}\]\w \[${DC}\] " # Current directory is size '0' (like /proc, /sys etc). 
     fi 
 }
 
@@ -413,7 +436,7 @@ function __git_prompt() {
 	    fi
 	    ### End Branch ### }}}
 
-	    GITSTATUSPROMPT=" ${GitCol}[$GBra]${DC}"	# Add result to prompt
+	    GITSTATUSPROMPT=" ${GitCol}[$GBra]\[${DC}\]"	# Add result to prompt
 	    
 	    ### Find Commit Status ### {{{
 	    ## Test Modified and Untracked for "0"
@@ -422,23 +445,23 @@ function __git_prompt() {
 
 	    local GAhe="$(echo ${GStat} | tr ':' '\n' | grep "^##" | grep -o "ahead [0-9]\{1,\}" | grep -o "[0-9]\{1,\}")"
 	    if [ "$GAhe" ]; then
-		GITSTATUSPROMPT="${GREEN}↑${DC}${GAhe}"	# Ahead
+		GITSTATUSPROMPT="\[${GREEN}\]↑\[${DC}\]${GAhe}"	# Ahead
 	    fi
 
 	    ## Needs a `git fetch`
 	    local GBeh="$(echo ${GStat} | tr ':' '\n' | grep "^##" | grep -o "behind [0-9]\{1,\}" | grep -o "[0-9]\{1,\}")"
 	    if [ "$GBeh" ]; then
-		GITSTATUSPROMPT+="${RED}↓${DC}${GBeh}"	# Behind
+		GITSTATUSPROMPT+="\[${RED}\]↓\[${DC}\]${GBeh}"	# Behind
 	    fi
 	    
 	    local GMod="$(echo ${GStat} | tr ':' '\n' | grep -c "^[ MARC]M")"
 	    if [ "$GMod" -gt "0" ]; then
-		GITSTATUSPROMPT+="${MAGENTA}≠${DC}${GMod}"	# Modified
+		GITSTATUSPROMPT+="\[${MAGENTA}\]≠\[${DC}\]${GMod}"	# Modified
 	    fi
 
 	    local GUnt="$(echo ${GStat} | tr ':' '\n' | grep -c "^\?")"
 	    if [ "$GUnt" -gt "0" ]; then
-		GITSTATUSPROMPT+="${YELLOW}?${DC}${GUnt}"	# Untracked
+		GITSTATUSPROMPT+="\[${YELLOW}\]?\[${DC}\]${GUnt}"	# Untracked
 	    fi
 	    ### End Commit Status ### }}}
 	fi
@@ -463,7 +486,7 @@ last_command () {
 	#smiley
 	FACE=$'\u263a'
 	if [ "$color_prompt" = yes ]; then
-            SMILE="${GREEN}${FACE} ${CMDNUMB}${DC}"
+            SMILE="\[${GREEN}\]${FACE} ${CMDNUMB}\[${DC}\]"
 	else
          SMILE=":) ${CMDNUMB}"
 	fi
@@ -472,7 +495,7 @@ last_command () {
 	FACE=$'\u2639'
 	EXITSTATUS="${EXITSTATUS} "
 	if [ "$color_prompt" = yes ]; then
-         SMILE="${BRED}${FACE} ${EXITSTATUS}${CMDNUMB}${DC}"
+         SMILE="\[${BRED}\]${FACE} ${EXITSTATUS}${CMDNUMB}\[${DC}\]"
 	else
         SMILE=":( ${EXITSTATUS}${CMDNUMB}"
 	fi
@@ -487,34 +510,12 @@ host_color () {
     # Only Display Host info if remote login
     if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
 	if [ "$color_prompt" = yes ]; then
-            HOSTTEXT="@${HC}\h ${DC}"
+            HOSTTEXT="@\[${HC}\]\h \[${DC}\]"
 	else
             HOSTTEXT="@\h "
 	fi
     fi
     echo -en $HOSTTEXT
-}
-
-bat_color () {
-    # Batter Power for Laptop
-    BAT_PERCENTAGE=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0| grep -E percentage| awk {'print $2'}|cut -d% -f1)
-
-
-    if [ "$BAT_PERCENTAGE" -lt 100 ]; then
-	BAT_STATE=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0| grep -E state | awk {'print $2'})
-	BAT_FULL=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep -E to\ full| awk {'print $4 $5'})
-	BAT_EMPTY=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep -E to\ empty| awk {'print $4 $5'})
-	if [ ${BAT_PERCENTAGE} -lt 5 ]; then 
-	    BC=${ALERT} # Battery almost dead (<5%). 
-	elif [ ${BAT_PERCENTAGE} -lt 20 ]; then 
-	    BC=${YELLOW} # Battery almost gone
-	else 
-	    BC=${GREEN} # Battery is ok. 
-	fi
-	echo -ne "${BC}${BAT_PERCENTAGE}% ${BAT_STATE} ${BAT_FULL}${BAT_EMPTY}${DC} "
-    else
-	echo -ne ""
-    fi
 }
 
 
@@ -539,7 +540,7 @@ echo -en "SVN"
 __screen () {
 # SRCEEN
     if [[ $TERM =~ screen ]] ; then
-	SCREEN="${BCYAN}(SCREEN)${DC} "
+	SCREEN="${BCYAN}(SCREEN)\[${DC}\] "
     else
 	SCREEN=""
     fi
@@ -551,7 +552,7 @@ __debian_chroot () {
     # (used in the prompt below)
     if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
 	debian_chroot=$(cat /etc/debian_chroot)
-	echo -ne "${DC}[ ${debian_chroot:+($debian_chroot)} ]\n"
+	echo -ne "\[${DC}\][ ${debian_chroot:+($debian_chroot)} ]\n"
     fi
 }
 
