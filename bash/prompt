@@ -60,6 +60,10 @@ function loadprompt () {
 	main) 
 	   export PROMPT_COMMAND=__prompt_command_main # Func to gen PS1 after CMDs
 	    ;;
+	amain)
+	    MODE=main
+	    export PROMPT_COMMAND=__prampt_command_advanced_main
+	    ;;
 	full) 
 	    export PROMPT_COMMAND=__prompt_command_full # Func to gen PS1 after CMDs
 	    ;;
@@ -79,16 +83,14 @@ function __prompt_command_off () {
 	define_colors
     fi
 
-    JC=$(job_color)
+    local JC=$(job_color)
 
     PS1="${JC}\\$ \[${DC}\]" 
 
     unset color_prompt force_color_prompt
 
-
     # Options for xterm
-    
-    # If this is an xterm set the title to user@host:dir
+        # If this is an xterm set the title to user@host:dir
     case "$TERM" in
 	xterm*|rxvt*)
 	    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
@@ -105,8 +107,8 @@ function __prompt_command_date () {
 	define_colors
     fi
 
-    LOADTEXT=$(loadtext)
-    JC=$(job_color)
+    local LOADTEXT=$(loadtext)
+    local JC=$(job_color)
 
     PS1="[ ${LOADTEXT}]${JC}\\$ \[${DC}\]" 
 
@@ -114,7 +116,6 @@ function __prompt_command_date () {
 
 
     # Options for xterm
-    
     # If this is an xterm set the title to user@host:dir
     case "$TERM" in
 	xterm*|rxvt*)
@@ -132,13 +133,10 @@ function __prompt_command_basic() {
 	define_colors
     fi
 
-    JC=$(job_color)
-
-    USERTEXT=$(usertext)
-
-    FC=$(disk_color)
-   
-    HOSTTEXT=$(host_color)
+    local JC=$(job_color)
+    local USERTEXT=$(usertext)
+    local FC=$(disk_color)
+    local HOSTTEXT=$(host_color)
 
     PS1="\n[ ${USERTEXT}${HOSTTEXT} ${FC}]${JC}\\$ \[${DC}\]" 
 
@@ -155,26 +153,24 @@ function __prompt_command_basic() {
     
 }
 function __prompt_command_main() {
-    EXITSTATUS=$?
+#    EXITSTATUS=$?
     PS1=""
 
     if [ "$color_prompt" = yes ]; then
 	define_colors
     fi
 
-    LOADTEXT=$(loadtext)
-    JC=$(job_color)
-
-    USERTEXT=$(usertext)
-
-    DEBIAN_CHROOT=$(__debian_chroot)
-
-    BATTERY=$(bat_color)
-    
-    FC=$(disk_color)
-   
-    SMILE=$(last_command)
-    HOSTTEXT=$(host_color)
+    local LOADTEXT=$(loadtext)
+    local JC=$(job_color)
+    local USERTEXT=$(usertext)
+if [[ -n ${LAPTOP} ]]; then
+    local BATTERY=$(bat_color)
+else
+local BATTERY=""
+fi
+    local FC=$(disk_color)
+    local SMILE=$(last_command)
+    local HOSTTEXT=$(host_color)
 
     PS1="\n\
 [ ${USERTEXT}${HOSTTEXT}${LOADTEXT}${BATTERY}${SMILE}${FC}]${JC}\\$ \[${DC}\]" 
@@ -195,26 +191,25 @@ function __prompt_command_main() {
 
 
 function __prompt_command_advanced_main() {
-    EXITSTATUS=$?
+#    EXITSTATUS=$?
     PS1=""
 
     if [ "$color_prompt" = yes ]; then
 	define_colors
     fi
 
-    LOADTEXT=$(loadtext)
-    JC=$(job_color)
-
-    USERTEXT=$(usertext)
-
-    DEBIAN_CHROOT=$(__debian_chroot)
-
-    BATTERY=$(bat_color)
-    
-    FC=$(disk_color)
-   
-    SMILE=$(last_command)
-    HOSTTEXT=$(host_color)
+    local LOADTEXT=$(loadtext)
+    local JC=$(job_color)
+    local USERTEXT=$(usertext)
+    local DEBIAN_CHROOT=$(__debian_chroot)
+if [[ -n ${LAPTOP} ]]; then
+    local BATTERY=$(bat_color)
+else
+local BATTERY=""
+fi
+    local FC=$(disk_color)
+    local SMILE=$(last_command)
+    local HOSTTEXT=$(host_color)
 
     PS1="\n\
 ${DEBIAN_CHROOT}\
@@ -234,41 +229,37 @@ ${DEBIAN_CHROOT}\
 }
 
 function __prompt_command_full() {
-    EXITSTATUS=$?
+#    EXITSTATUS=$?
     PS1=""
 
     if [ "$color_prompt" = yes ]; then
 	define_colors
     fi
 
-    LOADTEXT=$(loadtext)
+    local LOADTEXT=$(loadtext)
+    local USERTEXT=$(usertext)
+    local JC=$(job_color)
 
-    USERTEXT=$(usertext)
-    JC=$(job_color)
-
-    # Repositories
-    
+    # Repositories    
     # git
-    BRANCH=$(__git_prompt)
+    local BRANCH=$(__git_prompt)
 
     # subversion
     # currently disabled as I have nothing to check it with
-    # SVNBRANCH=$(__svn_branch)
+    # local SVNBRANCH=$(__svn_branch)
 
-    BACKGROUND_JOBS=$(background_jobs)
-    STOPPED_JOBS=$(stopped_jobs)
-
-    DEBIAN_CHROOT=$(__debian_chroot)
-
-    BATTERY=$(bat_color)
-    
-    FC=$(disk_color)
-   
-
-    SMILE=$(last_command)
-    HOSTTEXT=$(host_color)
-    
-    SCREEN=$(__screen)
+    local BACKGROUND_JOBS=$(background_jobs)
+    local STOPPED_JOBS=$(stopped_jobs)
+    local DEBIAN_CHROOT=$(__debian_chroot)
+if [[ -n ${BATTERY} ]]; then
+    local BATTERY=$(bat_color)    
+else
+local BATTERY=""
+fi
+    local FC=$(disk_color)
+    local SMILE=$(last_command)
+    local HOSTTEXT=$(host_color)    
+    local SCREEN=$(__screen)
 
     PS1="\n\
 ${DEBIAN_CHROOT}\
@@ -314,16 +305,16 @@ function loadtext() {
     local CORES=$(grep 'model name' /proc/cpuinfo | wc -l)
     local LOADPER=$(echo ${LOAD} ${CORES} | awk '{print $1 / $2 * 100}' | cut -d. -f1)
 
-    LOADCOLOR=$(loadcolor)
+    local LOADCOLOR=$(loadcolor)
 
     if [ ${LOADPER} -gt ${HIGHUSE} ]; then
-	SYMBOL=$'\u2622'
+	local SYMBOL='☢'
     elif [ ${LOADPER} -gt ${MEDUSE} ]; then
-	SYMBOL=$'\u26a0'
+	local SYMBOL='⚠'
     elif [ ${LOADPER} -gt ${LOWUSE} ]; then
-	SYMBOL=$'\u2699'
+	local SYMBOL='⚙'
     else
-	SYMBOL=$'\u2603'
+	local SYMBOL='☃'
     fi
     if [ "${MODE}" = "full" ] || [ "${MODE}" = "date" ]; then
 	echo -ne "\[${LOADCOLOR}\]\A ${SYMBOL} \[${DC}\]"
@@ -356,7 +347,7 @@ function job_color() {
     if [ $(jobs -s | wc -l) -gt "0" ]; then 
 	echo -en "\[${BYELLOW}\]"
     elif [ $(jobs -r | wc -l) -gt "0" ] ; then 
-	echo -en "${BCYAN}" 
+	echo -en "\[${BCYAN}\]" 
     elif [ $(jobs -r | wc -l) -gt "0" ] && [ $(jobs -s | wc -l) -gt "0" ]; then 
 	echo -en "\[${RED}\]"
     else
@@ -419,9 +410,9 @@ function __git_prompt() {
 	    ## Change this to test for 'ahead' or 'behind'!
 	    local GChanges="$(echo ${GStat} | tr ':' '\n' | grep -v "^$" | grep -v "^\#\#" | wc -l | tr -d ' ')"
 	    if [ "$GChanges" == "0" ]; then
-		local GitCol=$MAGENTA
+		local GitCol=${MAGENTA}
 	    else
-		local GitCol=$CYAN
+		local GitCol=${CYAN}
 	    fi
 	    ### End Test Changes ### }}}
 	    
@@ -436,7 +427,7 @@ function __git_prompt() {
 	    fi
 	    ### End Branch ### }}}
 
-	    GITSTATUSPROMPT=" ${GitCol}[$GBra]\[${DC}\]"	# Add result to prompt
+	    GITSTATUSPROMPT=" \[${GitCol}\][$GBra]\[${DC}\]"	# Add result to prompt
 	    
 	    ### Find Commit Status ### {{{
 	    ## Test Modified and Untracked for "0"
@@ -476,28 +467,28 @@ function __git_prompt() {
 last_command () {
 
     if [ ${MODE} = full ]; then
-	CMDNUMB="\! \# "
+	local CMDNUMB="\! \# "
     else
-	CMDNUMB=""
+	local CMDNUMB=""
     fi 
 
     # Last Command Success
     if [ ${EXITSTATUS} = 0 ]; then
 	#smiley
-	FACE=$'\u263a'
+	local FACE='☺'
 	if [ "$color_prompt" = yes ]; then
-            SMILE="\[${GREEN}\]${FACE} ${CMDNUMB}\[${DC}\]"
+            local SMILE="\[${GREEN}\]${FACE} ${CMDNUMB}\[${DC}\]"
 	else
-         SMILE=":) ${CMDNUMB}"
+            local SMILE=":) ${CMDNUMB}"
 	fi
     else 
 	#frowney
-	FACE=$'\u2639'
-	EXITSTATUS="${EXITSTATUS} "
+	local FACE=$'☹'
+	local EXITSTATUS="${EXITSTATUS} "
 	if [ "$color_prompt" = yes ]; then
-         SMILE="\[${BRED}\]${FACE} ${EXITSTATUS}${CMDNUMB}\[${DC}\]"
+            local SMILE="\[${BRED}\]${FACE} ${EXITSTATUS}${CMDNUMB}\[${DC}\]"
 	else
-        SMILE=":( ${EXITSTATUS}${CMDNUMB}"
+            local SMILE=":( ${EXITSTATUS}${CMDNUMB}"
 	fi
     fi
     echo -en "${SMILE}"
@@ -506,13 +497,17 @@ last_command () {
 
 
 host_color () {
-
+if [[ -z ${BOXNAME} ]]; then
+local BOXTEXT="\h"
+else
+local BOXTEXT=${BOXNAME}
+fi
     # Only Display Host info if remote login
     if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
 	if [ "$color_prompt" = yes ]; then
-            HOSTTEXT="@\[${HC}\]\h \[${DC}\]"
+            local HOSTTEXT="@\[${HC}\]${BOXTEXT} \[${DC}\]"
 	else
-            HOSTTEXT="@\h "
+            local HOSTTEXT="@${BOXTEXT} "
 	fi
     fi
     echo -en $HOSTTEXT
@@ -540,9 +535,9 @@ echo -en "SVN"
 __screen () {
 # SRCEEN
     if [[ $TERM =~ screen ]] ; then
-	SCREEN="${BCYAN}(SCREEN)\[${DC}\] "
+	local SCREEN="\[${BCYAN}\](SCREEN)\[${DC}\] "
     else
-	SCREEN=""
+	local SCREEN=""
     fi
     echo -ne ${SCREEN}
 }
@@ -551,7 +546,7 @@ __debian_chroot () {
     # set variable identifying the chroot you work in 
     # (used in the prompt below)
     if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-	debian_chroot=$(cat /etc/debian_chroot)
+	local debian_chroot=$(cat /etc/debian_chroot)
 	echo -ne "\[${DC}\][ ${debian_chroot:+($debian_chroot)} ]\n"
     fi
 }

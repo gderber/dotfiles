@@ -38,23 +38,17 @@ beep () {
     echo -e -n \\a
 }
 
-function emacs () { 
-    if [ -n $DISPLAY ]; then
-	command emacs "$@" &
-    else
-	emacs
-    fi
-}
+#function emacs () { 
+#    if [ -n $DISPLAY ]; then
+#	command emacs "$@" &
+#    else
+#	emacs
+#    fi
+#}
 
 hexscroll() { pv -qL 90 /dev/urandom | xxd -c $(( ($COLUMNS-10)*2/7 )); }
 
-fuck () {
-    if [ "$1" == "off" ]; then
-	sudo poweroff
-    else
-	echo "\"fuck\" is not a recognised command"
-    fi
-}
+
 
 up() {
      local d=""
@@ -194,7 +188,7 @@ function ask() { # See 'killps' for example of use. {
     esac
 }
 
-function commoncommands () {
+function ccmds () {
     history | awk '{a[$4]++}END{for(i in a){print a[i] " " i}}' | sort -rn | head
 }
 
@@ -234,43 +228,76 @@ function myip () {
 }
 
 function iii () {
-    # Gather Hardware Information
-    CPUTEMPC=` sensors|grep CPU |cut -d: -f2`
-    CPUTEMP=` sensors -f | grep CPU | cut -d: -f2`
-    
+
+    # Universal Hosts    
     local DISTROINFO=$(distroinfo)
     local OSINFO=$(osinfo)
     local LOGININFO=$(lastlogininfo)
-    local USERSINFO=$(usersinfo)
     local DATEINFO=$(date "+%Y%m%d %T%Z")
     local UPTIMEINFO=$(uptimeinfo)
-    local BATTERYINFO=$(batteryinfo)
     local LOADINFO=$(loadinfo)
     local MEMINFO=$(meminfo)
     local SWAPINFO=$(swapinfo)
     local DISKINFO=$(diskinfo)
     local CPUINFO=$(cpuinfo)
-    # local CPUTEMPINFO=
-    local DISKTEMPINFO=$(disktempinfo)
-    local IPINFO=$(ipinfo)
-    local LOCATIONINFO=$(locationinfo)
-    local WEATHERINFO=$(weatherinfo)
+    local EXTIPINFO=$(myip)
+    
+
+    # Selected Hosts
+    if [ -z ${BOXNAME} ]; then
+	local USERSINFO=$(usersinfo)
+	local UPRECORDINFO=$(uprecordinfo)
+	local BATTERYINFO=$(batteryinfo)
+	local CPUTEMPINFO=$(cputempinfo)
+	local DISKTEMPINFO=$(disktempinfo)
+	if [[ -x /sbin/ifconfig ]]; then
+	    local IPINFO=$(ipinfo)
+	fi
+	if [[ -x /usr/bin/geoiplookup ]]; then
+	    local ISPINFO=$(ispinfo)
+	    local LOCATIONINFO=$(locationinfo)
+	    local WEATHERTEMPINFO=$(weathertempinfo)
+	    local WEATHERSKYINFO=$(weatherskyinfo)
+	    local WEATHERHUMIDITYINFO=$(weatherhumidityinfo)
+	    local WEATHERWINDINFO=$(weatherwindinfo)
+	fi
+    fi
 
     printf "Distribution ...: %s %s %s \n" ${DISTROINFO}
     printf "OS..............: %s %s \n" ${OSINFO}
     printf "Last Login......: %s %s %s %s at %s from %s \n" ${LOGININFO}
-    echo -e "Logged in Users.: $USERSINFO"
+    if [ -z ${BOXNAME} ]; then
+	echo -e "Logged in Users.: $USERSINFO"
+    fi
     printf "Current Time....: %s %s \n" ${DATEINFO}
-    printf "Uptime..........: %s %s %s %s %s %s %s \n" ${UPTIMEINFO}
-    echo -e "Battery status..: ${BATTERYINFO}"
+    printf "Uptime..........: %s %s %s %s" ${UPTIMEINFO}
+    if [ -z ${BOXNAME} ]; then
+	printf "Record: %s %s %s" ${UPRECORDINFO}
+    fi
+    printf "\n"
+    if [ -z ${BOXNAME} ]; then
+	echo -e "Battery status..: ${BATTERYINFO}"
+    fi
     printf "Load............: %s %1.2f %2.1f%% %s \n" ${LOADINFO} ${DC}
     printf "Memory..........: %s %s %2.1f%% %s \n" ${MEMINFO} ${DC}
     printf "Swap............: %s %s %2.1f%% %s \n" ${SWAPINFO} ${DC}
     printf "Disk Usage......: %s %s %s %s \n" ${DISKINFO} ${DC}
     printf "CPU.............: %s %s %s %s %s%s %s %s \n" ${CPUINFO}
-    printf "Temperature.....: CPU: %s %s CORE: MB: GPU: CPU: \n" ${CPUTEMP} ${CPUTEMPC}
-    printf "Temperature.....: SBA: %s    SDB: %s \n" ${DISKTEMPINFO}
-    printf "Ext IP Address..: %s  IP Address: %s \nISP.............: %s %s %s \n" ${IPINFO}
-    printf "Location........: %s, %s %s \n" ${LOCATIONINFO}
-    printf "Weather.........: %s %s ) %s with %s skys and %s humidity." ${WEATHERINFO}
+    if [ -z ${BOXNAME} ];then
+	printf "Temperature.....: CPU: %s %s CORE: %s MB: %s GPU: %s \n" ${CPUTEMPINFO}
+	printf "Temperature.....: SBA: %s    SDB: %s \n" ${DISKTEMPINFO}
+	printf "Ext IP Address..: %s  " ${EXTIPINFO}
+	if [[ -x /sbin/ifconfig ]]; then
+	    printf "IP Address: %s \n" ${IPINFO}
+	fi
+	if [[ -x /usr/bin/geoiplookup ]]; then
+	    printf "ISP.............: %s %s %s \n" ${ISPINFO}
+	    printf "Location........: %s, %s %s \n" ${LOCATIONINFO}
+	    printf "............Weather.............\n"
+	    printf "Tempurature..: %s %s) %s \n" ${WEATHERTEMPINFO}
+	    printf "Skys.........: %s %s %s %s \n" ${WEATHERSKYINFO}
+	    printf "Humidity.....: %s %s %s \n" ${WEATHERHUMIDITYINFO}
+	    printf "Winds........: %s at %s MPH (%s KT) \n" ${WEATHERWINDINFO}
+	fi
+    fi
 }

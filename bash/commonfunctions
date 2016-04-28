@@ -48,29 +48,36 @@ function distroinfo () {
 
     if [ -z "$DISTRIB_DESCRIPTION" ] && [ -x /usr/bin/lsb_release ]; then
         # Fall back to using the very slow lsb_release utility
-        DISTRIB_DESCRIPTION=$(lsb_release -s -d)
+        local DISTRIB_DESCRIPTION=$(lsb_release -s -d)
     fi
     echo -ne "${DISTRIB_DESCRIPTION}"
 }
 
 function osinfo () {
-    KERNEL=$(uname -r)
-    OPERATING_SYSTEM=$(uname -o)
+    local KERNEL=$(uname -r)
+    local OPERATING_SYSTEM=$(uname -o)
     echo -ne "${KERNEL} ${OPERATING_SYSTEM}"
 }
 
 function uptimeinfo () {
-    UPTIMEHOURS=$(uptime |cut -d, -f-2|cut -d\  -f4-)
-#    UPTIMEDAYS=$
-    #UPTIME=`awk '{print int($1/86400)" day(s) "int($1%86400/3600)":"int(($1%3600)/60)":`
-    UPRECORDS=$(uprecords| grep -e "   1"|cut -d\| -f1|cut -d\  -f9-|head -n 1)
-    echo -ne "${UPTIMEHOURS} Record: ${UPRECORDS}"
+    local UPTIMEHOURS=$(uptime |cut -d, -f-2|cut -d\  -f4-)
+#    local UPTIMEDAYS=$
+#    local UPTIME=$(awk '{print int($1/86400)" day(s) "int($1%86400/3600)":"int(($1%3600)/60)":$(
+    echo -ne "${UPTIMEHOURS}"
+}
+
+function uprecordinfo () {
+    local UPRECORDS=$(uprecords| grep -e "   1"|cut -d\| -f1|cut -d\  -f9-|head -n 1)
+    echo -ne "${UPRECORDS}"
 }
 
 function meminfo () {
-    MEMORY=`free -gh --si | head -n 2 | tail -n 1 | awk {'print $2'}`
-    MEMUSED=`free -gh --si | head -n 2 | tail -n 1 | awk {'print $3'}`
-    MEMFREE=`free -gh --si | head -n 2 | tail -n 1 | awk {'print $4'}`
+if [ -z ${BOXNAME} ]; then
+local SI="--si"
+fi
+    MEMORY=$(free -gh ${SI} | head -n 2 | tail -n 1 | awk {'print $2'})
+    MEMUSED=$(free -gh ${SI} | head -n 2 | tail -n 1 | awk {'print $3'})
+    MEMFREE=$(free -gh ${SI} | head -n 2 | tail -n 1 | awk {'print $4'})
     MEMPER=$(free -m | awk '/Mem/ { printf("%3.1f", $3/$2*100) }')
     MEMPER2=$(echo ${MEMPER} | cut -d. -f1)
 
@@ -85,9 +92,12 @@ function meminfo () {
 }
 
 function swapinfo() {
-    SWAP=`free -gh --si | tail -n 1 |awk {'print  $2'}`
-    SWAPUSED=`free -gh --si | tail -n 1 | awk {'print $3'}`
-    SWAPFREE=`free -gh --si | tail -n 1 | awk {'print $4'}`
+if [ -z ${BOXNAME} ]; then
+local SI="--si"
+fi
+    SWAP=$(free -gh ${SI} | tail -n 1 |awk {'print  $2'})
+    SWAPUSED=$(free -gh ${SI} | tail -n 1 | awk {'print $3'})
+    SWAPFREE=$(free -gh ${SI} | tail -n 1 | awk {'print $4'})
     SWAPPER=$(free -m | awk '/Swap/ { printf("%3.1f", $3/$2*100) }')
     SWAPPER2=$(echo ${SWAPPER} | cut -d. -f1)
 
@@ -137,25 +147,7 @@ function usersinfo () {
     echo -ne "$LOGGEDINUSERS"
 }
 
-function batteryvariables () {
-    # Batter Power for Laptop
-    BAT_PERCENTAGE=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0| grep -E percentage| awk {'print $2'}|cut -d% -f1)
-    BAT_STATE=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0| grep -E state | awk {'print $2'})
-    BAT_FULL=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep -E to\ full| awk {'print $4 $5'})
-    BAT_EMPTY=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep -E to\ empty| awk {'print $4 $5'})
-}
 
-function batteryinfo () {
-    batteryvariables
-    if [ ${BAT_PERCENTAGE} -lt 5 ]; then 
-	BC=${ALERT} # Battery almost dead (<5%). 
-    elif [ ${BAT_PERCENTAGE} -lt 20 ]; then 
-	BC=${YELLOW} # Battery almost gone
-    else 
-	    BC=${GREEN} # Battery is ok. 
-    fi
-    echo -ne "${BC}${BAT_PERCENTAGE}% ${BAT_STATE} ${BAT_FULL}${BAT_EMPTY}${SDC} "
-}
 
 function cpuinfo () {
     local CPU=$(cat /proc/cpuinfo | grep 'model name' | head -1 | cut -d':' -f2)
@@ -172,40 +164,40 @@ function bat_color () {
 }
 
 function ipinfo () {
-    EXTIPADDR=$(myip)
-    IPADDR=$(ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}')
-    ISP=$(geoiplookup ${EXTIPADDR} |grep ASN|cut -d: -f2)
+    local IPADDR=$(ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}')
+    echo -ne "$IPADDR"
+}
 
-    echo -ne "$EXTIPADDR $IPADDR $ISP"
-
+function ispinfo () {
+    local EXTIPADDR=$(myip)
+    local ISP=$(geoiplookup ${EXTIPADDR} |grep ASN |cut -d: -f2)
+    echo -ne "$ISP"
 }
 
 function location_zip() {
     local EXTIPADDR=$(myip)
-    ZIP=$(geoiplookup ${EXTIPADDR}|grep City| awk '{ printf "%s", $10 }'|cut -d, -f1)
+    local ZIP=$(geoiplookup ${EXTIPADDR}|grep City| awk '{ printf "%s", $10 }'|cut -d, -f1)
     echo -ne "${ZIP}"
 }
 
 function locationinfo () {
     local EXTIPADDR=$(myip)
     local ZIP=$(location_zip)
-    CITY=$(geoiplookup ${EXTIPADDR}|grep City| awk '{ printf "%s", $9 }'|cut -d, -f1)
-    STATE=$(geoiplookup ${EXTIPADDR}|grep City| awk '{ printf "%s", $8 }'|cut -d, -f1)
+    local CITY=$(geoiplookup ${EXTIPADDR}|grep City| awk '{ printf "%s", $9 }'|cut -d, -f1)
+    local STATE=$(geoiplookup ${EXTIPADDR}|grep City| awk '{ printf "%s", $8 }'|cut -d, -f1)
 
     echo -ne "${CITY} ${STATE} ${ZIP}"
 
 }
 
-function weatherinfo () {
+function weathertempinfo () {
     ZIP=$(location_zip)
     TEMP=$(weather ${ZIP} | grep Temp| awk '{ printf("%s", $2)}')
-    DEGF='\u2109'
+    DEGF='°F'
     TEMPC=$(weather ${ZIP} | grep Temp | awk '{ printf("%s", $4)}')
-    DEGC='\u2103'
-    TEMPCOLOR=`weather ${ZIP}|grep Temp|cut -d: -f2|cut -c 2-3`
-    HUMIDITY=`weather ${ZIP}|grep Rel|cut -d: -f2`
-    SKY=`weather ${ZIP}|grep Sky|cut -d: -f2`
-    WIND=`weather ${ZIP}|grep Wind|cut -d: -f2`
+    DEGC='°C'
+    TEMPCOLOR=$(weather ${ZIP}|grep Temp|cut -d: -f2|cut -c 2-3)
+
 
     SUPFREEZE="${BCYAN}"
     FREEZE="${BBLUE}"
@@ -245,12 +237,160 @@ function weatherinfo () {
     else TC=${ALERT}
     fi
  
-    echo -ne "${TC}${TEMP}${DEGF} ${TEMPC}${DEGC} ${DC} ${SKY} ${HUMIDITY}"
+    echo -ne "${TC}${TEMP}${DEGF} ${TEMPC}${DEGC} ${DC}"
+}
+
+
+function weatherskyinfo () {
+    ZIP=$(location_zip)
+    SKY=$(weather ${ZIP}|grep Sky|cut -d: -f2)
+
+    SUPFREEZE="${BCYAN}"
+    FREEZE="${BBLUE}"
+    COLD="${BLUE}"
+    CHILI="${BGREEN}"
+    MILD="${GREEN}"
+    NORMAL="${YELLOW}"
+    WARM="${BYELLOW}"
+    HOT="${BRED}"
+    VHOT="${RED}"
+    DANGER="${ALERT}"
+
+    # Colour progression is important ... 
+    # bold gray -> bold green -> bold yellow -> bold red -> 
+    # black on red -> bold white on red 
+    # 
+    # Then we have to choose the values at which the colours switch, with 
+    # anything past yellow being pretty important. 
+
+    if [ "${SKY}" == "clear" ]; then 
+	TC=${SUPFREEZE}
+    elif [ "${SKY}" == "cloudy" ]; then 
+        TC=${FREEZE}
+    elif [ "${SKY}" == "mostly cloudy" ]; then 
+	TC=${COLD}
+#    elif [ "${SKY}" == "" ]; then 
+#	TC=${CHILI}
+#    elif [ ${TEMPCOLOR} -ge 60 ] && [ ${TEMPCOLOR} -lt 67 ]; then
+#	TC=${MILD}
+#    elif [ ${TEMPCOLOR} -ge 67 ] && [ ${TEMPCOLOR} -lt 76 ]; then 
+#	TC=${NORMAL}
+#    elif [ ${TEMPCOLOR} -ge 76 ] && [ ${TEMPCOLOR} -lt 85 ]; then
+#	TC=${WARM}
+#    elif [ ${TEMPCOLOR} -ge 85 ] && [ ${TEMPCOLOR} -lt 92 ]; then
+#        TC=${HOT}
+#    elif [ ${TEMPCOLOR} -ge 92 ] && [ ${TEMPCOLOR} -lt 100 ]; then
+#	TC=${VHOT}
+    else TC=${ALERT}
+    fi
+ 
+    echo -ne "${TC} ${SKY} ${DC}"
+}
+
+function weatherhumidityinfo () {
+    local ZIP=$(location_zip)
+    HUMIDITY=$(weather ${ZIP}|grep Rel| awk '{ printf "%s", $3 }' | cut -c-2)
+
+    SUPFREEZE="${BCYAN}"
+    FREEZE="${BBLUE}"
+    COLD="${BLUE}"
+    CHILI="${BGREEN}"
+    MILD="${GREEN}"
+    NORMAL="${YELLOW}"
+    WARM="${BYELLOW}"
+    HOT="${BRED}"
+    VHOT="${RED}"
+    DANGER="${ALERT}"
+
+    # Colour progression is important ... 
+    # bold gray -> bold green -> bold yellow -> bold red -> 
+    # black on red -> bold white on red 
+    # 
+    # Then we have to choose the values at which the colours switch, with 
+    # anything past yellow being pretty important. 
+
+#    if [ ${HUMIDITY} -lt 0 ]; then 
+#	TC=$SUPFREEZE
+#    elif [ ${HUMIDITY} -ge 0 ] && [ ${HUMIDITY} -lt 33 ]; then 
+#        TC=${FREEZE}
+#    elif [ ${HUMIDITY} -ge 33 ] && [ ${HUMIDITY} -lt 50 ]; then 
+#	TC=${COLD}
+#    elif [ ${HUMIDITY} -ge 50 ] && [ ${HUMIDITY} -lt 60 ]; then 
+#	TC=${CHILI}
+#    elif [ ${HUMIDITY} -ge 60 ] && [ ${HUMIDITY} -lt 67 ]; then
+#    TC=${MILD}
+#    elif [ ${HUMIDITY} -ge 67 ] && [ ${HUMIDITY} -lt 76 ]; then 
+#	TC=${NORMAL}
+#    elif [ ${HUMIDITY} -ge 76 ] && [ ${HUMIDITY} -lt 85 ]; then
+#	TC=${WARM}
+#    elif [ ${HUMIDITY} -ge 85 ] && [ ${HUMIDITY} -lt 92 ]; then
+#        TC=${HOT}
+#    elif [ ${HUMIDITY} -ge 92 ] && [ ${HUMIDITY} -lt 100 ]; then
+#	TC=${VHOT}
+#    else TC=${ALERT}
+#    fi
+ 
+    echo -ne "${HUMIDITY}%"
+}
+
+function weatherwindinfo () {
+    local ZIP=$(location_zip)
+    WIND=$(weather ${ZIP}|grep Wind|cut -d: -f2)
+    WINDSPEED=$(echo $WIND | awk '{ printf "%s", $4 }')
+    WINDTYPE=$(echo $WIND | awk '{ printf "%s", $1 }')
+    WINDSPEEDKT=$(echo $WIND | awk '{ printf "%s", $6 }')
+
+    SUPFREEZE="${BCYAN}"
+    FREEZE="${BBLUE}"
+    COLD="${BLUE}"
+    CHILI="${BGREEN}"
+    MILD="${GREEN}"
+    NORMAL="${YELLOW}"
+    WARM="${BYELLOW}"
+    HOT="${BRED}"
+    VHOT="${RED}"
+    DANGER="${ALERT}"
+
+    # Colour progression is important ... 
+    # bold gray -> bold green -> bold yellow -> bold red -> 
+    # black on red -> bold white on red 
+    # 
+    # Then we have to choose the values at which the colours switch, with 
+    # anything past yellow being pretty important. 
+
+#    if [ ${WINDSPEED} -lt 0 ]; then 
+#	TC=$SUPFREEZE
+#   elif [ ${WINDSPEED} -ge 0 ] && [ ${WINDSPEED} -lt 33 ]; then 
+#        TC=${FREEZE}
+#    elif [ ${WINDSPEED} -ge 33 ] && [ ${WINDSPEED} -lt 50 ]; then 
+#	TC=${COLD}
+#    elif [ ${WINDSPEED} -ge 50 ] && [ ${WINDSPEED} -lt 60 ]; then 
+#	TC=${CHILI}
+#    elif [ ${WINDSPEED} -ge 60 ] && [ ${WINDSPEED} -lt 67 ]; then
+#          TC=${MILD}
+#    elif [ ${WINDSPEED} -ge 67 ] && [ ${WINDSPEED} -lt 76 ]; then 
+#	TC=${NORMAL}
+#    elif [ ${WINDSPEED} -ge 76 ] && [ ${WINDSPEED} -lt 85 ]; then
+#	TC=${WARM}
+#    elif [ ${WINDSPEED} -ge 85 ] && [ ${WINDSPEED} -lt 92 ]; then
+#        TC=${HOT}
+#    elif [ ${WINDSPEED} -ge 92 ] && [ ${WINDSPEED} -lt 100 ]; then
+#	TC=${VHOT}
+#    else TC=${ALERT}
+#    fi
+ 
+    echo -ne "${WINDTYPE} ${WINDSPEED} ${WINDSPEEDKT}"
 }
 
 function disktempinfo () {
-    local SDATEMP=`/usr/sbin/hddtemp -uf /dev/sda|cut -c 36-`
-    local SDBTEMP=`/usr/sbin/hddtemp -uf /dev/sdb|cut -c 36-`
+    local SDATEMP=$(/usr/sbin/hddtemp -uf /dev/sda|cut -c 36-)
+    local SDBTEMP=$(/usr/sbin/hddtemp -uf /dev/sdb|cut -c 36-)
 
     echo -ne "$SDATEMP $SDBTEMP"
+}
+
+function cputempinfo () {
+    local CPUTEMPC=$(sensors | grep "Core 0" | cut -d: -f2 | cut -d\( -f1)
+    local CPUTEMP=$(sensors -f | grep "Core 0" | cut -d: -f2 | cut -d\( -f1)
+    echo -ne "${CPUTEMP} ${CPUTEMPC}"
 }

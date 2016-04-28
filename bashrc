@@ -28,35 +28,43 @@ fi
 
 so() { [ -s $1 ] && source $1; }
 
+# Host Specific settings
+so ~/.bash/${HOSTNAME}_settings
+
 so ~/.bash/bashrc				# main configuration
 
 ## Uses:
 ## export ENV_NAME=$(uname -s|tr 'A-Z' 'a-z')
-#so ~/.subbash/${ENV_NAME}_profile	  # configuration per OS linux/OSX
+so ~/.bash/${ENV_NAME}_profile	        # configuration per OS linux/OSX/WIN
 
-#so ~/.subbash/common	       		# common stuff or overriding
+so ~/.bash/common	       		# common stuff or overriding
 
-#so ~/.subbash/export  		       	# Exports
+so ~/.bash/export  		       	# Exports
 so ~/.bash/shopt   			# Shopts
-#so ~/.subbash/installcheck	  # Checks for installs, $MISSING_PROGRAMS
-#so ~/.subbash/sshagent		  # SSH agent, have before settings
-#so ~/.subbash/gpgagent		  # GPG agent, have before settings
+so ~/.bash/installcheck	                # Checks for installs, $MISSING_PROGRAMS
+so ~/.bash/sshagent    		        # SSH agent, have before settings
+so ~/.bash/gpgagent		        # GPG agent, have before settings
 
 ### Interactive ### {{{
 if [[ $- == *i* ]]; then
-   # so ~/.bash/colors
+    so ~/.bash/colors
+    so ~/.bash/commonfunctions          # Common Functions
+    so ~/.bash/functions                # Functions
+so ~/.bash/sudo_functions # Functions requiring sudo, which you may not have access to. 
+    if [[ ${LAPTOP} == "true" ]]; then
+	so ~/.bash/laptop_functions
+    fi
     so ~/.bash/prompt			# COMMAND_PROMPT function
     so ~/.bash/aliases	       		# Alias
-    so ~/.bash/functions	      		# Functions
     # so ~/.bash/xdisplay
 fi
 ### End Interactive ### }}}
 
 ## This needs to be after Interactive, to override
-#so ~/.subbash/settings	      	# Machine dependent settings
+so ~/.bash/settings	      	# Machine dependent settings
 
 
 ## This is last, so it can override everything. Less fighting with mini installs.
-#so ~/.subbash/bashrc.local    	# machine specific config. not tracked
+so ~/.bash/bashrc.local    	# machine specific config. not tracked
 
 return 0

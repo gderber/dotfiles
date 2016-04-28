@@ -4,9 +4,11 @@
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-
-#alias rm='rm -i'
-rm='trash'
+if [[ -e "/usr/bin/trash" ]]; then
+    alias rm='trash'
+else
+    alias rm='rm -i'
+fi
 alias cp='cp -i'
 alias mv='mv -i'
 
@@ -59,12 +61,7 @@ alias libpath='echo -e ${LD_LIBRARY_PATH//:/\\n}'
 
 alias namemaker="shuf -n 2 /usr/share/dict/words | tr -dc 'A-Za-z0-9'"
 
-# Apt related commands
-alias aptpurge='sudo aptitude purge $(aptitude search ~c -F %p)'
-alias upgrade='sudo apt-get update && sudo apt-get upgrade'
 
-# Forgot Sudo
-alias please='sudo $(history -p !!)'
 
 #
 alias wget='wget -c'
@@ -90,3 +87,5 @@ alias pd='pushd'
 alias pd2='pushd +2'
 alias pd3='pushd +3' 
 alias pd4='pushd +4'
+
+alias fat='aptitude search ~i | grep -v "i A" | cut -d " " -f 4'

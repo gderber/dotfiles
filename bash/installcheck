@@ -13,7 +13,7 @@ MISSING_CLI=""
 MISSING_GUI=""
 
 ### CLI ### {{{
-CLI_LIST=(docker pinfo qmv vim w3m mutt mpv tmux ncdu pass stow notmuch msmtp offlineimap urlview htop mosh sshuttle fusermount exfatfsck qemu-io pianobar cacaview conky encfs scanmem hexcurse lsof pidof pinentry-curses pinentry-tty ranger rfkill sshfs tree unar wget iotop parted caff wicd-curses rsync weechat diff file find gpg gpg2 mc lnav cheat dfc lemonbar newsbeuter task redshift xdotool git clamscan iftop wireshark aptitude hwmon bc entr gpm tlp sfill vit curl lshw parallel)
+local CLI_LIST=(emacs geoiplookup weather-util fusermount exfatfsck parted rsync diff  gpg gpg2 aptitude)
 
 for i in "${CLI_LIST[@]}"; do
 	if [[ ! $(command -v ${i}) ]]; then
@@ -23,7 +23,7 @@ done
 ### End CLI ### }}}
 
 ### GUI ### {{{
-GUI_LIST=(rofi mcomix zathura xombrero terminator feh scrot calibre stalonetray i3lock xclip xnest xpra xbacklight spacefm spectrwm libreoffice clipit chromium icedove cryptkeeper gparted xss-lock nvpy uzbl urxvt zeal i3 font-manager gimp baobab gvim nitrogen touchegg unclutter autorandr srandr graphviz compton)
+local GUI_LIST=(synaptic gparted keepass2 gimp baobab k3b)
 
 for i in "${GUI_LIST[@]}"; do
 	if [[ ! $(command -v ${i}) ]]; then
@@ -32,6 +32,28 @@ for i in "${GUI_LIST[@]}"; do
 done
 ### End GUI ### }}}
 
+
 ### Font ### {{{
 
 ### End Font ### }}}
+
+### GAME ### {{{
+local GAME_LIST=(playonlinux dosbox scummvm steam)
+
+for i in "${GAME_LIST[@]}"; do
+	if [[ ! $(command -v ${i}) ]]; then
+		MISSING_GAME+="${i} "
+	fi
+done
+### End Game ### }}}
+
+
+### DEVEL ### {{{
+local DEVEL_LIST=(build-essential git)
+
+for i in "${DEVEL_LIST[@]}"; do
+	if [[ ! $(command -v ${i}) ]]; then
+		MISSING_DEVEL+="${i} "
+	fi
+done
+### End DEVEL ### }}}
