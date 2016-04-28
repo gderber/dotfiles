@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function define_colors_1() {
+function define_colors() {
 
     # Define Normal Colors
     BLACK='\033[0;30m'
@@ -107,6 +107,3 @@ function define_colors_1() {
     DC=$(echo -ne ${NO_COLOR})
 }
 
-function define_colors () {
-    define_colors_1
-}
