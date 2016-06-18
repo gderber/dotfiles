@@ -334,12 +334,34 @@ function weatherhumidityinfo () {
 }
 
 function weatherwindinfo () {
+# Weather wind formats
+#
+# 1. "from the NW (310 degrees) at 6 MPH (5 KT)"
+# 2. "Variable at 6 MPH (5 KT)
+# 3. "Calm"
+#
+#
+#
     local ZIP=$(location_zip)
-    WIND=$(weather ${ZIP}|grep Wind|cut -d: -f2)
-    WINDSPEED=$(echo $WIND | awk '{ printf "%s", $4 }')
-    WINDTYPE=$(echo $WIND | awk '{ printf "%s", $1 }')
-    WINDSPEEDKT=$(echo $WIND | awk '{ printf "%s", $6 }')
-
+    local WIND=$(weather ${ZIP}|grep Wind|cut -d: -f2)
+    local WINDFORMAT=$(echo $WIND | awk '{ printf "%s", $1 }')
+    if [[ "${WINDFORMAT}" == "from" ]]; then
+	local WINDSPEED=$(echo $WIND | awk '{ printf "%s", $7 }')
+	WINDSPEED="${WINDSPEED} MPH"
+	local WINDTYPE=$(echo $WIND | awk '{ printf "%s %s", $1 $2 }')
+	local WINDDIR=$(echo $WIND | awk '{ printf "%s", $3 }')
+	local WINDDEG=$(echo $WIND | awk '{ printf "%s %s", $4 $5}')
+	local WINDSPEEDKT=$(echo $WIND | awk '{ printf "%s %s", $9 $10 }')
+    elif [[ "${WINDFORMAT}" == "Variable" ]]; then
+	local WINDSPEED=$(echo $WIND | awk '{ printf "%s", $3 }')
+	WINDSPEED="${WINDSPEED} MPH"
+	local WINDTYPE=$(echo $WIND | awk '{ printf "%s", $1 }')
+	local WINDSPEEDKT=$(echo $WIND | awk '{ printf "%s %s", $5 $6}')
+    else
+	local WINDSPEED=$(echo $WIND | awk '{ printf "%s", $3 }')
+	local WINDTYPE=$(echo $WIND | awk '{ printf "%s", $1 }')
+	local WINDSPEEDKT=$(echo $WIND | awk '{ printf "%s", $5 }')
+    fi
     SUPFREEZE="${BCYAN}"
     FREEZE="${BBLUE}"
     COLD="${BLUE}"
@@ -379,7 +401,7 @@ function weatherwindinfo () {
 #    else TC=${ALERT}
 #    fi
  
-    echo -ne "${WINDTYPE} ${WINDSPEED} ${WINDSPEEDKT}"
+    echo -ne "${WINDTYPE} ${WINDDIR} ${WINDDEG} at ${WINDSPEED} ${WINDSPEEDKT}"
 }
 
 function disktempinfo () {
