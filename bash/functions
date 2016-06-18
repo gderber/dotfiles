@@ -297,7 +297,53 @@ function iii () {
 	    printf "Tempurature..: %s %s) %s \n" ${WEATHERTEMPINFO}
 	    printf "Skys.........: %s %s %s %s \n" ${WEATHERSKYINFO}
 	    printf "Humidity.....: %s %s %s \n" ${WEATHERHUMIDITYINFO}
-	    printf "Winds........: %s at %s MPH (%s KT) \n" ${WEATHERWINDINFO}
+	    printf "Winds........: %s %s %s %s %s %s %s %s %s \n" ${WEATHERWINDINFO}
 	fi
     fi
+}
+
+function ytdl () {
+    local TITLE=$(youtube-dl -e "$@")
+    local FORMAT=$(youtube-dl -F "$@" | grep best| awk '{ printf "%s",$1 }')
+
+    youtube-dl -f ${FORMAT} -o 'Youtube/%(uploader)s/%(playlist)s/%(playlist_index)s/%(chapter_number)s - %(chapter)s/%(title)s.%(ext)s' "$@"
+}
+
+function massunzip () {
+    for zip in *.zip
+    do
+	dirname=`echo $zip | sed 's/\.zip$//'`
+	if mkdir $dirname
+	then
+	    if cd $dirname
+	    then
+		unzip ../$zip
+		cd ..
+		# rm -f $zip # Uncomment to delete the original zip file
+	    else
+		echo "Could not unpack $zip - cd failed"
+	    fi
+	else
+	    echo "Could not unpack $zip - mkdir failed"
+	fi
+    done
+}
+
+function bash_reload () {
+    builtin exec bash
+}
+
+function imageloc () {
+    echo "https://www.google.com/maps/place/$(exiftool -ee -p '$gpslatitude, $gpslongitude' -c "%d?%d'%.2f"\" image.jpg 2> /dev/null | sed -e "s/ //g")"
+}
+
+function firefoxurl () {
+    URL=$(imageloc)
+    /usr/bin/firefox $URL
+}
+
+function update_timestamp () {
+    for FILE in $(find . -type f); do
+	touch "$FILE"
+    done
 }
