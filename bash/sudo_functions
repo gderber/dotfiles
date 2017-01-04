@@ -6,11 +6,3 @@ alias upgrade='sudo apt-get update && sudo apt-get upgrade'
 
 # Forgot Sudo
 alias please='sudo $(history -p !!)'
-
-fuck () {
-    if [ "$1" == "off" ]; then
-	sudo poweroff
-    else
-	echo "\"fuck\" is not a recognised command"
-    fi
-}

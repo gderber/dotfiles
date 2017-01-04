@@ -1,56 +1,33 @@
 #!/bin/bash
 
-# https://github.com/xvoland/Extract/blob/master/extract.sh
-
-# Handy Extract Program
-function extract() {
-    if [ -z "$1" ]; then
-	# display usage
-	echo "Usage: extract <path/file_name>.<zip|rar|bz2|gz|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
-    else
-	if [ -f "$1" ] ; then 
-	    case "$1" in 
-		*.tar.bz2|*.tbz2) tar xvjf "$1" ;; 
-		*.tar.gz|*.tgz) tar xvzf "$1" ;; 
-		*.tar.xz) tar xvJf "$1" ;;
-		*.lzma) unlzma ./"$1" ;;
-		*.bz2) bunzip2 -k "$1" ;; 
-		*.rar) unrar x "$1" ;; 
-		*.gz) gunzip -k "$1" ;; 
-		*.tar) tar xvf "$1" ;; 
-		*.zip) unzip "$1" ;; 
-		*.Z) uncompress "$1" ;; 
-		*.7z) 7z x "$1" ;; 
-		*.xz) unxz ./"$1" ;;
-		*.exe) cabextract ./"$1" ;;
-		*) echo "'$1' cannot be extracted via >extract<" ;; 
-	    esac 
-	else 
-	    echo "'$1' is not a valid file!" 
-	fi 
-    fi
+function decToBin () { 
+    echo "ibase=10; obase=2; $1" | bc; 
 }
 
-function decToBin { echo "ibase=10; obase=2; $1" | bc; }
-decTohex() { bc <<< "obase=16; $1"; }
+function decTohex() { 
+    bc <<< "obase=16; $1"; 
+}
 
-beep () {
+function beep () {
     echo -e -n \\a
 }
 
+# if in an X display run $EDITOR with '&'
+# otherwise in shell
 #function emacs () { 
 #    if [ -n $DISPLAY ]; then
-#	command emacs "$@" &
+#	command $EDITOR "$@" &
 #    else
-#	emacs
+#	command $EDITOR "$@"
 #    fi
 #}
 
-hexscroll() { pv -qL 90 /dev/urandom | xxd -c $(( ($COLUMNS-10)*2/7 )); }
+function hexscroll() { 
+    pv -qL 90 /dev/urandom | xxd -c $(( ($COLUMNS-10)*2/7 )); 
+}
 
-
-
-up() {
+# move up $@ directories
+function up() {
      local d=""
      limit=$1
      for ((i=1 ; i <= limit ; i++))
@@ -64,8 +41,18 @@ up() {
      cd $d
 }
 
+# move up $@ directories
+function back() {
+     limit=$1
+     for ((i=1 ; i <= limit ; i++))
+     do
+	 popd
+     done
+}
+
+
 # Inspiration: http://serverfault.com/a/5551 (but basically rewritten)
-fawk() {
+function fawk() {
     USAGE="\
 usage:  fawk [<awk_args>] <field_no>
         Ex: getent passwd | grep andy | fawk -F: 5
@@ -95,102 +82,6 @@ usage:  fawk [<awk_args>] <field_no>
     awk $rest "{ print  \$$last }"
 } # fawk
 
-
-swap() { 
-# Swap 2 filenames around, if they exist (from Uzi's bashrc). 
-    local TMPFILE=tmp.$$ 
-    [ $# -ne 2 ] && 
-    echo "swap: 2 arguments needed" && 
-    return 1 
-    [ ! -e $1 ] && 
-    echo "swap: $1 does not exist" && 
-    return 1 
-
-    [ ! -e $2 ] && 
-    echo "swap: $2 does not exist" && 
-    return 1 
-    
-    mv "$1" $TMPFILE 
-    mv "$2" "$1" 
-    mv $TMPFILE "$2" 
-}
-
-function my_ps() { ps $@ -u $USER -o pid,%cpu,%mem,bsdtime,command ; }
-function pp() { my_ps f | awk '!/awk/ && $0~var' var=${1:-".*"} ; }
-
-function killps() { # kill by process name
-    local pid pname sig="-TERM" # default signal 
-    if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then 
-	echo "Usage: killps [-SIGNAL] pattern" 
-	return; 
-    fi 
-
-    if [ $# = 2 ]; then 
-	sig=$1 ; 
-    fi 
-
-    for pid in $(my_ps| awk '!/awk/ && $0~pat { print $1 }' pat=${!#} ) 
-    do 
-	pname=$(my_ps | awk '$1~var { print $5 }' var=$pid ) 
-	if ask "Kill process $pid <$pname> with signal $sig?" 
-	then 
-	    kill $sig $pid 
-	fi 
-    done 
-} 
-
-
-function mydf() { # Pretty-print of 'df' output. { 
-    # Inspired by 'dfc' utility. 
-    for fs ; do 
-	if [ ! -d $fs ] 
-	then 
-	    echo -e $fs" :No such file or directory" ; continue 
-	fi 
-
-
-	local info=( $(command df -P $fs | awk 'END{ print $2,$3,$5 }') ) 
-	local free=( $(command df -Pkh $fs | awk 'END{ print $4 }') ) 
-	local nbstars=$(( 20 * ${info[1]} / ${info[0]} )) 
-	local out="[" 
-
-	for ((j=0;j<20;j++)); do 
-	    if [ ${j} -lt ${nbstars} ]; then 
-		out=$out"*" 
-	    else out=$out"-" 
-	    fi 
-	done 
-
-	out=${info[2]}" "$out"] ("$free" free on "$fs")" 
-	echo -e $out 
-    done 
-}
-
-
-function ii() { # Get current host related info. { 
-    echo -e "\nYou are logged on ${BRED}$HOST" 
-    echo -e "\n${BRED}Additionnal information:$DC " ; uname -a 
-    echo -e "\n${BRED}Users logged on:$DC " ; w -hs | cut -d " " -f1 | sort | uniq 
-    echo -e "\n${BRED}Current date :$DC " ; date 
-    echo -e "\n${BRED}Machine stats :$DC " ; uptime 
-    echo -e "\n${BRED}Memory stats :$DC " ; free 
-    echo -e "\n${BRED}Diskspace :$DC " ; mydf / $HOME 
-    echo -e "\n${BRED}Local IP Address :$DC" ; myip 
-    echo -e "\n${BRED}Open connections :$DC "; netstat -pan --inet; 
-    echo 
-}
-
-function ask() { # See 'killps' for example of use. { 
-    echo -n "$@" '[y/n] ' ; read ans 
-    case "$ans" in 
-	y*|Y*) return 0 ;; 
-	*) return 1 ;; 
-    esac
-}
-
-function ccmds () {
-    history | awk '{a[$4]++}END{for(i in a){print a[i] " " i}}' | sort -rn | head
-}
 
 function mkdircd () { 
     mkdir -p "$@" && 
@@ -223,112 +114,6 @@ function _cd {
 alias cd='_cd'
 complete -d cd
 
-function myip () {
-    echo $(dig +short myip.opendns.com @resolver1.opendns.com)
-}
-
-function iii () {
-
-    # Universal Hosts    
-    local DISTROINFO=$(distroinfo)
-    local OSINFO=$(osinfo)
-    local LOGININFO=$(lastlogininfo)
-    local DATEINFO=$(date "+%Y%m%d %T%Z")
-    local UPTIMEINFO=$(uptimeinfo)
-    local LOADINFO=$(loadinfo)
-    local MEMINFO=$(meminfo)
-    local SWAPINFO=$(swapinfo)
-    local DISKINFO=$(diskinfo)
-    local CPUINFO=$(cpuinfo)
-    local EXTIPINFO=$(myip)
-    
-
-    # Selected Hosts
-    if [ -z ${BOXNAME} ]; then
-	local USERSINFO=$(usersinfo)
-	local UPRECORDINFO=$(uprecordinfo)
-	local BATTERYINFO=$(batteryinfo)
-	local CPUTEMPINFO=$(cputempinfo)
-	local DISKTEMPINFO=$(disktempinfo)
-	if [[ -x /sbin/ifconfig ]]; then
-	    local IPINFO=$(ipinfo)
-	fi
-	if [[ -x /usr/bin/geoiplookup ]]; then
-	    local ISPINFO=$(ispinfo)
-	    local LOCATIONINFO=$(locationinfo)
-	    local WEATHERTEMPINFO=$(weathertempinfo)
-	    local WEATHERSKYINFO=$(weatherskyinfo)
-	    local WEATHERHUMIDITYINFO=$(weatherhumidityinfo)
-	    local WEATHERWINDINFO=$(weatherwindinfo)
-	fi
-    fi
-
-    printf "Distribution ...: %s %s %s \n" ${DISTROINFO}
-    printf "OS..............: %s %s \n" ${OSINFO}
-    printf "Last Login......: %s %s %s %s at %s from %s \n" ${LOGININFO}
-    if [ -z ${BOXNAME} ]; then
-	echo -e "Logged in Users.: $USERSINFO"
-    fi
-    printf "Current Time....: %s %s \n" ${DATEINFO}
-    printf "Uptime..........: %s %s %s %s" ${UPTIMEINFO}
-    if [ -z ${BOXNAME} ]; then
-	printf "Record: %s %s %s" ${UPRECORDINFO}
-    fi
-    printf "\n"
-    if [ -z ${BOXNAME} ]; then
-	echo -e "Battery status..: ${BATTERYINFO}"
-    fi
-    printf "Load............: %s %1.2f %2.1f%% %s \n" ${LOADINFO} ${DC}
-    printf "Memory..........: %s %s %2.1f%% %s \n" ${MEMINFO} ${DC}
-    printf "Swap............: %s %s %2.1f%% %s \n" ${SWAPINFO} ${DC}
-    printf "Disk Usage......: %s %s %s %s \n" ${DISKINFO} ${DC}
-    printf "CPU.............: %s %s %s %s %s%s %s %s \n" ${CPUINFO}
-    if [ -z ${BOXNAME} ];then
-	printf "Temperature.....: CPU: %s %s CORE: %s MB: %s GPU: %s \n" ${CPUTEMPINFO}
-	printf "Temperature.....: SBA: %s    SDB: %s \n" ${DISKTEMPINFO}
-	printf "Ext IP Address..: %s  " ${EXTIPINFO}
-	if [[ -x /sbin/ifconfig ]]; then
-	    printf "IP Address: %s \n" ${IPINFO}
-	fi
-	if [[ -x /usr/bin/geoiplookup ]]; then
-	    printf "ISP.............: %s %s %s \n" ${ISPINFO}
-	    printf "Location........: %s, %s %s \n" ${LOCATIONINFO}
-	    printf "............Weather.............\n"
-	    printf "Tempurature..: %s %s) %s \n" ${WEATHERTEMPINFO}
-	    printf "Skys.........: %s %s %s %s \n" ${WEATHERSKYINFO}
-	    printf "Humidity.....: %s %s %s \n" ${WEATHERHUMIDITYINFO}
-	    printf "Winds........: %s %s %s %s %s %s %s %s %s \n" ${WEATHERWINDINFO}
-	fi
-    fi
-}
-
-function ytdl () {
-    local TITLE=$(youtube-dl -e "$@")
-    local FORMAT=$(youtube-dl -F "$@" | grep best| awk '{ printf "%s",$1 }')
-
-    youtube-dl -f ${FORMAT} -o 'Youtube/%(uploader)s/%(playlist)s/%(playlist_index)s/%(chapter_number)s - %(chapter)s/%(title)s.%(ext)s' "$@"
-}
-
-function massunzip () {
-    for zip in *.zip
-    do
-	dirname=`echo $zip | sed 's/\.zip$//'`
-	if mkdir $dirname
-	then
-	    if cd $dirname
-	    then
-		unzip ../$zip
-		cd ..
-		# rm -f $zip # Uncomment to delete the original zip file
-	    else
-		echo "Could not unpack $zip - cd failed"
-	    fi
-	else
-	    echo "Could not unpack $zip - mkdir failed"
-	fi
-    done
-}
-
 function bash_reload () {
     builtin exec bash
 }
@@ -343,7 +128,9 @@ function firefoxurl () {
 }
 
 function update_timestamp () {
-    for FILE in $(find . -type f); do
-	touch "$FILE"
-    done
+    find . -type f -print0 -exec sh -c '
+        for file do
+	    touch "$file"
+        done
+    ' sh {} +
 }

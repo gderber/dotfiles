@@ -39,8 +39,8 @@ HISTCONTROL=ignoreboth
 
 if [[ "${FORBIDEN_HIST}" != "true" ]]; then
     # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-    HISTSIZE=1000
-    HISTFILESIZE=2000
+    HISTSIZE=2000
+    HISTFILESIZE=4000
 
 # Format History
 HISTTIMEFORMAT='%F %T '
@@ -76,3 +76,5 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+eval "$(beet completion)"

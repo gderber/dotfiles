@@ -19,3 +19,12 @@ function batteryinfo () {
     fi
     echo -ne "${BC}${BAT_PERCENTAGE}% ${BAT_STATE} ${BAT_FULL}${BAT_EMPTY}${DC} "
 }
+
+function bat_color () {
+    batteryvariables
+    if [ "$BAT_PERCENTAGE" -lt 100 ]; then
+	echo -ne "${BC}${BAT_PERCENTAGE}% ${BAT_STATE} ${BAT_FULL}${BAT_EMPTY}${SDC} "
+    else
+	echo -ne ""
+    fi
+}
