@@ -50,11 +50,12 @@ function loadprompt () {
 	    # $
 	    export PROMPT_COMMAND=__prompt_command_off
 	    ;;
-	date) 
+        date) 
 	    # [\t]\$ 
 	    export PROMPT_COMMAND=__prompt_command_date 
 	    ;; 
 	basic)
+	    # [\u \w]\$
 	    export PROMPT_COMMAND=__prompt_command_basic
 	    ;; 
 	main) 
@@ -74,10 +75,12 @@ function loadprompt () {
 }
 
 function __prompt_command_none () {
+    history -a
     PS1=""
 }
 
 function __prompt_command_off () {
+    history -a
     PS1=""
     if [ "$color_prompt" = yes ]; then
 	define_colors
@@ -89,18 +92,11 @@ function __prompt_command_off () {
 
     unset color_prompt force_color_prompt
 
-    # Options for xterm
-        # If this is an xterm set the title to user@host:dir
-    case "$TERM" in
-	xterm*|rxvt*)
-	    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-	    ;;
-	*)
-	    ;;
-    esac
+    xterm_settings
 }
 
 function __prompt_command_date () {
+    history -a
     PS1=""
 
     if [ "$color_prompt" = yes ]; then
@@ -114,19 +110,11 @@ function __prompt_command_date () {
 
     unset color_prompt force_color_prompt
 
-
-    # Options for xterm
-    # If this is an xterm set the title to user@host:dir
-    case "$TERM" in
-	xterm*|rxvt*)
-	    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-	    ;;
-	*)
-	    ;;
-    esac
+    xterm_settings
 }
 
 function __prompt_command_basic() {
+    history -a
     PS1=""
 
     if [ "$color_prompt" = yes ]; then
@@ -140,20 +128,12 @@ function __prompt_command_basic() {
 
     PS1="\n[ ${USERTEXT}${HOSTTEXT} ${FC}]${JC}\\$ \[${DC}\]" 
 
-    # Options for xterm
-    
-    # If this is an xterm set the title to user@host:dir
-    case "$TERM" in
-	xterm*|rxvt*)
-	    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-	    ;;
-	*)
-	    ;;
-    esac
-    
+    xterm_settings
 }
+
 function __prompt_command_main() {
-#    EXITSTATUS=$?
+    EXITSTATUS=$?
+    history -a
     PS1=""
 
     if [ "$color_prompt" = yes ]; then
@@ -163,11 +143,11 @@ function __prompt_command_main() {
     local LOADTEXT=$(loadtext)
     local JC=$(job_color)
     local USERTEXT=$(usertext)
-if [[ -n ${LAPTOP} ]]; then
-    local BATTERY=$(bat_color)
-else
-local BATTERY=""
-fi
+    if [[ -n ${LAPTOP} ]]; then
+	local BATTERY=$(bat_color)
+    else
+	local BATTERY=""
+    fi
     local FC=$(disk_color)
     local SMILE=$(last_command)
     local HOSTTEXT=$(host_color)
@@ -175,23 +155,14 @@ fi
     PS1="\n\
 [ ${USERTEXT}${HOSTTEXT}${LOADTEXT}${BATTERY}${SMILE}${FC}]${JC}\\$ \[${DC}\]" 
 
-    # Options for xterm
-    
-    # If this is an xterm set the title to user@host:dir
-    case "$TERM" in
-	xterm*|rxvt*)
-	    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-	    ;;
-	*)
-	    ;;
-    esac
-    
+    xterm_settings
 }
 
 
 
 function __prompt_command_advanced_main() {
-#    EXITSTATUS=$?
+    EXITSTATUS=$?
+    history -a
     PS1=""
 
     if [ "$color_prompt" = yes ]; then
@@ -202,11 +173,11 @@ function __prompt_command_advanced_main() {
     local JC=$(job_color)
     local USERTEXT=$(usertext)
     local DEBIAN_CHROOT=$(__debian_chroot)
-if [[ -n ${LAPTOP} ]]; then
-    local BATTERY=$(bat_color)
-else
-local BATTERY=""
-fi
+    if [[ -n ${LAPTOP} ]]; then
+	local BATTERY=$(bat_color)
+    else
+	local BATTERY=""
+    fi
     local FC=$(disk_color)
     local SMILE=$(last_command)
     local HOSTTEXT=$(host_color)
@@ -215,20 +186,12 @@ fi
 ${DEBIAN_CHROOT}\
 [ ${USERTEXT}${HOSTTEXT}${LOADTEXT}${BATTERY}${SMILE}${FC}]${JC}\\$ \[${DC}\]" 
 
-    # Options for xterm
-    
-    # If this is an xterm set the title to user@host:dir
-    case "$TERM" in
-	xterm*|rxvt*)
-	    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-	    ;;
-	*)
-	    ;;
-    esac
+    xterm_settings
     
 }
 
 function __prompt_command_full() {
+    history -a
 #    EXITSTATUS=$?
     PS1=""
 
@@ -251,11 +214,11 @@ function __prompt_command_full() {
     local BACKGROUND_JOBS=$(background_jobs)
     local STOPPED_JOBS=$(stopped_jobs)
     local DEBIAN_CHROOT=$(__debian_chroot)
-if [[ -n ${BATTERY} ]]; then
-    local BATTERY=$(bat_color)    
-else
-local BATTERY=""
-fi
+    if [[ -n ${BATTERY} ]]; then
+	local BATTERY=$(bat_color)    
+    else
+	local BATTERY=""
+    fi
     local FC=$(disk_color)
     local SMILE=$(last_command)
     local HOSTTEXT=$(host_color)    
@@ -268,17 +231,7 @@ ${DEBIAN_CHROOT}\
 [ ${FC}${BRANCH}] \n\
 ${JC}\\$ \[${DC}\]" 
 
-    # Options for xterm
-    
-    # If this is an xterm set the title to user@host:dir
-    case "$TERM" in
-	xterm*|rxvt*)
-	    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-	    ;;
-	*)
-	    ;;
-    esac
-    
+    xterm_settings
 }
 
 
@@ -301,9 +254,7 @@ function usertext () {
 # Returns a color indicating system load. 
 function loadtext() { 
 
-    local LOAD=$(cat /proc/loadavg | awk '{print $1}')
-    local CORES=$(grep 'model name' /proc/cpuinfo | wc -l)
-    local LOADPER=$(echo ${LOAD} ${CORES} | awk '{print $1 / $2 * 100}' | cut -d. -f1)
+    local LOADPER=$(loadper)
 
     local LOADCOLOR=$(loadcolor)
 
@@ -467,7 +418,7 @@ function __git_prompt() {
 last_command () {
 
     if [ ${MODE} = full ]; then
-	local CMDNUMB="\! \# "
+	local CMDNUMB="\! "
     else
 	local CMDNUMB=""
     fi 
@@ -483,7 +434,7 @@ last_command () {
 	fi
     else 
 	#frowney
-	local FACE=$'☹'
+	local FACE='☹'
 	local EXITSTATUS="${EXITSTATUS} "
 	if [ "$color_prompt" = yes ]; then
             local SMILE="\[${BRED}\]${FACE} ${EXITSTATUS}${CMDNUMB}\[${DC}\]"
@@ -497,11 +448,11 @@ last_command () {
 
 
 host_color () {
-if [[ -z ${BOXNAME} ]]; then
-local BOXTEXT="\h"
-else
-local BOXTEXT=${BOXNAME}
-fi
+    if [[ -z ${BOXNAME} ]]; then
+	local BOXTEXT="\h"
+    else
+	local BOXTEXT=${BOXNAME}
+    fi
     # Only Display Host info if remote login
     if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
 	if [ "$color_prompt" = yes ]; then
@@ -535,7 +486,7 @@ echo -en "SVN"
 __screen () {
 # SRCEEN
     if [[ $TERM =~ screen ]] ; then
-	local SCREEN="\[${BCYAN}\](SCREEN)\[${DC}\] "
+	local SCREEN="\[${BCYAN}\] (${WINDOW}) \[${DC}\] "
     else
 	local SCREEN=""
     fi
@@ -549,6 +500,18 @@ __debian_chroot () {
 	local debian_chroot=$(cat /etc/debian_chroot)
 	echo -ne "\[${DC}\][ ${debian_chroot:+($debian_chroot)} ]\n"
     fi
+}
+
+function xterm_settings () {
+    # Options for xterm
+    # If this is an xterm set the title to user@host:dir
+    case "$TERM" in
+	xterm*|rxvt*)
+	    PS1="\[\033]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+	    ;;
+	*)
+	    ;;
+    esac
 }
 
 loadprompt $@
