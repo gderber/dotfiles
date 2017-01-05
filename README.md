@@ -2,13 +2,21 @@
 
 My Bash Config Files.
 
-All files are located at ~/.bash/ with the excption of .bashrc.
 
 File descrpition
 .bashrc: loads all the subsequent config files
-
-bash/aliases: source file for all aliases
-bash/colors:
-bash/commonfunctions:
-bash/functions:
-bash/prompt:
+.bash_logout: 
+.bash/aliases:          source file for all aliases
+.bash/bashrc:           ...
+.bash/colors:           defines colors
+.bash/commonfunctions: ..
+.bash/functions:        ...
+.bash/gpgagent:         ...
+.bash/installcheck:     ...
+.bash/laptop_functions: ...
+.bash/linux_profile:    ...
+.bash/prompt:           ...
+.bash/shopt:            ....
+.bash/sshagent:         ..
+.bash/sudo_functions:   functions that can only be run with sudo privledges
+.bash/xdisplay:         ..
