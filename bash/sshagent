@@ -1,3 +1,4 @@
+#!/bin/bash
 #### My (demuredemeanor) sub source ssh-agent script
 # Uses tabstop=4; shiftwidth=4 tabs; foldmarker={{{,}}};
 # https://notabug.org/demure/dotfiles/
@@ -8,7 +9,7 @@
 # Add check -> Y/N for ssh_env existing? might not need, if using __ssh_agent right
 
 ### SSH Agent ### {{{
-function __ssh_agent() {
+function __ssh_agent () {
 	local SSH_ENV="$HOME/.ssh/environment"
 	local U_CHECK="$(logname)"
 	logname &>/dev/null
