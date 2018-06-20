@@ -1,0 +1,89 @@
+Host apollo
+    HostName apollo
+
+Host aphrodite
+    HostName aphrodite
+
+Host ariande
+    HostName ariande
+
+Host calliope
+    HostName calliope
+
+Host demeter
+    HostName demeter
+
+Host dionysus
+    HostName dionysus
+
+Host hm
+    HostName hearthminion.com
+    User hearthmi
+    StrictHostKeyChecking yes
+    VerifyHostKeyDNS ask
+    VisualHostKey yes
+
+Host hera
+    HostName hera
+
+Host hestia
+    HostName hestia
+
+Host mnemosyne
+    HostName mnemosyne
+
+Host morpheus
+    HostName morpheus
+    ForwardX11 yes
+
+Host orion
+    HostName orion
+
+Host telete
+    HostName telete
+
+Host zeus
+    HostName zeus
+
+Host *
+    User pi
+    StrictHostKeyChecking ask
+    UpdateHostKeys ask
+
+    # All Options
+    # Can speed up logins to some servers
+    #GSSAPIAuthentication no
+    #GSSAPIKeyExchange no
+    #ChallengeResponseAuthentication no
+    #HashKnownHosts no
+    #Protocol 2
+    # Some servers will force log out if you haven't typed anything in a while
+    # This means send a packet every 60 seconds, after 3 of those without a
+    # response then drop the connection
+    #ServerAliveCountMax 3
+    #ServerAliveInterval 60
+    #TCPKeepAlive yes
+    #BatchMode [yes|no]  # Def: no
+    #CheckHostIP [yes|no]  # Def: yes - no is useful on a host who's key changes (rebuilding a dev machine)
+    #Ciphers (see ssh_config(5))  # (sshv2) Def: (see man page) - (speed: arcfour > blowfish > aes)
+    #Compression [yes|no]  # Def: no
+    #ControlMaster [yes|ask|auto|autoask]  # Best to just google ControlMaster or check man pages
+    #ControlPath <path>
+    #ControlPersist [yes|no]
+    #DynamicForward <[bind_addres:]port>  # sets up a local socks proxy over ssh
+    #ExitOnForwardFailure [yes|no]  # Def: no
+    #ForwardX11 [yes|no]  # Def: no
+    #ForwardX11Timeout (see sshd_config "Time Formats")  # Def: 20 minutes
+    #ForwardX11Trust [yes|no]  # Def: yes (debian specific)
+    #HostKeyAlias <name>  # Useful if have several Host sections for single server
+    #HostName [<dns_name>|<ip>]  # Also supports %h for given on command line (eg: %h.example.com)
+    #IdentityFile <path>  # Def: (see ssh_config(5)) - several escape sequences are supported, see man page
+    #KbdInteractiveAuthentication [yes|no]   # Def: yes - can disable if only using ssh keys
+    #LocalForward <[local bind_address:]local_port> <remote_host>:<remote_port>
+    #  An example that forwards local 8080 to port 8443 on remote server:
+    #      LocalForward localhost:8080 127.0.0.1:8443
+    #PasswordAuthentication [yes|no]  # Def: yes - Another thing to disable if using keys
+    #Port <server_port>  # Def: 22
+    #PreferredAuthentications <list>  # Can set this to 'publickey' to disable all other methods
+    #StrictHostKeyChecking [yes|no|ask]  # Def: ask
+    #VerifyHostKeyDNS [yes|no|ask] # Def: no - useful but rarely used, google it for info
