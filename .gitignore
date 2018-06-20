@@ -39,6 +39,7 @@
 \#*\#
 /.emacs.desktop
 /.emacs.desktop.lock
+session.*
 *.elc
 auto-save-list
 tramp
