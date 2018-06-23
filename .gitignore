@@ -358,3 +358,9 @@ secring.*
 ~$*.ppt*   # PowerPoint temporary
 *.~vsd*    # Visio autosave temporary files
 
+# ==================================
+#
+# Project Specific
+#
+# ==================================
+/backup/
