@@ -1,3 +1,4 @@
+#!/bin/bash
 # =============================================================== #
 #
 # PERSONAL $HOME/.bashrc FILE
@@ -67,4 +68,8 @@ so ~/.bash/settings	      	# Machine dependent settings
 ## This is last, so it can override everything. Less fighting with mini installs.
 so ~/.bash/bashrc.local    	# machine specific config. not tracked
 
-return 0
+if [[ -n $SSH_CLIENT ]] || [[ -n $SSH_TTY ]]; then
+    if [[ ! $TERM =~ screen ]]; then
+	screen -Rd
+    fi
+fi

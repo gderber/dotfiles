@@ -59,7 +59,7 @@ select 1
 # defsilence            off             # default: off
   hardcopy_append       on              # default: off
   nethack               on              # default: off
-  startup_message       off             # default: on   # Display the copyright page
+#  startup_message       off             # default: on   # Display the copyright page
   vbell                 off             # default: ???
 
 #
@@ -121,7 +121,7 @@ select 1
 # in addition to the hardstatus line.
 #
 # use caption to show window list:
-caption always           "%?%F%{=b Kw}%:%{=u kR}%?  %h %-024= %C%a %D %d %M %Y%{= db}"
+# caption always           "%?%F%{=b Kw}%:%{=u kR}%?  %h %-024= %C%a %D %d %M %Y%{= db}"
 
 #
 # ===============================================================
@@ -133,8 +133,8 @@ caption always           "%?%F%{=b Kw}%:%{=u kR}%?  %h %-024= %C%a %D %d %M %Y%{
 # Prints the window names and highlight the current window in yellow.
 # On the right there is the time in green and the date in yellow.
 #
-hardstatus off
-hardstatus alwayslastline "%{= kw} %-Lw%{=b Kw} %n%f %t %{-}%+Lw %=%{= dd}"
+#hardstatus off
+#hardstatus alwayslastline "%{= kw} %-Lw%{=b Kw} %n%f %t %{-}%+Lw %=%{= dd}"
 
 hardstatus alwayslastline
 hardstatus string "%{= kG}[ %{G}%H %{g}][%= %{= w}%?%-Lw%?%{= R}%n*%f %t%?%{= R}(%u)%?%{= w}%+Lw%?%= %{= g}][%{B}%Y-%m-%d %{W}%c:%s %{g}]"
