@@ -198,8 +198,11 @@
     rex = remote rm
     rem = remote rename
 
+    flow-setup = "!git branch --track develop origin/develop 2>/dev/null ; git flow init -fd && git checkout master && git pull origin master && git checkout develop && git pull origin develop"
+
 [push]
     default = matching
 
 [url "git@github.com:"]
 insteadof = github:
+

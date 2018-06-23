@@ -41,154 +41,9 @@ function loadprompt () {
 	fi
     fi
 
-    case "$MODE" in 
-	none) 
-	    # ""
-	    export PROMPT_COMMAND=__prompt_command_none
-	    ;; 
-	off) 
-	    # $
-	    export PROMPT_COMMAND=__prompt_command_off
-	    ;;
-        date) 
-	    # [\t]\$ 
-	    export PROMPT_COMMAND=__prompt_command_date 
-	    ;; 
-	basic)
-	    # [\u \w]\$
-	    export PROMPT_COMMAND=__prompt_command_basic
-	    ;; 
-	main) 
-	   export PROMPT_COMMAND=__prompt_command_main # Func to gen PS1 after CMDs
-	    ;;
-	amain)
-	    MODE=main
-	    export PROMPT_COMMAND=__prampt_command_advanced_main
-	    ;;
-	full) 
-	    export PROMPT_COMMAND=__prompt_command_full # Func to gen PS1 after CMDs
-	    ;;
-	*)
-	    export PROMPT_COMMAND=__prompt_command_main # Func to gen PS1 after CMDs
-	    ;;
-    esac
+    export PROMPT_COMMAND=__prompt_command_full # Func to gen PS1 after CMDs
 }
 
-function __prompt_command_none () {
-    history -a
-    PS1=""
-}
-
-function __prompt_command_off () {
-    history -a
-    PS1=""
-    if [ "$color_prompt" = yes ]; then
-	define_colors
-    fi
-
-    local JC=$(job_color)
-
-    PS1="${JC}\\$ \[${DC}\]" 
-
-    unset color_prompt force_color_prompt
-
-    xterm_settings
-}
-
-function __prompt_command_date () {
-    history -a
-    PS1=""
-
-    if [ "$color_prompt" = yes ]; then
-	define_colors
-    fi
-
-    local LOADTEXT=$(loadtext)
-    local JC=$(job_color)
-
-    PS1="[ ${LOADTEXT}]${JC}\\$ \[${DC}\]" 
-
-    unset color_prompt force_color_prompt
-
-    xterm_settings
-}
-
-function __prompt_command_basic() {
-    history -a
-    PS1=""
-
-    if [ "$color_prompt" = yes ]; then
-	define_colors
-    fi
-
-    local JC=$(job_color)
-    local USERTEXT=$(usertext)
-    local FC=$(disk_color)
-    local HOSTTEXT=$(host_color)
-
-    PS1="\n[ ${USERTEXT}${HOSTTEXT} ${FC}]${JC}\\$ \[${DC}\]" 
-
-    xterm_settings
-}
-
-function __prompt_command_main() {
-    EXITSTATUS=$?
-    history -a
-    PS1=""
-
-    if [ "$color_prompt" = yes ]; then
-	define_colors
-    fi
-
-    local LOADTEXT=$(loadtext)
-    local JC=$(job_color)
-    local USERTEXT=$(usertext)
-    if [[ -n ${LAPTOP} ]]; then
-	local BATTERY=$(bat_color)
-    else
-	local BATTERY=""
-    fi
-    local FC=$(disk_color)
-    local SMILE=$(last_command)
-    local HOSTTEXT=$(host_color)
-
-    PS1="\n\
-[ ${USERTEXT}${HOSTTEXT}${LOADTEXT}${BATTERY}${SMILE}${FC}]${JC}\\$ \[${DC}\]" 
-
-    xterm_settings
-}
-
-
-
-function __prompt_command_advanced_main() {
-    EXITSTATUS=$?
-    history -a
-    PS1=""
-
-    if [ "$color_prompt" = yes ]; then
-	define_colors
-    fi
-
-    local LOADTEXT=$(loadtext)
-    local JC=$(job_color)
-    local USERTEXT=$(usertext)
-    local DEBIAN_CHROOT=$(__debian_chroot)
-    if [[ -n ${LAPTOP} ]]; then
-	local BATTERY=$(bat_color)
-    else
-	local BATTERY=""
-    fi
-    local FC=$(disk_color)
-    local SMILE=$(last_command)
-    local HOSTTEXT=$(host_color)
-
-    PS1="\n\
-${DEBIAN_CHROOT}\
-[ ${USERTEXT}${HOSTTEXT}${LOADTEXT}${BATTERY}${SMILE}${FC}]${JC}\\$ \[${DC}\]" 
-
-    xterm_settings
-    
-}
 
 function __prompt_command_full() {
     history -a
@@ -225,7 +80,7 @@ function __prompt_command_full() {
     local SCREEN=$(__screen)
 
     PS1="\n\
-${DEBIAN_CHROOT}\
+${DEBIAN_CHROOT} \n\
 [ ${USERTEXT}${HOSTTEXT} ] \n\
 [ ${LOADTEXT}${BATTERY}${SMILE}${SCREEN}${BACKGROUND_JOBS}${STOPPED_JOBS}] \n\
 [ ${FC}${BRANCH}] \n\

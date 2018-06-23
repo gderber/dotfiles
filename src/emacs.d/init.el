@@ -81,7 +81,7 @@
 
 (setq debug-on-enrror t)
 
-(load "~/.config/emacs/global")
+;;(load "~/.config/emacs/global")
 ;;(load "~/.config/emacs/column-marker")
 
 ;; Load my defaults from another file.  Again, makes distributing this file
