@@ -6,7 +6,7 @@
 
 ### GPG Agent ### {{{
 function __gpg_agent() {
-	envfile="$HOME/.gnupg/gpg-agent.env"
+	envfile="$HOME/.gnupg/gpg-agent-info"
 	if [[ -e "$envfile" ]] && kill -0 $(grep GPG_AGENT_INFO "$envfile" | cut -d: -f 2) 2>/dev/null; then
 		eval "$(cat "$envfile")"
 	else
@@ -15,4 +15,11 @@ function __gpg_agent() {
 	export GPG_AGENT_INFO  # the env file does not contain the export statement
 	export SSH_AUTH_SOCK   # enable gpg-agent for ssh
 }
+
+
+
+#if [ -f "${HOME}/.gnupg/.gpg-agent-info" ]; then
+#    . "${HOME}/.gnupg/.gpg-agent-info"
+#    export GPG_AGENT_INFO
+#fi
 ### End GPG Agent ### }}}

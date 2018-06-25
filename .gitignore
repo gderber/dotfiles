@@ -53,6 +53,7 @@ flycheck_*.el  # Flycheck
 /server/   # server auth directory
 .projectile # projectiles files
 .dir-locals.el  # directory configuration
+/src/emacs.d/places
 
 # Org-mode
 .org-id-locations
@@ -349,6 +350,16 @@ TAGS
 
 # GPG
 secring.*
+/*/exports/
+/*/openpgp-revocs.d/
+/*/private-keys-v1.d/
+pubring.kbx
+random_seed
+reader_0.status
+sshcontrol
+tofu.db
+trustdb.gpg
+
 
 # Microsoft Office
 *.tmp
