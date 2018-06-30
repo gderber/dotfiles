@@ -287,7 +287,7 @@ ehthumbs_vista.db
 *.stackdump     # Dump file
 *.lnk           # Windows shortcuts
 [Dd]esktop.ini  # Folder config file
-$RECYCLE.BIN/   # Recycle Bin used on file shares
+#\$RECYCLE.BIN/   # Recycle Bin used on file shares
 
 
 
