@@ -1,0 +1,94 @@
+NAME=dotfiles
+VERSION=0.0.1
+
+BASH_FILES=bash bashrc bash_profile bash_login
+EMACS_FILES=emacs.d
+GIT_FILES=.gitignore .gitattributes .gitconfig
+GNUPG_FILES=gpa-agent.conf gpg.conf
+INPUT_FILES=editrc inputrc
+PYTHON_FILES=pylintrc pythonrc
+SCREEN_FILES=screenrc
+SSH_FILES=config
+WGET_FILES=wgetrc
+
+DOC_FILES=*.md *.txt
+
+PKG_DIR=pkg
+PKG_NAME=$(NAME)-$(VERSION)
+PKG=$(PKG_DIR)/$(PKG_NAME).tar.gz
+SIG=$(PKG_DIR)/$(PKG_NAME).asc
+
+PREFIX=~/
+DOC_DIR=$(PREFIX)/share/doc/$(PKG_NAME)
+
+pkg:
+        mkdir -p $(PKG_DIR)
+
+$(PKG): pkg
+        git archive --output=$(PKG) --prefix=$(PKG_NAME)/ HEAD
+
+build: $(PKG)
+
+$(SIG): $(PKG)
+        gpg --sign --detach-sign --armor $(PKG)
+
+sign: $(SIG)
+
+clean:
+        rm -f $(PKG) $(SIG)
+
+all: $(PKG) $(SIG)
+
+test:
+
+tag:
+        git tag v$(VERSION)
+        git push --tags
+
+release: $(PKG) $(SIG) tag
+
+install:
+	install-bash \
+	install-emacs \
+	install-gnupg \
+	install-python \
+	install-ssh \
+	install-screen \
+	install-wget
+
+install-bash:
+	for file in $(BASH_FILES); do ln -s src/$$file $(PREFIX)/.$$file; done 
+
+install-emacs:
+	for file in $(EMACS_FILES); do ln -s src/$$file $(PREFIX)/.$$file; done 
+
+install-gnupg:
+	for file in $(GNUPG_FILES); do ln -s src/gnupg/$$file $(PREFIX)/.gnupg/$$file; done 
+
+install-python:
+	for file in $(WGET_FILES); do ln -s src/$$file $(PREFIX)/.$$file; done 
+
+install-ssh:
+	for file in $(SSH_FILES); do ln -s src/ssh/$$file $(PREFIX)/.ssh/$$file; done 
+
+install-screen:
+	for file in $(SCREEN_FILES); do ln -s src/$$file $(PREFIX)/.$$file; done
+
+install-wget:
+	for file in $(WGET_FILES); do ln -s src/$$file $(PREFIX)/.$$file; done 
+
+uninstall:
+        for file in $(INSTALL_FILES); do rm -f $(PREFIX)/$$file; done
+        rm -rf $(DOC_DIR)
+
+.PHONY: build sign clean test tag release install uninstall all
+
+all: \
+	backup \
+	install
+
+clean:
+	@echo "cleaning..."
+
+backup:
+	@echo "backing up"
