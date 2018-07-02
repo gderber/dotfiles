@@ -42,7 +42,7 @@ all: $(PKG) $(SIG)
 test:
 
 tag:
-	git tag v$(VERSION)
+	git tag $(VERSION)
 	git push --tags
 
 release: $(PKG) $(SIG) tag
@@ -63,51 +63,51 @@ install: \
 	install-wget
 
 install-bash:
-	for file in $(BASH_FILES); \
+	@for file in $(BASH_FILES); \
 	do \
 		ln -nvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
 	done 
 
 install-emacs:
-	for file in $(EMACS_FILES); \
+	@for file in $(EMACS_FILES); \
 	do \
 		ln -nvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
 	done 
 
 install-git:
-	for file in $(GIT_FILES); \
+	@for file in $(GIT_FILES); \
 	do \
 		ln -vsf $(PWD)/$$file $(PREFIX)/$$file; \
 	done 
 
 install-gnupg:
-	for file in $(GNUPG_FILES); \
+	@for file in $(GNUPG_FILES); \
 	do \
-		mkdir -p $(PREFIX)/.gnupg/ \
+		mkdir -pv $(PREFIX)/.gnupg/; \
 		ln -vsf $(PWD)/src/gnupg/$$file $(PREFIX)/.gnupg/$$file; \
 	done 
 
 install-python:
-	for file in $(WGET_FILES); \
+	@for file in $(WGET_FILES); \
 	do \
 		ln -vsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
 	done 
 
 install-ssh:
-	for file in $(SSH_FILES); \
+	@for file in $(SSH_FILES); \
 	do \
-		mkdir -p $(PREFIX)/.ssh/ \
+		mkdir -pv $(PREFIX)/.ssh/; \
 		ln -vsf $(PWD)/src/ssh/$$file $(PREFIX)/.ssh/$$file; \
 	done 
 
 install-screen:
-	for file in $(SCREEN_FILES); \
+	@for file in $(SCREEN_FILES); \
 	do \
 		ln -vsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
 	done
 
 install-wget:
-	for file in $(WGET_FILES); \
+	@for file in $(WGET_FILES); \
 	do \
 		ln -vsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
 	done 
