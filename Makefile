@@ -83,6 +83,7 @@ install-git:
 install-gnupg:
 	for file in $(GNUPG_FILES); \
 	do \
+		mkdir -p $(PREFIX)/.gnupg/ \
 		ln -vsf $(PWD)/src/gnupg/$$file $(PREFIX)/.gnupg/$$file; \
 	done 
 
@@ -95,6 +96,7 @@ install-python:
 install-ssh:
 	for file in $(SSH_FILES); \
 	do \
+		mkdir -p $(PREFIX)/.ssh/ \
 		ln -vsf $(PWD)/src/ssh/$$file $(PREFIX)/.ssh/$$file; \
 	done 
 
