@@ -45,8 +45,8 @@ screen  -t bash      4
 screen  -t bash      5
 screen  -t bash      6
 screen  -t bash      7
-screen  -t EDIT      8 emacs -nw
-screen  -t ROOT      9 sudo -i
+screen  -t SUDO      8 sudock
+screen  -t EDIT      9 emacs -nw
 screen  -t SYSINFO   10 glances
 select 1
 
