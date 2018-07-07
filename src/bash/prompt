@@ -223,7 +223,7 @@ function __git_prompt() {
 	    ### End Test Changes ### }}}
 	    
 	    ### Find Branch ### {{{
-	    local GBra="$(echo ${GStat} | tr ':' '\n' | grep "^##" | cut -c4- | grep -o "^[a-zA-Z]\{1,\}[^\.]")"
+	    local GBra="$(echo ${GStat} | tr ':' '\n' | grep "^##" | cut -c4- | grep -o "^[a-zA-Z/]\{1,\}[^\.]")"
 	    if [ "$GBra" ]; then
 		if [ "$GBra" == "master" ]; then
 		    local GBra="Master"			# Because why waste space
