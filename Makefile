@@ -63,85 +63,51 @@ install: \
 	install-wget
 
 install-bash:
-<<<<<<< HEAD
-	for file in $(BASH_FILES); \
-=======
 	@for file in $(BASH_FILES); \
->>>>>>> f258893666f83b282216c63e39ac2d63403336ca
 	do \
 		ln -nvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
 	done 
 
 install-emacs:
-<<<<<<< HEAD
-	for file in $(EMACS_FILES); \
-=======
 	@for file in $(EMACS_FILES); \
->>>>>>> f258893666f83b282216c63e39ac2d63403336ca
 	do \
 		ln -nvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
 	done 
 
 install-git:
-<<<<<<< HEAD
-	for file in $(GIT_FILES); \
-=======
 	@for file in $(GIT_FILES); \
->>>>>>> f258893666f83b282216c63e39ac2d63403336ca
 	do \
 		ln -vsf $(PWD)/$$file $(PREFIX)/$$file; \
 	done 
 
 install-gnupg:
-<<<<<<< HEAD
-	for file in $(GNUPG_FILES); \
-	do \
-=======
 	@for file in $(GNUPG_FILES); \
 	do \
 		mkdir -pv $(PREFIX)/.gnupg/; \
->>>>>>> f258893666f83b282216c63e39ac2d63403336ca
 		ln -vsf $(PWD)/src/gnupg/$$file $(PREFIX)/.gnupg/$$file; \
 	done 
 
 install-python:
-<<<<<<< HEAD
-	for file in $(WGET_FILES); \
-=======
 	@for file in $(WGET_FILES); \
->>>>>>> f258893666f83b282216c63e39ac2d63403336ca
 	do \
 		ln -vsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
 	done 
 
 install-ssh:
-<<<<<<< HEAD
-	for file in $(SSH_FILES); \
-	do \
-=======
 	@for file in $(SSH_FILES); \
 	do \
 		mkdir -pv $(PREFIX)/.ssh/; \
->>>>>>> f258893666f83b282216c63e39ac2d63403336ca
 		ln -vsf $(PWD)/src/ssh/$$file $(PREFIX)/.ssh/$$file; \
 	done 
 
 install-screen:
-<<<<<<< HEAD
-	for file in $(SCREEN_FILES); \
-=======
 	@for file in $(SCREEN_FILES); \
->>>>>>> f258893666f83b282216c63e39ac2d63403336ca
 	do \
 		ln -vsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
 	done
 
 install-wget:
-<<<<<<< HEAD
-	for file in $(WGET_FILES); \
-=======
 	@for file in $(WGET_FILES); \
->>>>>>> f258893666f83b282216c63e39ac2d63403336ca
 	do \
 		ln -vsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
 	done 
