@@ -21,7 +21,7 @@ fi
 [[ -d "${HOME/.local/bin" ]] && PATH="$HOME/.local/bin:$PATH"
 [[ -d "${HOME}/.local/games" ]] && PATH="${HOME}/.local/games:${PATH}"
 [[ -d "${HOME/bin" ]] && PATH="$HOME/bin:$PATH"
-[[ -d "${HOME}/games" ]] && PATH="${HOME}/games:${PATH}"" 
+[[ -d "${HOME}/games" ]] && PATH="${HOME}/games:${PATH}"
 
 if [[ -n $SSH_CLIENT ]] || [[ -n $SSH_TTY ]]; then
     if [[ ! $TERM =~ screen ]]; then
