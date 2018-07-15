@@ -9,6 +9,7 @@ Host ariande
 
 Host calliope
     HostName calliope
+    ForwardX11 yes
 
 Host demeter
     HostName demeter
@@ -22,6 +23,7 @@ Host hm
     StrictHostKeyChecking yes
     VerifyHostKeyDNS ask
     VisualHostKey yes
+    IdentityFile ~/id_rsa
 
 Host hera
     HostName hera
@@ -31,10 +33,10 @@ Host hestia
 
 Host mnemosyne
     HostName mnemosyne
-
+    ForwardX11 yes
+    
 Host morpheus
     HostName morpheus
-    ForwardX11 yes
 
 Host orion
     HostName orion
@@ -46,20 +48,24 @@ Host zeus
     HostName zeus
 
 Host *
-    User pi
     StrictHostKeyChecking ask
     UpdateHostKeys ask
+    
+
+
 
     # All Options
     # Can speed up logins to some servers
     #GSSAPIAuthentication no
     #GSSAPIKeyExchange no
     #ChallengeResponseAuthentication no
-    #HashKnownHosts no
+    # HashKnownHosts no
+    
     #Protocol 2
-    # Some servers will force log out if you haven't typed anything in a while
-    # This means send a packet every 60 seconds, after 3 of those without a
-    # response then drop the connection
+    
+    # Some servers will force log out if you haven't typed anything in a
+    # while. This means send a packet every 60 seconds, after 3 of those
+    # without a response then drop the connection.
     #ServerAliveCountMax 3
     #ServerAliveInterval 60
     #TCPKeepAlive yes
