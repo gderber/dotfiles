@@ -65,19 +65,19 @@ install: \
 install-bash:
 	@for file in $(BASH_FILES); \
 	do \
-		ln -nvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
+		ln -nrvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
 	done 
 
 install-emacs:
 	@for file in $(EMACS_FILES); \
 	do \
-		ln -nvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
+		ln -nrvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
 	done 
 
 install-git:
 	@for file in $(GIT_FILES); \
 	do \
-		ln -vsf $(PWD)/$$file $(PREFIX)/$$file; \
+		ln -rvsf $(PWD)/$$file $(PREFIX)/$$file; \
 	done 
 
 install-gnupg:
@@ -85,13 +85,13 @@ install-gnupg:
 	@for file in $(GNUPG_FILES); \
 	do \
 		mkdir -pv $(PREFIX)/.gnupg/; \
-		ln -vsf $(PWD)/src/gnupg/$$file $(PREFIX)/.gnupg/$$file; \
+		ln -rvsf $(PWD)/src/gnupg/$$file $(PREFIX)/.gnupg/$$file; \
 	done 
 
 install-python:
 	@for file in $(WGET_FILES); \
 	do \
-		ln -vsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
+		ln -rvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
 	done 
 
 install-ssh:
@@ -99,19 +99,19 @@ install-ssh:
 	@for file in $(SSH_FILES); \
 	do \
 		mkdir -pv $(PREFIX)/.ssh/; \
-		ln -vsf $(PWD)/src/ssh/$$file $(PREFIX)/.ssh/$$file; \
+		ln -rvsf $(PWD)/src/ssh/$$file $(PREFIX)/.ssh/$$file; \
 	done 
 
 install-screen:
 	@for file in $(SCREEN_FILES); \
 	do \
-		ln -vsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
+		ln -rvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
 	done
 
 install-wget:
 	@for file in $(WGET_FILES); \
 	do \
-		ln -vsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
+		ln -rvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
 	done 
 
 backup:
