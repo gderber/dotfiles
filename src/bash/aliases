@@ -34,14 +34,14 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 # some more ls aliases
-alias ll='ls -alF'
+alias ll='ls -AlFh'
 alias la='ls -A'
 alias l='ls -CF'
 
 alias l.='ls -d .*' #list hidden files 
 alias ll2='ls -lhrt' #extra info compared to "l" 
 alias lld='ls -lUd */' #list directories
-alias list='ls -alFh'
+alias list='ls -AlFh'
 
 #
 alias du='du -ksch' # Makes a more readable output and sort
