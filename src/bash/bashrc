@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # =============================================================== #
 #
 # PERSONAL $HOME/.bashrc FILE
@@ -42,14 +41,13 @@ if [[ "${FORBIDEN_HIST}" != "true" ]]; then
     HISTSIZE=2000
     HISTFILESIZE=4000
 
-# Format History
-HISTTIMEFORMAT='%F %T '
+    # Format History
+    HISTTIMEFORMAT='%F %T '
 fi
 
 # Ignore certain commands
 # ?:??   Ignore 1 and 2 character commands
-HISTIGNORE='?:??:history:list:exit:top:clear:pwd:fals[eu]:true'
-
+HISTIGNORE='?:??:history:list:exit:top:clear:pwd:fals[eu]:true:reboot'
 
 
 # make less more friendly for non-text input files, see lesspipe(1)
@@ -79,4 +77,8 @@ fi
 
 if command -v beet 2&> /dev/null; then
     eval "$(beet completion)"
+fi
+
+if command -v keychain 2&> /dev/null; then
+    eval "$(keychain --eval id_ed25519)"
 fi
