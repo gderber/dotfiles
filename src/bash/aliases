@@ -83,3 +83,5 @@ alias pd3='pushd +3'
 alias pd4='pushd +4'
 
 alias fat='aptitude search ~i | grep -v "i A" | cut -d " " -f 4'
+
+alias sshkey="ssh-keygen -t ed25519"
