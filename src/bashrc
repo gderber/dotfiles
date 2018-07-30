@@ -39,10 +39,8 @@ so ~/.bash/bashrc				# main configuration
 so ~/.bash/${ENV_NAME}_profile	        # configuration per OS linux/OSX/WIN
 
 so ~/.bash/common	       		# common stuff or overriding
-
 so ~/.bash/export  		       	# Exports
 so ~/.bash/shopt   			# Shopts
-so ~/.bash/installcheck	                # Checks for installs, $MISSING_PROGRAMS
 #so ~/.bash/sshagent    		        # SSH agent, have before settings
 so ~/.bash/gpgagent		        # GPG agent, have before settings
 
