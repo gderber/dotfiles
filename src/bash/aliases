@@ -22,7 +22,7 @@ alias -- -='cd -' #go to previous dir
 
 #
 # enable color support of ls and also add handy aliases
-if [ -x /usr/bin/dircolors ]; then
+if [[ -x /usr/bin/dircolors ]]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
     #alias dir='dir --color=auto'
@@ -48,7 +48,6 @@ alias du='du -ksch' # Makes a more readable output and sort
 alias df='df -kh'
 alias dfx4='df -kh -t ext4'
 
-
 #
 alias h='history' 
 alias j='jobs -l' 
@@ -58,10 +57,7 @@ alias j='jobs -l'
 alias path='echo -e ${PATH//:/\\n}' 
 alias libpath='echo -e ${LD_LIBRARY_PATH//:/\\n}'
 
-
 alias namemaker="shuf -n 2 /usr/share/dict/words | tr -dc 'A-Za-z0-9'"
-
-
 
 #
 alias wget='wget -c'
@@ -69,7 +65,6 @@ alias wget='wget -c'
 #set -o nounset # These two options are useful for debugging. 
 #set -o xtrace 
 alias debug="set -o nounset; set -o xtrace" 
-
 
 alias scratch='history -d $((HISTCMD-2)) && history -d $((HISTCMD-1))'
 
@@ -80,7 +75,6 @@ alias star_wars='telnet towel.blinkenlights.nl'
 #alias ______up='ping -i 30 -a 192.168.0.139'
 
 alias dpbx='dbus-launch dropbox start -i'
-
 
 # Pushd aliases
 alias pd='pushd' 
