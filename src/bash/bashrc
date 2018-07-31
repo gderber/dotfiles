@@ -48,7 +48,7 @@ fi
 HISTIGNORE='?:??:history:list:exit:top:clear:pwd:fals[eu]:true:reboot'
 
 # make less more friendly for non-text input files, see lesspipe(1)
-[[ command -v lesspipe ]] && eval "$(SHELL=/bin/sh lesspipe)"
+[[ -x /usr/bin/lesspipe ]] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # LESS man page colors (makes Man pages more readable). 
 export LESS_TERMCAP_mb=$'\E[01;31m' 
