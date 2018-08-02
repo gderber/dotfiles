@@ -1,21 +1,28 @@
 Host apollo
-    HostName apollo
+    HostName apollo.olympus.home
 
 Host aphrodite
-    HostName aphrodite
+    HostName aphrodite.olympus.home
+
+    # Forward agent for pushing your ssh-agent. You will need to add your ssh key
+    # to the authorized_keys file on the remote system.
+    # Normally not a great idea to make this a global always on option unless you
+    # are sure the remote systems are secure.
+    #ForwardAgent yes
 
 Host ariande
-    HostName ariande
+    HostName ariande.olympus.home
+
 
 Host calliope
-    HostName calliope
+    HostName calliope.olympus.home
     ForwardX11 yes
 
 Host demeter
-    HostName demeter
+    HostName demeter.olympus.home
 
 Host dionysus
-    HostName dionysus
+    HostName dionysus.olympus.home
 
 Host hm
     HostName hearthminion.com
@@ -26,34 +33,34 @@ Host hm
     IdentityFile ~/id_rsa
 
 Host hera
-    HostName hera
+    HostName hera.olympus.home
 
 Host hestia
-    HostName hestia
+    HostName hestia.olympus.home
 
 Host mnemosyne
-    HostName mnemosyne
+    HostName mnemosyne.olympus.home
     ForwardX11 yes
     
 Host morpheus
-    HostName morpheus
+    HostName morpheus.olympus.home
 
 Host orion
-    HostName orion
+    HostName orion.olympus.home
 
 Host telete
-    HostName telete
+    HostName telete.olympus.home
 
 Host zeus
-    HostName zeus
+    HostName zeus.olympus.home
 
 Host *
     StrictHostKeyChecking ask
     UpdateHostKeys ask
+    SendEnv WINDOW
+    SendEnv LANG LC_*
+
     
-
-
-
     # All Options
     # Can speed up logins to some servers
     #GSSAPIAuthentication no
