@@ -1,5 +1,15 @@
+# ----------------------------------------------------------------------
+#
+# Makefile for pysorcery
+#
+# By Geoff S Derber
+#
+#
+#
+# ---------------------------------------------------------------------
 NAME=dotfiles
 VERSION=0.0.1
+DESCRIPTION="My dotfiles"
 
 BASH_FILES=bash bashrc bash_profile bash_logout
 EMACS_FILES=emacs.d
