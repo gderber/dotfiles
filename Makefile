@@ -20,6 +20,7 @@ PYTHON_FILES=pylintrc pythonrc
 SCREEN_FILES=screenrc
 SSH_FILES=config
 WGET_FILES=wgetrc
+TOP_FILES=toprc
 
 DOC_FILES=*.md *.txt
 
@@ -70,6 +71,7 @@ install: \
 	install-python \
 	install-ssh \
 	install-screen \
+	install-top \
 	install-wget
 
 install-bash:
@@ -114,6 +116,12 @@ install-ssh:
 
 install-screen:
 	@for file in $(SCREEN_FILES); \
+	do \
+		ln -rvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
+	done
+
+install-top:
+	@for file in $(TOP_FILES); \
 	do \
 		ln -rvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
 	done
