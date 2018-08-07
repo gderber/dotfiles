@@ -4,12 +4,6 @@ Host apollo
 Host aphrodite
     HostName aphrodite.olympus.frrber.home
 
-    # Forward agent for pushing your ssh-agent. You will need to add your ssh key
-    # to the authorized_keys file on the remote system.
-    # Normally not a great idea to make this a global always on option unless you
-    # are sure the remote systems are secure.
-    ForwardAgent yes
-
 Host ariande
     HostName ariande.olympus.home
 
@@ -55,11 +49,17 @@ Host zeus
     HostName zeus.olympus.derber.home
 
 Host *.olympus.derber.home
-     GSSAPIAuthentication yes
-     GSSAPIKeyExchange yes
-     GSSAPIRenewalForcesRekey yes
-     GSSAPITrustDns yes
-     GSSAPIDelegateCredentials yes 
+    # Forward agent for pushing your ssh-agent. You will need to add your ssh key
+    # to the authorized_keys file on the remote system.
+    # Normally not a great idea to make this a global always on option unless you
+    # are sure the remote systems are secure.
+    ForwardAgent yes
+
+    GSSAPIAuthentication yes
+    GSSAPIKeyExchange yes
+    GSSAPIRenewalForcesRekey yes
+    GSSAPITrustDns yes
+    GSSAPIDelegateCredentials yes 
 
 Host *
     StrictHostKeyChecking ask
