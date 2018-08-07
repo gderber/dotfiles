@@ -1,22 +1,22 @@
 Host apollo
-    HostName apollo.olympus.home
+    HostName apollo.olympus.derber.home
 
 Host aphrodite
-    HostName aphrodite.olympus.frrber.home
+    HostName aphrodite.olympus.derber.home
 
 Host ariande
-    HostName ariande.olympus.home
+    HostName ariande.olympus.derber.home
 
 
 Host calliope
-    HostName calliope.olympus.home
+    HostName calliope.olympus.derber.home
     ForwardX11 yes
 
 Host demeter
-    HostName demeter.olympus.home
+    HostName demeter.olympus.derber.home
 
 Host dionysus
-    HostName dionysus.olympus.home
+    HostName dionysus.olympus.derber.home
 
 Host hm
     HostName hearthminion.com
@@ -27,23 +27,23 @@ Host hm
     IdentityFile ~/id_rsa
 
 Host hera
-    HostName hera.olympus.home
+    HostName hera.olympus.derber.home
 
 Host hestia
-    HostName hestia.olympus.home
+    HostName hestia.olympus.derber.home
 
 Host mnemosyne
-    HostName mnemosyne.olympus.home
+    HostName mnemosyne.olympus.derber.home
     ForwardX11 yes
     
 Host morpheus
-    HostName morpheus.olympus.home
+    HostName morpheus.olympus.derber.home
 
 Host orion
-    HostName orion.olympus.home
+    HostName orion.olympus.derber.home
 
 Host telete
-    HostName telete.olympus.home
+    HostName telete.olympus.derber.home
 
 Host zeus
     HostName zeus.olympus.derber.home
