@@ -2,13 +2,13 @@ Host apollo
     HostName apollo.olympus.home
 
 Host aphrodite
-    HostName aphrodite.olympus.home
+    HostName aphrodite.olympus.frrber.home
 
     # Forward agent for pushing your ssh-agent. You will need to add your ssh key
     # to the authorized_keys file on the remote system.
     # Normally not a great idea to make this a global always on option unless you
     # are sure the remote systems are secure.
-    #ForwardAgent yes
+    ForwardAgent yes
 
 Host ariande
     HostName ariande.olympus.home
@@ -52,7 +52,14 @@ Host telete
     HostName telete.olympus.home
 
 Host zeus
-    HostName zeus.olympus.home
+    HostName zeus.olympus.derber.home
+
+Host *.olympus.derber.home
+     GSSAPIAuthentication yes
+     GSSAPIKeyExchange yes # If your version supports this
+     GSSAPIRenewalForcesRekey yes # If your version supports this
+     GSSAPITrustDns yes
+     GSSAPIDelegateCredentials yes 
 
 Host *
     StrictHostKeyChecking ask
