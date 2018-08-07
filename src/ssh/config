@@ -56,8 +56,8 @@ Host zeus
 
 Host *.olympus.derber.home
      GSSAPIAuthentication yes
-     GSSAPIKeyExchange yes # If your version supports this
-     GSSAPIRenewalForcesRekey yes # If your version supports this
+     GSSAPIKeyExchange yes
+     GSSAPIRenewalForcesRekey yes
      GSSAPITrustDns yes
      GSSAPIDelegateCredentials yes 
 
