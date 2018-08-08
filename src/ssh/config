@@ -1,22 +1,22 @@
 Host apollo
-    HostName apollo.olympus.derber.home
+    HostName apollo.olympus.drbr.org
 
 Host aphrodite
-    HostName aphrodite.olympus.derber.home
+    HostName aphrodite.olympus.drbr.org
 
 Host ariande
-    HostName ariande.olympus.derber.home
+    HostName ariande.olympus.drbr.org
 
 
 Host calliope
-    HostName calliope.olympus.derber.home
+    HostName calliope.olympus.drbr.org
     ForwardX11 yes
 
 Host demeter
-    HostName demeter.olympus.derber.home
+    HostName demeter.olympus.drbr.org
 
 Host dionysus
-    HostName dionysus.olympus.derber.home
+    HostName dionysus.olympus.drbr.org
 
 Host hm
     HostName hearthminion.com
@@ -27,28 +27,28 @@ Host hm
     IdentityFile ~/id_rsa
 
 Host hera
-    HostName hera.olympus.derber.home
+    HostName hera.olympus.drbr.org
 
 Host hestia
-    HostName hestia.olympus.derber.home
+    HostName hestia.olympus.drbr.org
 
 Host mnemosyne
-    HostName mnemosyne.olympus.derber.home
+    HostName mnemosyne.olympus.drbr.org
     ForwardX11 yes
     
 Host morpheus
-    HostName morpheus.olympus.derber.home
+    HostName morpheus.olympus.drbr.org
 
 Host orion
-    HostName orion.olympus.derber.home
+    HostName orion.olympus.drbr.org
 
 Host telete
-    HostName telete.olympus.derber.home
+    HostName telete.olympus.drbr.org
 
 Host zeus
-    HostName zeus.olympus.derber.home
+    HostName zeus.olympus.drbr.org
 
-Host *.olympus.derber.home
+Host *.olympus.drbr.org
     # Forward agent for pushing your ssh-agent. You will need to add your ssh key
     # to the authorized_keys file on the remote system.
     # Normally not a great idea to make this a global always on option unless you
