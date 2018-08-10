@@ -22,7 +22,7 @@ SSH_FILES=config
 WGET_FILES=wgetrc
 TOP_FILES=toprc
 MISC_FILES=profile xscreensaver
-BEETS_FILES=config.yaml genre.txt
+BEETS_FILES=config.yaml genres.txt
 
 DOC_FILES=*.md *.txt
 
