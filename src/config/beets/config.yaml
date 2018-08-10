@@ -1,0 +1,435 @@
+#---------------------------------------------------------------------------------------------------
+#
+# Global Options
+#
+#---------------------------------------------------------------------------------------------------
+library: /home/mythtv/.config/beets/library.db
+statefile: /home/mythtv/.config/beets/state.pickle
+directory: /home
+plugins: [
+#autotagger extentions
+  chroma,
+  #discogs,
+  fromfilename,
+#metadata plugins
+  acousticbrainz,
+  #bpm,
+  #edit,
+  embedart,
+  fetchart,
+  #ftintitle,
+  #keyfinder,
+  #importadded,
+  lastgenre,
+  #lastimport,
+  lyrics,
+  mbsync,
+  metasync,
+  #mpdstats,
+  replaygain,
+  #scrub,
+  #zero,
+#path format plugins
+  bucket,
+  inline,
+  rewrite,
+  the,
+#Interoperability plugins
+  #embyupdate,
+  #importfeeds,
+  #mpdupdate,
+  #play,
+  smartplaylist,
+  #thumbnails,
+  badfiles,
+#Misc plugins
+  #bpd,
+  duplicates,
+  #export,
+  #fuzzy,
+  #hook,
+  #ihate,
+  info,
+  mbcollection,
+  mbsubmit,
+  missing,
+  random,
+  #filefilter,
+  types,
+#Other plugins
+  smartalternatives,
+  setlister
+]
+
+pluginpath:
+  - /home/mythtv/.beets/beets-setlister/beetsplug/
+
+# default: [".*", "*~", "System Volume Information", "lost+found"]
+#ignore: []
+
+
+############################################################
+#
+# A set of regular expression/replacement pairs to be applied to all filenames created by beets.
+#
+# defaults:
+#   '[\\/]': _
+#   '^\.': _
+#   '[\x00-\x1f]': _
+#   '[<>:"\?\*\|]': _
+#   '\.$': _
+#   '\s+$': ''
+#   '^\s+': ''
+#
+############################################################
+replace:
+  ': Chapter I\) Four Point Six _ Chapter II\) Life _ Chapter III\) The Toolmaker _ Chapter IV\) The Understanding _ Chapter V\) Sea-Worn Driftwood': ''
+#  ': Original Soundtrack From the SyFy Special Events': ''
+#  ': Music From the Motion Picture': ''
+#  ': Music From the Original Motion Picture Soundtrack': ''
+#  ': Music From the Original Motion Picture': ''
+#  ': Original Soundtrack From the Sci Fi Channel Television Series': ''
+#  ': Original Soundtrack From the SyFy Television Series': ''
+#  ': Original Soundtrack From': ''
+#  ': Original Motion Picture Score': ''
+#  ': Original Motion Picture Soundtrack': ''
+#  ': Original Score': ''
+#  ': Original Television Soundtrack': ''
+#  ' \& London Symphony Orchestra': ''
+#  '\; London Symphony Orchestra': ''
+#  '\, Hans Zimmer and Harry Gregson-Williams': ''
+#  ' \& Lisa Gerrard': ''
+#  ' \& Inon Zur': ''
+#  ' \& Randy Edelman': ''
+#  '\; Gundula Janowitz, Gerhard Stolze, Dietrich Fischer-Dieskau, Chor der Deutschen Oper Berlin und Orchester der Deutschen Oper Berlin, Eugen Jochum': ''
+#  '\; Wiener Philharmoniker, Sir Georg Solti': ''
+#  ' and the Cincinnati Pops Orchestra': ''
+  '^\...': '' # strip 3 leading dots
+  '[\\/]': '' # strip forward and backslashes
+  '^\.': '' # strip leading dots
+  '[\x00-\x1f]': '' # strip control characters
+  ':': ' -' # replace : with -
+  '[<>\"\?\*\|\!]': '' # removes the Windows “reserved characters”
+  '\...$': '' # remove trailing 3 dots
+  '\.$' : '' # remove trailing dots
+  '\s+$': '' # remove trailing whitespace?
+  '^\s+': '' # remove leading whitespace?
+  '\(instrumental\)': ''
+  '\(orchestral\)': ''
+  '\(excerpt\)': ''
+  '\[remastered\]': ''
+  '\[\]': ''
+#  '\[Amazon exclusive version\]': ''
+  'Season One': 'Season 1'
+  'Season Two': 'Season 2'
+  'Season Three': 'Season 3'
+  'Season Four': 'Season 4'
+#  ' & Krzysztof Wierzynkiewicz': ''
+#  ' & Daniel Pharos': ''
+#  ' & Jayb Productions': ''
+#  ' & Tim Ries': ''
+#  ' & Bobby Prince': ''
+#  ' & Marcin Przybylowicz': ''
+#  ' & Larry Mullen, Jr': ''
+#  '_ Alexey Omelchuk': ''
+#  ' _ FireLake': ''
+#  ' & Dave G. Fraser': ''
+#  ' & Adam Skorupa': ''
+#  ', Mike Larson and Jim B-Reay': ''
+#  ' with special guest Alan Jackson': ''
+#  ' with special guest Little Texas': ''
+#  ', performance by Jim Dale': ''
+#  ' read by Jim Dale': ''
+#  ' feat. Felicia Day': ''
+
+asciify_paths: yes
+
+format_item: $artist - $album - $track. $title ($length)
+format_album: $albumartist - $album
+sort_item: albumartist+ album+ disc+ track+
+per_disc_numbering: yes
+terminal_encoding: utf8
+
+clutter: ["Thumbs.DB", ".DS_Store", "*.m3u", ".pls", "*.jpg"]
+max_filename_length: 64
+id3v23: yes
+
+ui:
+  colors:
+    text_success: green                # default ???
+    text_warning: yellow               # default ???
+    text_error: red                    # default ???
+    text_highlight: fuchsia            # default ???
+    text_highlight_minor: lightgray    # default ???
+    action_default: turquoise          # default ???
+    action: blue                       # default ???
+
+import:
+  log: ~/tmp/beetslog
+  detail: yes
+
+musicbrainz:
+  user: gderber
+  pass: JM9UNn9uzNUTLWQJ
+
+match:
+  strong_rec_thresh: 0.08
+  max_rec:
+    missing_tracks: low
+    unmatched_tracks: medium
+    track_length: strong
+  preferred:
+     countries: ['US', 'XW', 'CA', 'XE', 'GB|UK', 'AU', 'DE']
+     media: ['CD', 'Digital Media|File']
+
+#---------------------------------------------------------------------------------------------------
+#
+# Paths
+# Paths and filenames for music files  relative to music directory
+#
+# flexible fields used:
+# sort: Classical, Soundtracks, Holiday, etc
+# from_source: Amazon, GoG, My CDs, etc
+# album_holiday: Christmas, Holloween, etc
+# soundtrack_type: Games, Movies, TV Shows, etc
+# series:
+# series_no:
+#
+#---------------------------------------------------------------------------------------------------
+paths:
+  sort:Meditation: mythtv/Music/$sort/%ifdef{from_source,$from_source,Unsorted}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
+  singleton: mythtv/Music/%ifdef{from_source,$from_source,Unsorted}/%ifdef{sort,$sort,Unsorted}/%ifdef{album_holiday,$album_holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/Non-Album/%the{%asciify{$title}}
+  comp: mythtv/Music/%ifdef{from_source,$from_source,Unsorted}/%ifdef{sort,$sort,Unsorted}/%ifdef{album_holiday,$album_holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
+  default: mythtv/Music/%ifdef{from_source,$from_source,Unsorted}/%ifdef{sort,$sort,Unsorted}/%ifdef{album_holiday,$album_holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%ifdef{series,%the{$series}}/%ifdef{series_no,$series_no - }%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
+
+
+#---------------------------------------------------------------------------------------------------
+#
+# Plugins Config
+#
+#---------------------------------------------------------------------------------------------------
+chroma:
+  auto: yes
+
+acousticbrainz:
+  auto: yes
+
+edit:
+  itemfields: track title artist album
+  albumfields: album albumartist
+
+embedart:
+  auto: yes
+  compare_threshold: 0
+  ifempty: yes
+  maxwidth: 0
+  remove_art_file: no
+
+fetchart:
+  auto: yes
+  cautious: yes
+  cover_names: cover front art album folder
+  minwidth: 480
+
+ftintitle:
+  auto: no
+  format: feat. {0}
+
+keyfinder:
+  auto: no
+
+lastgenre:
+  auto: yes
+  fallback: ''
+  source: album
+  whitelist: ~/.config/beets/genres.txt
+
+lyrics:
+  auto: yes
+
+metasync:
+  source: amarok
+
+replaygain:
+  backend: gstreamer
+  overwrite: yes
+  targetlevel: 89
+
+bucket:
+  bucket_year: [ '1980-89' ]
+  extrapolate: yes
+
+item_fields:
+  multidisc: 1 if disctotal > 1 else 0
+  lmultidisc: 1 if disctotal > 9 else 0
+
+rewrite:
+ artist .*rowling*.: J.K. Rowling
+ artist .*glennie-smith*.: Nick Glennie-Smith
+ artist .*zimmer*.: Hans Zimmer
+
+the:
+  a: yes
+  the: yes
+  patterns: []
+  strip: no
+  format: '{0}, {1}'
+
+smartplaylist:
+  playlist_dir: /home/mythtv/Music/Playlists
+  relative_to: /home/mythtv/Music/Playlists
+  playlists:
+    - name: 'All.m3u'
+      query: 'sort+ albumartist+ soundtrack_type+ series+ series_no+ album+ disc+ track+'
+    - name: 'Main.m3u'
+      query: '^sort:Books ^sort:Classical ^sort:Comedians ^sort:Meditation ^sort:SFX ^holiday:Christmas ^sort:Delete sort+ albumartist+ soundtrack_type+ series+ series_no+ album+ disc+ track+'
+    - name: 'Main - Christmas.m3u'
+      query: '^sort:Books ^sort:Classical ^sort:Comedians ^sort:Meditation ^sort:SFX ^sort:Delete sort+ albumartist+ soundtrack_type+ series+ series_no+ album+ disc+ track+'
+    - name: 'Main - Classical.m3u'
+      query: '^sort:Books ^sort:Comedians ^sort:Meditation ^sort:SFX ^holiday:Christmas ^sort:Delete sort+ albumartist+ soundtrack_type+ series+ series_no+ album+ disc+ track+'
+    - name: 'Main - Classical - Christmas.m3u'
+      query: '^sort:Books ^sort:Comedians ^sort:Meditation ^sort:SFX ^sort:Delete sort+ albumartist+ soundtrack_type+ series+ series_no+ album+ disc+ track+'
+    - name: '$holiday.m3u'
+      query: 'holiday::(Christmas|Halloween)'
+    - name: '$sort.m3u'
+      query: 'sort::(Books|Classical|Comedians|Modern|Meditation|SFX|Soundtracks) albumartist+ series+ series_no+ album+ disc+ track+'
+    - name: 'Book $series.m3u'
+      query: 'sort:Books series::("Harry Potter") albumartist+ series+ series_no+ album+ disc+ track+'
+    - name: 'Travel.m3u'
+      album_query: 'travel:1'
+      query: 'travel:1'
+#    - name: '$original_year.m3u'
+#      query: [ 'original_year::(1|2)(0|1|2|3|4|5|6|7|8|9)(0|1|2|3|4|5|6|7|8|9)0', 'original_year::(1|2)(0|1|2|3|4|5|6|7|8|9)(0|1|2|3|4|5|6|7|8|9)1' ]
+    - name: 'Songs from Old.m3u'
+      query: 'original_year:..1899'
+    - name: 'Songs from 1900s.m3u'
+      query: 'original_year:1900..1909'
+    - name: 'Songs from 1910s.m3u'
+      query: 'original_year:1910..1919'
+    - name: 'Songs from 1920s.m3u'
+      query: 'original_year:1920..1929'
+    - name: 'Songs from 1930s.m3u'
+      query: 'original_year:1930..1939'
+    - name: 'Songs from 1940s.m3u'
+      query: 'original_year:1940..1949'
+    - name: 'Songs from 1950s.m3u'
+      query: 'original_year:1950..1959'
+    - name: 'Songs from 1960s.m3u'
+      query: 'original_year:1960..1969'
+    - name: 'Songs from 1970s.m3u'
+      query: 'original_year:1970..1979'
+    - name: 'Songs from 1980s.m3u'
+      query: 'original_year:1980..1989'
+    - name: 'Songs from 1990s.m3u'
+      query: 'original_year:1990..1999'
+    - name: 'Songs from 2000s.m3u'
+      query: 'original_year:2000..2009'
+    - name: 'Songs from 2010s.m3u'
+      query: 'original_year:2010..2019'
+    - name: 'Workout - $workout.m3u'
+      query: 'workout::(Normal|Intense) ^sort:Books ^sort:Classical ^sort:Comedians ^sort:Meditation ^sort:SFX ^holiday:Christmas ^sort:Delete path+'
+    - name: 'Tempo - $workout.m3u'
+      query: 'workout::(Snail|Turtle|Slow|Normal|Intense|Rediculous|Ludicrous) ^sort:Books ^sort:Classical ^sort:Comedians ^sort:Meditation ^sort:SFX ^holiday:Christmas ^sort:Delete path+'
+    - name: 'Danceable.m3u'
+      query: 'danceable:1 ^sort:Books ^sort:Classical ^sort:Comedians ^sort:Meditation ^sort:SFX ^holiday:Christmas ^sort:Delete path+'
+    - name: 'Danceable - $rhythm.m3u'
+      query: 'rhythm::(ChaChaCha|Tango|Waltz|Viennesewaltz|Samba|Rumba|Rumba-American|Jive|Quickstep|Rumba-Misc|Rumba-International) ^sort:Books ^sort:Classical ^sort:Comedians ^sort:Meditation ^sort:SFX ^holiday:Christmas ^sort:Delete path+'
+    - name: 'Danceable - $rhythm - Christmas.m3u'
+      query: 'rhythm::(ChaChaCha|Tango|Waltz|Viennesewaltz|Samba|Rumba|Rumba-American|Jive|Quickstep|Rumba-Misc|Rumba-International) ^sort:Books ^sort:Classical ^sort:Comedians ^sort:Meditation ^sort:SFX ^sort:Delete path+'
+    - name: 'Mood - Acoustic.m3u'
+      query: 'mood_acoustic:1'
+    - name: 'Mood - Aggressive.m3u'
+      query: 'mood_aggresive:1'
+    - name: 'Mood - Electronic.m3u'
+      query: 'mood_electronic:1'
+    - name: 'Mood - Happy.m3u'
+      query: 'mood_happy:1'
+    - name: 'Mood - Sad.m3u'
+      query: 'mood_sad:1'
+    - name: 'Mood - Party.m3u'
+      query: 'mood_party:1'
+    - name: 'Mood - Relaxed.m3u'
+      query: 'mood_relaxed:1'
+
+thumbnails:
+  force: yes
+
+badfiles:
+  commands:
+    ogg: myoggchecker --opt1 --opt2
+    flac: flac --test --warnings-as-errors --silent
+
+duplicates:
+  album: no
+
+mbcollection:
+  auto: no
+
+mbsubmit:
+  threshold: medium
+
+missing:
+  format: $albumartist - $album - $track - $title
+
+types:
+  rating: int
+  playcount: int
+
+smartalternatives:
+  auto: false
+  alt_dir: /home
+#  alt_formats:
+#    mp3: ...
+#    flac: ...
+  alternatives:
+
+    - name: by-year
+      query: ^year::%
+      directories:
+        - directory: mythtv/MusicAlt/Year
+          formats: link
+          paths:
+            default: %bucket{$original_year}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
+
+    - name: gzbr
+      query: "gzbr:true"
+      directories:
+        - directory: geoff/Music
+          formats: link
+          paths:
+            singleton:true: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/Non-Album/%the{%asciify{$title}}
+            comp: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
+            default: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
+        - directory: geoff/OneDrive/Music
+          formats: mp3 aac
+          paths:
+            singleton:true: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/Non-Album/%the{%asciify{$title}}
+            comp: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
+            default: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
+
+    - name: bzbr
+      query: "bzbr:true"
+      directories:
+        - directory: bree/Music
+          formats: link
+          paths:
+            singleton:true: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/Non-Album/%the{%asciify{$title}}
+            comp: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
+            default: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
+        - directory: bree/OneDrive/Music
+          formats: mp3
+          paths:
+            singleton:true: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/Non-Album/%the{%asciify{$title}}
+            comp: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
+            default: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
+
+
+##################################################
+#
+# Setlister
+#
+# Generate ploylists from the setlists of a given artist
+#
+##################################################
+setlister:
+  playlist_dir: /home/mythtv/Music/Playlists/
