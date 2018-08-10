@@ -104,7 +104,8 @@ install-git:
 	done 
 
 install-gnupg:
-	mkdir -pv $(PREFIX)/.gnupg/;
+	mkdir -pv $(PREFIX)/.gnupg 
+	chmod 700 $(PREFIX)/.gnupg 
 	@for file in $(GNUPG_FILES); \
 	do \
 		ln -rvsf $(PWD)/src/gnupg/$$file $(PREFIX)/.gnupg/$$file; \
@@ -124,6 +125,7 @@ install-misc:
 
 install-ssh:
 	mkdir -p $(PREFIX)/.ssh
+	chmod 700 $(PREFIX)/.ssh
 	@for file in $(SSH_FILES); \
 	do \
 		mkdir -pv $(PREFIX)/.ssh/; \
