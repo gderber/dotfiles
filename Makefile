@@ -21,6 +21,8 @@ SCREEN_FILES=screenrc
 SSH_FILES=config
 WGET_FILES=wgetrc
 TOP_FILES=toprc
+MISC_FILES=profile xscreensaver
+BEETS_FILES=config.yaml genre.txt
 
 DOC_FILES=*.md *.txt
 
@@ -65,9 +67,11 @@ uninstall:
 
 install: \
 	install-bash \
+	install-beets \
 	install-emacs \
 	install-gnupg \
 	install-git \
+	install-misc \
 	install-python \
 	install-ssh \
 	install-screen \
@@ -78,6 +82,13 @@ install-bash:
 	@for file in $(BASH_FILES); \
 	do \
 		ln -nrvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
+	done 
+
+install-beets:
+	mkdir -pv $(PREFIX)/.config/beets/
+	@for file in $(BEETS_FILES); \
+	do \
+		ln -nrvsf $(PWD)/src/config/beets/$$file $(PREFIX)/.config/beets/$$file; \
 	done 
 
 install-emacs:
@@ -93,15 +104,20 @@ install-git:
 	done 
 
 install-gnupg:
-	mkdir -p $(PREFIX)/.gnupg
+	mkdir -pv $(PREFIX)/.gnupg/;
 	@for file in $(GNUPG_FILES); \
 	do \
-		mkdir -pv $(PREFIX)/.gnupg/; \
 		ln -rvsf $(PWD)/src/gnupg/$$file $(PREFIX)/.gnupg/$$file; \
 	done 
 
 install-python:
 	@for file in $(WGET_FILES); \
+	do \
+		ln -rvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
+	done 
+
+install-misc:
+	@for file in $(MISC_FILES); \
 	do \
 		ln -rvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
 	done 

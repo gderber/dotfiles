@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# SSH Agent
+if command -v keychain 2&> /dev/null; then
+    for key in id_ed25519 id_ecdsa id_rsa id_dsa
+    do
+	[[ -f .ssh/$key ]] &&
+	    KEYS="$KEYS $key" &&
+	    [[ "$key" == "id_dsa" ]] &&
+	    echo "Warning you are still using dsa"
+    done
+    keyVal=$(gpg -K | awk '/sec/{if (length($2) > 0) print $2}') &&
+	[[ -n keyVal ]] &&
+	KEYS="$KEYS $keyVal"
+    
+    eval "$(keychain --eval ${KEYS}"
+fi
+
