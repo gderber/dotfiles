@@ -74,7 +74,3 @@ fi
 if command -v beet 2&> /dev/null; then
     eval "$(beet completion)"
 fi
-
-if command -v keychain 2&> /dev/null; then
-    eval "$(keychain --eval id_ed25519)"
-fi
