@@ -3,9 +3,6 @@
 # Global Options
 #
 #---------------------------------------------------------------------------------------------------
-library: /home/mythtv/.config/beets/library.db
-statefile: /home/mythtv/.config/beets/state.pickle
-directory: /home
 plugins: [
 #autotagger extentions
   chroma,
@@ -61,8 +58,8 @@ plugins: [
   setlister
 ]
 
-pluginpath:
-  - /home/mythtv/.beets/beets-setlister/beetsplug/
+#pluginpath:
+#  - /home/mythtv/.beets/beets-setlister/beetsplug/
 
 # default: [".*", "*~", "System Volume Information", "lost+found"]
 #ignore: []
@@ -197,10 +194,10 @@ match:
 #
 #---------------------------------------------------------------------------------------------------
 paths:
-  sort:Meditation: mythtv/Music/$sort/%ifdef{from_source,$from_source,Unsorted}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
-  singleton: mythtv/Music/%ifdef{from_source,$from_source,Unsorted}/%ifdef{sort,$sort,Unsorted}/%ifdef{album_holiday,$album_holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/Non-Album/%the{%asciify{$title}}
-  comp: mythtv/Music/%ifdef{from_source,$from_source,Unsorted}/%ifdef{sort,$sort,Unsorted}/%ifdef{album_holiday,$album_holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
-  default: mythtv/Music/%ifdef{from_source,$from_source,Unsorted}/%ifdef{sort,$sort,Unsorted}/%ifdef{album_holiday,$album_holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%ifdef{series,%the{$series}}/%ifdef{series_no,$series_no - }%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
+  sort:Meditation: $sort/%ifdef{from_source,$from_source,Unsorted}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
+  singleton: %ifdef{from_source,$from_source,Unsorted}/%ifdef{sort,$sort,Unsorted}/%ifdef{album_holiday,$album_holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/Non-Album/%the{%asciify{$title}}
+  comp: %ifdef{from_source,$from_source,Unsorted}/%ifdef{sort,$sort,Unsorted}/%ifdef{album_holiday,$album_holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
+  default: %ifdef{from_source,$from_source,Unsorted}/%ifdef{sort,$sort,Unsorted}/%ifdef{album_holiday,$album_holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%ifdef{series,%the{$series}}/%ifdef{series_no,$series_no - }%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
 
 
 #---------------------------------------------------------------------------------------------------
@@ -276,8 +273,8 @@ the:
   format: '{0}, {1}'
 
 smartplaylist:
-  playlist_dir: /home/mythtv/Music/Playlists
-  relative_to: /home/mythtv/Music/Playlists
+  playlist_dir: Playlists
+  relative_to: Playlists
   playlists:
     - name: 'All.m3u'
       query: 'sort+ albumartist+ soundtrack_type+ series+ series_no+ album+ disc+ track+'
@@ -377,7 +374,7 @@ types:
 
 smartalternatives:
   auto: false
-  alt_dir: /home
+  alt_dir: ~
 #  alt_formats:
 #    mp3: ...
 #    flac: ...
@@ -386,38 +383,16 @@ smartalternatives:
     - name: by-year
       query: ^year::%
       directories:
-        - directory: mythtv/MusicAlt/Year
+        - directory: MusicAlt/Year
           formats: link
           paths:
             default: %bucket{$original_year}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
 
-    - name: gzbr
-      query: "gzbr:true"
+    - name: Cloud
+      query: "cloud:true"
       directories:
-        - directory: geoff/Music
-          formats: link
-          paths:
-            singleton:true: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/Non-Album/%the{%asciify{$title}}
-            comp: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
-            default: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
-        - directory: geoff/OneDrive/Music
+        - directory: OneDrive/Music
           formats: mp3 aac
-          paths:
-            singleton:true: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/Non-Album/%the{%asciify{$title}}
-            comp: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
-            default: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
-
-    - name: bzbr
-      query: "bzbr:true"
-      directories:
-        - directory: bree/Music
-          formats: link
-          paths:
-            singleton:true: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/Non-Album/%the{%asciify{$title}}
-            comp: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
-            default: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
-        - directory: bree/OneDrive/Music
-          formats: mp3
           paths:
             singleton:true: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/Non-Album/%the{%asciify{$title}}
             comp: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
@@ -432,4 +407,4 @@ smartalternatives:
 #
 ##################################################
 setlister:
-  playlist_dir: /home/mythtv/Music/Playlists/
+  playlist_dir: ~/Music/Playlists/
