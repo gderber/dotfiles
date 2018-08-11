@@ -9,7 +9,7 @@ if command -v keychain 2&> /dev/null; then
 	    [[ "${key}" == "id_dsa" ]] &&
 	    echo "Warning you are still using dsa"
     done
-    keyVal=$(gpg -K | awk '/sec/{if (length($2) > 0) print $2}'|cut -d/ -f2) &&
+    keyVal=$(gpg -K | awk '/sec/{if (length($2) > 0) print $2}'|sed 's|.*/0x||' &&
 	[[ -n ${keyVal} ]] &&
 	KEYS="${KEYS}  ${keyVal}"
     
