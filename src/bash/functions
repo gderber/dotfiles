@@ -135,10 +135,3 @@ function update_timestamp () {
     ' sh {} +
 }
 
-function genkeys () {
-    ssh-keygen -t ed25519 &&
-	gpg --full-generate-key --expert &&
-	keyVal=$(gpg -K | awk '/sec/{if (length($2) > 0) print $2}') &&
-	gpg --edit-key --expert $keyVal
-
-}
