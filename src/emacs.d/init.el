@@ -78,40 +78,37 @@
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
 (package-initialize)
+;;(elpy-enable)
+(require 'epa-file)
+(epa-file-enable)
 
 (setq debug-on-enrror t)
 
-;;(load "~/.config/emacs/global")
-;;(load "~/.config/emacs/column-marker")
+
+(load (expand-file-name "~/.emacs.d/global"))
+(load (expand-file-name "~/.emacs.d/column-marker"))
+
+;; (load (expand-file-name "~/.emacs.d/mode-line"))
+
 
 ;; Load my defaults from another file.  Again, makes distributing this file
 ;; easier.  These defaults are things like my name and email address.
 (load (expand-file-name "~/.emacs.d/private"))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(column-number-mode t)
- '(display-battery-mode t)
- '(display-time-24hr-format t)
- '(display-time-day-and-date t)
- '(display-time-default-load-average t)
- '(display-time-mail-file (quote none))
- '(display-time-mode t)
- '(indicate-buffer-boundaries (quote ((t . right) (top . left))))
- '(indicate-empty-lines t)
- '(inhibit-startup-screen t)
- '(line-number-mode t)
- '(save-place t nil (saveplace))
- '(scroll-bar-mode (quote right))
- '(show-paren-mode t)
- '(size-indication-mode t)
- '(text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify)))
- '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
+;; Space emacs
+;;(setq spacemacs-start-directory "~/.emacs.d/spacemacs/")
+;;(load-file (concat spacemacs-start-directory "init.el"))
+
+;;(cond ((eq system-type 'windows-nt)
+       ;; Windows-specific code goes here.
+;;       )
+;;       ((eq system-type 'gnu/linux)
+	;; Linux-specific code goes here.
+;;	))
+
+;;(cond ((display-graphic-p)
+       ;; Graphical code goes here.
+;;       )
+;;      (t
+       ;; Console-specific code
+;;       ))

@@ -1,9 +1,9 @@
-(load "~/.config/emacs/highlight-chars")
+;;(load "~/.config/emacs/highlight-chars")
 
 ;;;;; Global Functions ;;;;;
 (defun insert-date (prefix)
-  "Insert the current date. With prefix-argument, use ISO format. With
-   two prefix arguments, write out the day and month name."
+;;  "Insert the current date. With prefix-argument, use ISO format. With
+;;   two prefix arguments, write out the day and month name."
   (interactive "P")
   (let ((format (cond
 		 ((not prefix) "%d.%m.%Y")
@@ -11,6 +11,30 @@
 		 ((equal prefix '(16)) "%A, %d. %B %Y")))
 	(system-time-locale "de_DE"))
     (insert (format-time-string format))))
+
+(defun dka-fix-comments ()
+  "Move through the entire buffer searching for comments that begin with
+    \"//\" and fill them appropriately.  That means if comments start too
+    close to the end of line (20 less than the fill-column) move the
+    entire comment on a line by itself."
+  (interactive)
+  (save-excursion
+    (beginning-of-buffer)
+    (while (search-forward "//")
+      (lisp-indent-for-comment)
+      ;; when the comment is deemed to be too close to the end of the
+      ;; line, yank it and put it on the previous line before filling
+      (while (< (- fill-column 20) (- (current-column) 3))
+	(search-backward "//")
+	(kill-line)
+	(beginning-of-line)
+	(yank)
+	(insert "\n"))
+      ;; now fill the lines that are too long
+      (if (and (not (end-of-line))
+	       (< fill-column (current-column)))
+	  (c-fill-paragraph)))))
+
 
 ;;;;; Global Keybindings ;;;;;;
 
@@ -32,12 +56,12 @@
 
 ;; Duplicates of some of the keys above so everything works
 ;; properly on remote xterms.
-(global-set-key "\e[12~" 'other-window)
-(global-set-key "\e[13~" 'kill-this-buffer)
+;;(global-set-key "\e[12~" 'other-window)
+;;(global-set-key "\e[13~" 'kill-this-buffer)
 
 ;; Keys that Jeff likes - maybe I'll try them too.
-(global-set-key (kbd "C-x C-k") 'compile)
-(global-set-key (kbd "C-x C-j") 'fill-paragraph)
+;;(global-set-key (kbd "C-x C-k") 'compile)
+;;(global-set-key (kbd "C-x C-j") 'fill-paragraph)
 
 ; Unfortunately there's no common way to bind mouse events in the
 ; different emacsen.
@@ -69,17 +93,18 @@
  '(display-time-mode t)
  '(size-indication-mode t) ;; Show file size
  '(indicate-buffer-boundaries (quote ((t . right) (top . left))))
+ '(inhibit-startup-screen t)
  '(indicate-empty-lines t)
  '(save-place t nil (saveplace))
  '(scroll-bar-mode (quote right))
  '(show-paren-mode t) ;; Show matched Parens
  '(text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify)))
- '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
+ '(uniquify-buffer-name-style (quote forward) nil (uniquify))
+)
 
 (setq global-font-lock-mode t)             ; Enable syntax-highlighting
 (setq font-lock-maximum-decoration t)
 (setq indent-tabs-mode nil)                ; Use spaces instead of tabs for indentation.
-;;(setq inhibit-startup-message t)           ;don't need it anymore.
 (setq transient-mark-mode t)               ;where's that selection?
 (setq mouse-yank-at-point t)               ;paste at point NOT at cursor
 (setq next-line-add-newlines nil)          ;no newlines if I cursor past EOF.
@@ -87,8 +112,8 @@
  ;I didn't understand this for a long time - if you don't set this,
  ;you can't do things like search the minibuffer history with M-s
  ;(cause that requires another minibuffer)
-;;(setq browse-url-browser-function          ;call netscape on URLs.
-;;      (quote browse-url-netscape))
+(setq browse-url-browser-function          ;call netscape on URLs.
+      (quote browse-url-netscape))
 ;;(setq browse-url-new-window-p t)           ;open a fresh netscape window.
 ;;(if (boundp 'running-xemacs)
 ;;    (progn
@@ -106,6 +131,10 @@
 ;; uptimes
 (setq emacs-load-start-time (current-time))
 
-(add-hook 'font-lock-mode-hook 'hc-highlight-tabs)
-(add-hook 'font-lock-mode-hook 'hc-highlight-hard-spaces)
-(add-hook 'font-lock-mode-hook 'hc-highlight-trailing-whitespace)
+;;(add-hook 'font-lock-mode-hook 'hc-highlight-tabs)
+;;(add-hook 'font-lock-mode-hook 'hc-highlight-hard-spaces)
+;;(add-hook 'font-lock-mode-hook 'hc-highlight-trailing-whitespace)
+
+(add-to-list 'auto-mode-alist '(".*_EDITMSG\\'" . log-entry-mode))
+(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+(add-to-list 'auto-mode-alist '("ssh*_config" . conf-mode))
