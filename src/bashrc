@@ -52,9 +52,9 @@ if [[ $- == *i* ]]; then
     
     # Conditional functions
     # Functions requiring sudo, which you may not have access to.
-    if sudo -v ; then 
-       so ~/.bash/sudo_functions 
-    fi
+    #if sudo -v ; then 
+    #   so ~/.bash/sudo_functions 
+    #fi
     # These functions are only useful for laptops
     if [[ ${LAPTOP} == "true" ]]; then
 	so ~/.bash/laptop_functions
