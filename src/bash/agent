@@ -13,6 +13,6 @@ if command -v keychain 2&> /dev/null; then
 	[[ -n ${keyVal} ]] &&
 	KEYS="${KEYS}  ${keyVal}"
     
-    eval "$(keychain --clear --eval --agents gpg,ssh ${KEYS})"
+    eval "$(keychain --eval --agents gpg,ssh ${KEYS})"
 fi
 
