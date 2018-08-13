@@ -142,10 +142,10 @@
 
 	# Commit Aliases
 	# commit
-    c      = commit -v
-    ca     = commit --all -v
+    c      = commit -S -v
+    ca     = commit -S --all -v
     cm     = commit --message
-    cam    = commit --all --message
+    cam    = commit -S --all --message
     camend = commit --amend --reuse-message HEAD
     cundo  = reset --soft "HEAD^"
 	cp     = cherry-pick
