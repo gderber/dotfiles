@@ -135,6 +135,3 @@
 ;;(add-hook 'font-lock-mode-hook 'hc-highlight-hard-spaces)
 ;;(add-hook 'font-lock-mode-hook 'hc-highlight-trailing-whitespace)
 
-(add-to-list 'auto-mode-alist '(".*_EDITMSG\\'" . log-entry-mode))
-(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-(add-to-list 'auto-mode-alist '("ssh*_config" . conf-mode))

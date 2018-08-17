@@ -84,8 +84,8 @@
 
 (setq debug-on-enrror t)
 
-
 (load (expand-file-name "~/.emacs.d/global"))
+(load (expand-file-name "~/.emacs.d/filetypes"))
 (load (expand-file-name "~/.emacs.d/column-marker"))
 
 ;; (load (expand-file-name "~/.emacs.d/mode-line"))
