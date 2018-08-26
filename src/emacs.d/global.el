@@ -25,11 +25,11 @@
       ;; when the comment is deemed to be too close to the end of the
       ;; line, yank it and put it on the previous line before filling
       (while (< (- fill-column 20) (- (current-column) 3))
-	(search-backward "//")
-	(kill-line)
-	(beginning-of-line)
-	(yank)
-	(insert "\n"))
+       (search-backward "//")
+       (kill-line)
+       (beginning-of-line)
+       (yank)
+       (insert "\n"))
       ;; now fill the lines that are too long
       (if (and (not (end-of-line))
 	       (< fill-column (current-column)))
@@ -51,7 +51,7 @@
 
 (global-unset-key (kbd "ESC ESC"))         ;eval-expr gets in my way.
 (global-set-key (kbd "C-`") 'capitalize-word)      ;I want c-~, but
-						   ;that's too
+      ;that's too
                                                    ;hard to type.
 
 ;; Duplicates of some of the keys above so everything works
@@ -100,14 +100,18 @@
  '(show-paren-mode t) ;; Show matched Parens
  '(text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify)))
  '(uniquify-buffer-name-style (quote forward) nil (uniquify))
-)
+ )
 
+
+(setq-default fill-column 72)
 (setq global-font-lock-mode t)             ; Enable syntax-highlighting
 (setq font-lock-maximum-decoration t)
 (setq indent-tabs-mode nil)                ; Use spaces instead of tabs for indentation.
+(setq tab-width 4)                         ; Set tab width to 4
 (setq transient-mark-mode t)               ;where's that selection?
 (setq mouse-yank-at-point t)               ;paste at point NOT at cursor
 (setq next-line-add-newlines nil)          ;no newlines if I cursor past EOF.
+(setq require-final-newline 't)            ; Always newline at end of file
 (setq minibuffer-max-depth nil)            ;enable multiple minibuffers:
  ;I didn't understand this for a long time - if you don't set this,
  ;you can't do things like search the minibuffer history with M-s
@@ -131,7 +135,7 @@
 ;; uptimes
 (setq emacs-load-start-time (current-time))
 
-;;(add-hook 'font-lock-mode-hook 'hc-highlight-tabs)
-;;(add-hook 'font-lock-mode-hook 'hc-highlight-hard-spaces)
-;;(add-hook 'font-lock-mode-hook 'hc-highlight-trailing-whitespace)
-
+(add-hook 'font-lock-mode-hook 'hc-highlight-tabs)
+(add-hook 'font-lock-mode-hook 'hc-highlight-hard-spaces)
+(add-hook 'font-lock-mode-hook 'hc-highlight-trailing-whitespace)
+(add-hook 'after-change-major-mode-hook 'fci-mode)
