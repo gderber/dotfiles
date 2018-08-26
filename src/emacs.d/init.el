@@ -82,29 +82,39 @@
 (require 'epa-file)
 (epa-file-enable)
 
+(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+			 ("marmalade" . "https://marmalade-repo.org/packages/")
+			 ("melpa" . "https://melpa.org/packages/")))
+
 (setq debug-on-enrror t)
 
 (load (expand-file-name "~/.emacs.d/global"))
 (load (expand-file-name "~/.emacs.d/filetypes"))
 (load (expand-file-name "~/.emacs.d/column-marker"))
+(load (expand-file-name "~/.emacs.d/highlight-chars"))
+(load (expand-file-name "~/.emacs.d/fill-column-indicator"))
+;;(load (expand-file-name "~/.emacs.d/headers2"))
+
+
 
 ;; (load (expand-file-name "~/.emacs.d/mode-line"))
 
+(load (expand-file-name "~/.emacs.d/modes/apache-mode"))
 
 ;; Load my defaults from another file.  Again, makes distributing this file
 ;; easier.  These defaults are things like my name and email address.
 (load (expand-file-name "~/.emacs.d/private"))
 
 ;; Space emacs
-;;(setq spacemacs-start-directory "~/.emacs.d/spacemacs/")
-;;(load-file (concat spacemacs-start-directory "init.el"))
+(setq spacemacs-start-directory "~/.emacs.d/spacemacs/")
+(load-file (concat spacemacs-start-directory "init.el"))
 
 ;;(cond ((eq system-type 'windows-nt)
        ;; Windows-specific code goes here.
 ;;       )
 ;;       ((eq system-type 'gnu/linux)
-	;; Linux-specific code goes here.
-;;	))
+       ;; Linux-specific code goes here.
+;;     ))
 
 ;;(cond ((display-graphic-p)
        ;; Graphical code goes here.
@@ -112,3 +122,34 @@
 ;;      (t
        ;; Console-specific code
 ;;       ))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(column-number-mode t)
+ '(display-battery-mode t)
+ '(display-time-24hr-format t)
+ '(display-time-day-and-date t)
+ '(display-time-default-load-average t)
+ '(display-time-mail-file (quote none))
+ '(display-time-mode t)
+ '(indicate-buffer-boundaries (quote ((t . right) (top . left))))
+ '(indicate-empty-lines t)
+ '(inhibit-startup-screen t)
+ '(line-number-mode t)
+ '(package-selected-packages
+   (quote
+    (which-key undo-tree hydra evil-unimpaired async aggressive-indent adaptive-wrap ace-window)))
+ '(save-place t nil (saveplace))
+ '(scroll-bar-mode (quote right))
+ '(show-paren-mode t)
+ '(size-indication-mode t)
+ '(text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify)))
+ '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

@@ -3,8 +3,9 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil nil ("evil-unimpaired.el") (23408 54726 769845
-;;;;;;  215000))
+;;;### (autoloads nil nil ("../../../../../../../.emacs.d/elpa/evil-unimpaired-0.1pre0.20180813.4615/evil-unimpaired-autoloads.el"
+;;;;;;  "../../../../../../../.emacs.d/elpa/evil-unimpaired-0.1pre0.20180813.4615/evil-unimpaired.el")
+;;;;;;  (23425 60305 461111 431000))
 
 ;;;***
 

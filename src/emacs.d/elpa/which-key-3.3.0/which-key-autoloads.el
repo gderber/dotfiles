@@ -3,9 +3,9 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "which-key" "which-key.el" (23408 54732 657881
-;;;;;;  886000))
-;;; Generated autoloads from which-key.el
+;;;### (autoloads nil "which-key" "../../../../../../../.emacs.d/elpa/which-key-3.3.0/which-key.el"
+;;;;;;  "87666f050b71b5daffee2ce843da0ee8")
+;;; Generated autoloads from ../../../../../../../.emacs.d/elpa/which-key-3.3.0/which-key.el
 
 (defvar which-key-mode nil "\
 Non-nil if Which-Key mode is enabled.
@@ -164,8 +164,11 @@ is selected interactively by mode in `minor-mode-map-alist'.
 
 ;;;***
 
-;;;### (autoloads nil nil ("which-key-pkg.el" "which-key-tests.el")
-;;;;;;  (23408 54732 225879 197000))
+;;;### (autoloads nil nil ("../../../../../../../.emacs.d/elpa/which-key-3.3.0/which-key-autoloads.el"
+;;;;;;  "../../../../../../../.emacs.d/elpa/which-key-3.3.0/which-key-pkg.el"
+;;;;;;  "../../../../../../../.emacs.d/elpa/which-key-3.3.0/which-key-tests.el"
+;;;;;;  "../../../../../../../.emacs.d/elpa/which-key-3.3.0/which-key.el")
+;;;;;;  (23425 60314 21133 440000))
 
 ;;;***
 
