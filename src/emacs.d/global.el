@@ -100,6 +100,16 @@
  '(show-paren-mode t) ;; Show matched Parens
  '(text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify)))
  '(uniquify-buffer-name-style (quote forward) nil (uniquify))
+ '(package-selected-packages
+   (quote
+    (which-key undo-tree hydra evil-unimpaired async aggressive-indent adaptive-wrap ace-window)))
+ '(size-indication-mode t)
+ )
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  )
 
 
@@ -139,3 +149,13 @@
 (add-hook 'font-lock-mode-hook 'hc-highlight-hard-spaces)
 (add-hook 'font-lock-mode-hook 'hc-highlight-trailing-whitespace)
 (add-hook 'after-change-major-mode-hook 'fci-mode)
+
+
+;; Header
+(autoload 'auto-update-file-header "header2")
+(add-hook 'write-file-hooks 'auto-update-file-header)
+;; To have Emacs add a file header whenever you create a new file in
+;; some mode, put this in your init file (~/.emacs):
+(autoload 'auto-make-header "header2")
+(add-hook 'emacs-lisp-mode-hook 'auto-make-header)
+(add-hook 'c-mode-common-hook   'auto-make-header)
