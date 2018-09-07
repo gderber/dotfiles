@@ -1,11 +1,11 @@
 #!/bin/bash
 
-function decToBin () { 
-    echo "ibase=10; obase=2; $1" | bc; 
+function decToBin () {
+    echo "ibase=10; obase=2; $1" | bc;
 }
 
-function decTohex() { 
-    bc <<< "obase=16; $1"; 
+function decTohex() {
+    bc <<< "obase=16; $1";
 }
 
 function beep () {
@@ -22,8 +22,8 @@ function beep () {
 #    fi
 #}
 
-function hexscroll() { 
-    pv -qL 90 /dev/urandom | xxd -c $(( ($COLUMNS-10)*2/7 )); 
+function hexscroll() {
+    pv -qL 90 /dev/urandom | xxd -c $(( ($COLUMNS-10)*2/7 ));
 }
 
 # move up $@ directories
@@ -32,11 +32,11 @@ function up() {
      limit=$1
      for ((i=1 ; i <= limit ; i++))
      do
-	 d=$d/..
+	d=$d/..
      done
      d=$(echo $d | sed 's/^\///')
      if [ -z "$d" ]; then
-	 d=..
+	d=..
      fi
      cd $d
 }
@@ -46,7 +46,7 @@ function back() {
      limit=$1
      for ((i=1 ; i <= limit ; i++))
      do
-	 popd
+	popd
      done
 }
 
@@ -62,7 +62,7 @@ usage:  fawk [<awk_args>] <field_no>
 	return
 	#exit 1 # whoops! that would quit the shell!
     fi
-    
+
     # bail if the *last* argument isn't a number (source:
     # http://stackoverflow.com/a/808740)
     last=${@:(-1)}
@@ -71,7 +71,7 @@ usage:  fawk [<awk_args>] <field_no>
 	echo -e "$USAGE" >&2;
 	return
     fi
-    
+
     if [ $# -gt 1 ]; then
 	# Source:
 	# http://www.cyberciti.biz/faq/linux-unix-bsd-apple-osx-bash-get-last-argument/5F
