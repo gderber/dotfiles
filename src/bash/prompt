@@ -60,7 +60,7 @@ function __prompt_command_full() {
 
     # Repositories    
     # git
-    local BRANCH=$(__git_prompt)
+    #local BRANCH=$(__git_prompt)
 
     # subversion
     # currently disabled as I have nothing to check it with
