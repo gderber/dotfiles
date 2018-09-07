@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 #
-# Makefile for pysorcery
+# Makefile for dotfiles
 #
 # By Geoff S Derber
 #
@@ -8,11 +8,11 @@
 #
 # ---------------------------------------------------------------------
 NAME=dotfiles
-VERSION=0.0.1
+VERSION=0.0.2
 DESCRIPTION="My dotfiles"
 
 BASH_FILES=bash bashrc bash_profile bash_logout
-EMACS_FILES=emacs.d
+EMACS_FILES=emacs.d spacemacs
 GIT_FILES=.gitignore .gitattributes .gitconfig
 GNUPG_FILES=gpg-agent.conf gpg.conf
 INPUT_FILES=editrc inputrc
@@ -21,8 +21,10 @@ SCREEN_FILES=screenrc
 SSH_FILES=config
 WGET_FILES=wgetrc
 TOP_FILES=toprc
-MISC_FILES=profile xscreensaver
+MISC_FILES=profile netrc
+KSH_FILES=kshrc
 BEETS_FILES=config.yaml genres.txt
+XFILES=Xdefaults xscreensaver
 
 DOC_FILES=*.md *.txt
 
