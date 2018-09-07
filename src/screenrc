@@ -46,7 +46,7 @@ screen  -t bash      5
 screen  -t bash      6
 screen  -t bash      7
 screen  -t bash      8
-screen  -t bash      9 
+screen  -t bash      9
 screen  -t EDIT      10 emacs -nw
 select 1
 
