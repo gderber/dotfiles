@@ -159,3 +159,7 @@
 (autoload 'auto-make-header "header2")
 (add-hook 'emacs-lisp-mode-hook 'auto-make-header)
 (add-hook 'c-mode-common-hook   'auto-make-header)
+
+;;(elpy-enable)
+(require 'epa-file)
+(epa-file-enable)

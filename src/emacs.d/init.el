@@ -71,22 +71,18 @@
 
 ;;;; Global Settings ;;;;
 
-;; Provide a useful error trace if loading this monster fails.
-
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
 (package-initialize)
-;;(elpy-enable)
-(require 'epa-file)
-(epa-file-enable)
 
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("marmalade" . "https://marmalade-repo.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")))
 
-(setq debug-on-enrror t)
+;; Provide a useful error trace if loading this monster fails.
+(setq debug-on-error t)
 
 (load (expand-file-name "~/.emacs.d/global"))
 (load (expand-file-name "~/.emacs.d/filetypes"))
@@ -99,15 +95,13 @@
 
 ;; (load (expand-file-name "~/.emacs.d/mode-line"))
 
-(load (expand-file-name "~/.emacs.d/modes/apache-mode"))
-
 ;; Load my defaults from another file.  Again, makes distributing this file
 ;; easier.  These defaults are things like my name and email address.
 (load (expand-file-name "~/.emacs.d/private"))
 
 ;; Space emacs
-(setq spacemacs-start-directory "~/.emacs.d/spacemacs/")
-(load-file (concat spacemacs-start-directory "init.el"))
+;;(setq spacemacs-start-directory "~/.emacs.d/spacemacs/")
+;;(load-file (concat spacemacs-start-directory "init.el"))
 
 ;;(cond ((eq system-type 'windows-nt)
        ;; Windows-specific code goes here.
@@ -122,3 +116,7 @@
 ;;      (t
        ;; Console-specific code
 ;;       ))
+
+;; Mode Specific Setups
+(load (expand-file-name "~/.emacs.d/modes/apache-mode"))
+(load (expand-file-name "~/.emacs.d/modes/org-mode"))

@@ -4,6 +4,9 @@
 	name = G S Derber
 	#signingkey = **Your GPG ID**
 
+[github]
+	user = gderber
+
 [branch "master"]
 	remote = origin
 	merge = refs/heads/master
@@ -64,7 +67,7 @@
     bX  = branch -D
     bmv = branch -m
     bM  = branch -M
-    bs  = show-branch
+	bs  = show-branch
 	bS  = show-branch -a
 
 	cl = clone
