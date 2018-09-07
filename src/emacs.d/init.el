@@ -100,8 +100,8 @@
 (load (expand-file-name "~/.emacs.d/private"))
 
 ;; Space emacs
-;;(setq spacemacs-start-directory "~/.emacs.d/spacemacs/")
-;;(load-file (concat spacemacs-start-directory "init.el"))
+(setq spacemacs-start-directory "~/.emacs.d/spacemacs/")
+(load-file (concat spacemacs-start-directory "init.el"))
 
 ;;(cond ((eq system-type 'windows-nt)
        ;; Windows-specific code goes here.

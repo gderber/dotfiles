@@ -85,7 +85,7 @@ install-beets:
 	@for file in $(BEETS_FILES); \
 	do \
 		ln -nrvsf $(PWD)/src/config/beets/$$file $(PREFIX)/.config/beets/$$file; \
-	don 
+	done
 
 install-emacs:
 	@for file in $(EMACS_FILES); \
