@@ -2,23 +2,25 @@
 
 function start_agents () {
     if [[ -n "$DESKTOP_SESSION" ]]; then
-	eval $(gnome-keyring-daemon --start)
-	export SSH_AUTH_SOCK
+        eval $(gnome-keyring-daemon --start)
+        export SSH_AUTH_SOCK
     else
-	# SSH Agent
-	if command -v keychain 2&> /dev/null; then
-	    for key in id_ed25519 id_ecdsa id_rsa id_dsa
-	    do
-		[[ -f .ssh/$key ]] &&
-		    KEYS="${KEYS} ${key}" &&
-		    [[ "${key}" == "id_dsa" ]] &&
-		    echo "Warning you are still using dsa"
-	    done
-	    keyVal=$(gpg -K | awk '/sec/{if (length($2) > 0) print $2}'|sed 's|.*/0x||' ) &&
-		[[ -n ${keyVal} ]] &&
-		KEYS="${KEYS}  ${keyVal}"
-	    eval "$(keychain --eval --agents gpg,ssh ${KEYS})"
-	fi
+        # SSH Agent
+        if command -v keychain 2&> /dev/null; then
+            cd ${HOME}/.ssh/
+            SSHKEYS=$(ls *.pub|cut -d. -f1)
+            for key in ${SSHKEYS}
+            do
+                [[ -f .ssh/$key ]] &&
+                    KEYS="${KEYS} ${key}" &&
+                    [[ "${key}" == "id_dsa" ]] &&
+                    echo "Warning you are still using dsa"
+            done
+            keyVal=$(gpg -K | awk '/sec/{if (length($2) > 0) print $2}'|sed 's|.*/0x||' ) &&
+                [[ -n ${keyVal} ]] &&
+                KEYS="${KEYS}  ${keyVal}"
+            eval "$(keychain --eval --agents gpg,ssh ${KEYS})"
+        fi
     fi
 }
 

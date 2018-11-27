@@ -91,7 +91,9 @@ install-emacs:
 	@for file in $(EMACS_FILES); \
 	do \
 		ln -nrvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
-	done 
+	done
+	cd $(PREFIX)/.emacs.d/
+	git clone https://github.com/syl20bnr/spacemacs.git
 
 install-git:
 	@for file in $(GIT_FILES); \

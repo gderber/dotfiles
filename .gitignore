@@ -46,7 +46,9 @@ tramp
 .\#*
 .*~
 *_flymake.*  # flymake-mode
+src/emacs.d/elpa/        # elpa packages
 src/emacs.d/elpa/**        # elpa packages
+
 *.rel        # reftex files
 /auto/       # AUCTeX auto folder
 flycheck_*.el  # Flycheck
