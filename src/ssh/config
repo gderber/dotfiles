@@ -4,8 +4,8 @@ Host apollo
 Host aphrodite
     HostName aphrodite.olympus.drbr.org
 
-Host ariande
-    HostName ariande.olympus.drbr.org
+Host ariadne
+    HostName ariadne.olympus.drbr.org
 
 
 Host calliope
@@ -18,13 +18,16 @@ Host demeter
 Host dionysus
     HostName dionysus.olympus.drbr.org
 
+Host git
+     IdentityFile ~/.ssh/id_ed25519
+     
 Host hm
     HostName hearthminion.com
     User hearthmi
     StrictHostKeyChecking yes
     VerifyHostKeyDNS ask
     VisualHostKey yes
-    IdentityFile ~/id_rsa
+    IdentityFile ~/.ssh/id_rsa
 
 Host hera
     HostName hera.olympus.drbr.org
@@ -59,7 +62,8 @@ Host *.olympus.drbr.org
     GSSAPIKeyExchange yes
     GSSAPIRenewalForcesRekey yes
     GSSAPITrustDns yes
-    GSSAPIDelegateCredentials yes 
+    GSSAPIDelegateCredentials yes
+    
 
 Host *
     StrictHostKeyChecking ask
