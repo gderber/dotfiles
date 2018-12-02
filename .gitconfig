@@ -1,7 +1,11 @@
 # Global Config
-[user]
-	email = gd.smlinux@gmail.com
-	name = G S Derber
+[include]
+path = ~/.gitconfig.local
+
+# This section is now in .gitconfig.local
+#[user]
+	#email = emai@address.com
+	#name = Y R Name
 	#signingkey = **Your GPG ID**
 
 [github]
@@ -67,25 +71,25 @@
     bX  = branch -D
     bmv = branch -m
     bM  = branch -M
-	bs  = show-branch
-	bS  = show-branch -a
+    bs  = show-branch
+    bS  = show-branch -a
 
-	cl = clone
+    cl = clone
 
-	# Config files
-	ec = config --global -e
+    # Config files
+    ec = config --global -e
 
-	# Git Flow
-	fi = flow init
-	flf = flow feature
-	flh = flow hotfix
-	flr = flow release
-	flff = flow feature finish
-	flhf = flow hotfix finish
-	flrf = flow release finish
-	flfs = flow feature start
-	flhs = flow hotfix start
-	flrs = flow release start
+    # Git Flow
+    fi    = flow init
+    flf   = flow feature
+    flh   = flow hotfix
+    flr   = flow release
+    flff  = flow feature finish
+    flhf  = flow hotfix finish
+    flrf  = flow release finish
+    flfs  = flow feature start
+    flhs  = flow hotfix start
+    flrs  = flow release start
 
 	# Logging Aliases
 	ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
@@ -118,13 +122,13 @@
     # Checkout Aliases
     co  = checkout
     co0 = checkout HEAD --
-	cob = checkout -b
-	cod = checkout develop
-	coh = checkout hotfix
-	com = checkout master
-	cor = checkout release
+    cob = checkout -b
+    cod = checkout develop
+    coh = checkout hotfix
+    com = checkout master
+    cor = checkout release
 
-	# fetch
+    # fetch
     f   = fetch
     fm  = pull
     fo  = fetch origin
@@ -143,30 +147,24 @@
     rs  = rebase --skip
     rom = rebase origin/master
 
-	# Commit Aliases
-	# commit
+    # Commit Aliases
+    # commit
     c      = commit -S -v
-    ca     = commit -S --all -v
-    cm     = commit --message
+    ca     = !git add -A && git commit -S --all -v
+    cm     = !git add -A && git commit -S --all -v --message
     cam    = commit -S --all --message
     camend = commit --amend --reuse-message HEAD
     cundo  = reset --soft "HEAD^"
-	cp     = cherry-pick
-
-	ca = !git add -A && git commit
-	ci = commit
-	cm = !git add -A && git commit -m
-	save = !git add -A && git commit -m 'SAVEPOINT'
-
-	wip = !git add -u && git commit -m "WIP"
-	undo = reset HEAD~1 --mixed
-	amend = commit -a --amend
-	wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
-	bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
-	bdone = "!f() { git checkout ${1-master} && git up && git bclean ${1-master}; }; f"
-	untrack = rm --cache --
-	o = !git push origin --all && git push --prune
-
+    cp     = cherry-pick
+    save = !git add -A && git commit -m 'SAVEPOINT'
+    wip = !git add -u && git commit -m "WIP"
+    undo = reset HEAD~1 --mixed
+    amend = commit -a --amend
+    wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
+    bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
+    bdone = "!f() { git checkout ${1-master} && git up && git bclean ${1-master}; }; f"
+    untrack = rm --cache --
+    o = !git push origin --all && git push --prune
 
     # diff
     d    = diff          # Diff working dir to index
