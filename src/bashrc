@@ -18,12 +18,12 @@
 #
 # =============================================================== #
 
-#------------------------------------------------------------- 
+#-------------------------------------------------------------
 # Source global definitions (if any)
-#------------------------------------------------------------- 
-if [ -f /etc/bashrc ]; then 
-    . /etc/bashrc 
-    # --> Read /etc/bashrc, if present. 
+#-------------------------------------------------------------
+if [ -f /etc/bashrc ]; then
+    . /etc/bashrc
+    # --> Read /etc/bashrc, if present.
 fi
 
 
@@ -31,7 +31,7 @@ so() { [ -s $1 ] && source $1; }
 
 # Host Specific settings
 so ~/.bash/${HOSTNAME}_settings
-so ~/.bash/bashrc				# main configuration
+so ~/.bash/bashrc # main configuration
 
 ## Uses:
 export ENV_NAME=$(uname -s|tr 'A-Z' 'a-z')

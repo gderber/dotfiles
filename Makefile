@@ -8,7 +8,7 @@
 #
 # ---------------------------------------------------------------------
 NAME=dotfiles
-VERSION=0.0.2
+VERSION=0.0.3
 DESCRIPTION="My dotfiles"
 
 BASH_FILES=bash bashrc bash_profile bash_logout
@@ -92,14 +92,16 @@ install-emacs:
 	do \
 		ln -nrvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
 	done
-	cd $(PREFIX)/.emacs.d/
-	git clone https://github.com/syl20bnr/spacemacs.git
+	@if [ ! -d $(PREFIX)/.emacs.d/spacemacs ]; then
+		cd $(PREFIX)/.emacs.d/
+		git clone https://github.com/syl20bnr/spacemacs.git
+	fi
 
 install-git:
 	@for file in $(GIT_FILES); \
 	do \
 		ln -rvsf $(PWD)/$$file $(PREFIX)/$$file; \
-	done 
+	done
 
 install-gnupg:
 	mkdir -pv $(PREFIX)/.gnupg

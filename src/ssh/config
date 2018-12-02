@@ -7,16 +7,21 @@ Host aphrodite
 Host ariadne
     HostName ariadne.olympus.drbr.org
 
-
 Host calliope
     HostName calliope.olympus.drbr.org
     ForwardX11 yes
+
+Host defiance
+     HostName defiance.swg.home
 
 Host demeter
     HostName demeter.olympus.drbr.org
 
 Host dionysus
     HostName dionysus.olympus.drbr.org
+
+Host endeavor
+     HostName endeavor.swg.home
 
 Host git
      IdentityFile ~/.ssh/id_ed25519
@@ -35,6 +40,12 @@ Host hera
 Host hestia
     HostName hestia.olympus.drbr.org
 
+Host independence
+     HostName independence.swg.home
+
+Host liberty
+     HostName liberty.swg.home
+
 Host mnemosyne
     HostName mnemosyne.olympus.drbr.org
     ForwardX11 yes
@@ -44,6 +55,9 @@ Host morpheus
 
 Host orion
     HostName orion.olympus.drbr.org
+
+Host redemption
+     Hostname redemption.swg.home
 
 Host telete
     HostName telete.olympus.drbr.org

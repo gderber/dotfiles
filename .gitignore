@@ -46,8 +46,9 @@ tramp
 .\#*
 .*~
 *_flymake.*  # flymake-mode
-src/emacs.d/elpa/        # elpa packages
-src/emacs.d/elpa/**        # elpa packages
+src/emacs.d/spacemacs/
+src/emacs.d/spacemacs/**
+src/emacs.d/places
 
 *.rel        # reftex files
 /auto/       # AUCTeX auto folder
@@ -55,7 +56,7 @@ flycheck_*.el  # Flycheck
 /server/   # server auth directory
 .projectile # projectiles files
 .dir-locals.el  # directory configuration
-**/emacs.d/places
+
 
 # Org-mode
 .org-id-locations
