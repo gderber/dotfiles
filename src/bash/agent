@@ -1,6 +1,8 @@
 #!/bin/bash
 
+
 function start_agents () {
+    unset KEYS
     if [[ -n "$DESKTOP_SESSION" ]]; then
         eval $(gnome-keyring-daemon --start)
         export SSH_AUTH_SOCK
@@ -20,8 +22,7 @@ function start_agents () {
             keyVal=$(gpg -K | awk '/sec/{if (length($2) > 0) print $2}'|sed 's|.*/0x||' ) &&
                 [[ -n ${keyVal} ]] &&
                 KEYS="${KEYS}  ${keyVal}" &&
-	    echo ${KEYS} &&
-            eval "$(keychain --clear --eval --agents gpg,ssh ${KEYS})"
+            eval "$(keychain --eval --agents gpg,ssh ${KEYS})"
         fi
     fi
 }
