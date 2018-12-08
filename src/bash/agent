@@ -9,20 +9,28 @@ function start_agents () {
     else
         # SSH Agent
         if command -v keychain 2&> /dev/null; then
-            cd ${HOME}/.ssh/
-            SSHKEYS=$(ls *.pub|cut -d. -f1|cut -d- -f1|sort -u)
-            cd ${HOME}
-            for key in ${SSHKEYS}
-            do
-                [[ -f .ssh/$key ]] &&
-                    KEYS="${KEYS} ${key}" &&
-                    [[ "${key}" == "id_dsa" ]] &&
-                    echo "Warning you are still using dsa"
-            done
+            # Id GPG Keys
             keyVal=$(gpg -K | awk '/sec/{if (length($2) > 0) print $2}'|sed 's|.*/0x||' ) &&
                 [[ -n ${keyVal} ]] &&
-                KEYS="${KEYS}  ${keyVal}" &&
-            eval "$(keychain --eval --agents gpg,ssh ${KEYS})"
+                KEYS="${KEYS} ${keyVal}" &&
+                cd ${HOME}/.ssh/ &&
+                # Id SSH keys
+                SSHKEYS=$(ls *.pub|cut -d. -f1|cut -d- -f1|sort -u) &&
+                cd ${HOME} &&
+                for key in ${SSHKEYS}
+                do
+                    [[ -f .ssh/$key ]] &&
+                        KEYS="${KEYS} ${key}" &&
+                        [[ "${key}" == "id_dsa" ]] &&
+                        echo "Warning you are still using dsa"
+                done
+
+                eval "$(keychain --eval --agents gpg,ssh ${KEYS})"
+
+            # Clear KEYS
+            unset KEYS
+            
+            #eval "$(keychain --eval --agents ssh ${KEYS})"
         fi
     fi
 }
