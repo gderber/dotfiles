@@ -90,7 +90,7 @@
 (load (expand-file-name "~/.emacs.d/highlight-chars"))
 (load (expand-file-name "~/.emacs.d/fill-column-indicator"))
 (load (expand-file-name "~/.emacs.d/header2"))
-
+(set-language-environment "UTF-8")
 
 
 ;; (load (expand-file-name "~/.emacs.d/mode-line"))
@@ -101,7 +101,7 @@
 
 ;; Space emacs
 (setq spacemacs-start-directory "~/.emacs.d/spacemacs/")
-;(load-file (concat spacemacs-start-directory "init.el"))
+(load-file (concat spacemacs-start-directory "init.el"))
 
 ;;(cond ((eq system-type 'windows-nt)
        ;; Windows-specific code goes here.

@@ -8,7 +8,7 @@
 #
 # ---------------------------------------------------------------------
 NAME=dotfiles
-VERSION=0.0.3
+VERSION=0.0.4
 DESCRIPTION="My dotfiles"
 
 BASH_FILES=bash bashrc bash_profile bash_logout
@@ -21,6 +21,8 @@ MISC_FILES=kshrc netrc profile screenrc toprc wgetrc
 PYTHON_FILES=pylintrc pythonrc
 SSH_FILES=config
 X_FILES=Xdefaults xscreensaver
+
+F1_EXISTS=$(shell [ -d $(PREFIX)/.emacs.d/spacemacs ] && echo 1 || echo 0 )
 
 DOC_FILES=*.md *.txt
 
@@ -88,15 +90,12 @@ install-beets:
 	done
 
 install-emacs:
-	@for file in $(EMACS_FILES); \
-	do \
-		ln -nrvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
-	done \
-	@if [ ! -d $(PREFIX)/.emacs.d/spacemacs ]; then \
-		cd $(PREFIX)/.emacs.d/ \
-		git clone https://github.com/syl20bnr/spacemacs.git \
-		cd $(HOME) \
-	fi
+	@$(foreach f, $(EMACS_FILES), [ -f $(HOME)/$f ] || ln -n -r -v -s -f $(PWD)/src/$f $(PREFIX)/.$f ; )
+#	ifeq ( $(F1_EXISTS) , 1 )
+#		git clone https://github.com/syl20bnr/spacemacs.git $(HOME)/emacs.d/spacemacs
+#       else
+#		( cd $(PREFIX)/.emacs.d/spacemacs; git pull origin master );
+#	endif
 
 install-git:
 	@for file in $(GIT_FILES); \
