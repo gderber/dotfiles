@@ -12,10 +12,14 @@ function getsshkey () {
     SSHKEYS=$(ls *.pub |
                   cut -d. -f1 |
                   cut -d- -f1 |
-                  cut -d_ -f1 |
+                  cut -d_ -f2 |
                   sort -u) &&
+    echo ${SSHKEYS}
     for key in ${SSHKEYS}
     do
+        [[ "${key}" == "gpg"]] &&
+            user=$(echo ${HOME}| sed 's|.*/||') &&
+            key=${user}_${key}
         [[ -f .ssh/$key ]] &&
             KEYS="${KEYS} ${key}" &&
             [[ "${key}" == "id_dsa" ]] &&
@@ -42,7 +46,7 @@ function start_agents () {
             # Clear KEYS
             unset KEYS &&
                 # ID SSH Keys
-                SSHKEYS=$(getsshkeys) &&
+                SSHKEYS=$(getsshkey) &&
                 [[ -n ${SSHKEYS} ]] &&
                 KEYS="${KEYS} ${SSHKEYS}" &&
                 eval "$(keychain --eval --agents ssh ${KEYS})"
