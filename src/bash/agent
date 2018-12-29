@@ -7,6 +7,24 @@ function getgpgkey () {
     echo -ne ${keyVal}
 }
 
+function getsshkey () {
+    cd ${HOME}/.ssh/ &&
+    SSHKEYS=$(ls *.pub |
+                  cut -d. -f1 |
+                  cut -d- -f1 |
+                  cut -d_ -f1 |
+                  sort -u) &&
+    for key in ${SSHKEYS}
+    do
+        [[ -f .ssh/$key ]] &&
+            KEYS="${KEYS} ${key}" &&
+            [[ "${key}" == "id_dsa" ]] &&
+            echo "Warning you are still using dsa"
+    done
+    echo -ne ${KEYS}
+
+}
+
 function start_agents () {
     unset KEYS
     if [[ -n "$DESKTOP_SESSION" ]]; then
@@ -15,34 +33,19 @@ function start_agents () {
     else
         # SSH Agent
         if command -v keychain 2&> /dev/null; then
-            # Id GPG Keys
-            keyVal=$(gpg -K |
-                         awk '/sec/{if (length($2) > 0) print $2}' |
-                         sed 's|.*/0x||' ) &&
+            # ID GPG Keys
+            keyVal=$(getgpgkey) &&
                 [[ -n ${keyVal} ]] &&
                 KEYS="${KEYS} ${keyVal}" &&
-                cd ${HOME}/.ssh/ &&
-                # Id SSH keys
-                SSHKEYS=$(ls *.pub |
-                              cut -d. -f1 |
-                              cut -d- -f1 |
-                              cut -d_ -f1 |
-                              sort -u) &&
-                cd ${HOME} &&
-                for key in ${SSHKEYS}
-                do
-                    [[ -f .ssh/$key ]] &&
-                        KEYS="${KEYS} ${key}" &&
-                        [[ "${key}" == "id_dsa" ]] &&
-                        echo "Warning you are still using dsa"
-                done
-
-            eval "$(keychain --eval --agents gpg,ssh ${KEYS})"
+                eval "$(keychain --eval --agents gpg ${KEYS})"
 
             # Clear KEYS
-            unset KEYS
-
-            #eval "$(keychain --eval --agents ssh ${KEYS})"
+            unset KEYS &&
+                # ID SSH Keys
+                SSHKEYS=$(getsshkeys) &&
+                [[ -n ${SSHKEYS} ]] &&
+                KEYS="${KEYS} ${SSHKEYS}" &&
+                eval "$(keychain --eval --agents ssh ${KEYS})"
         fi
     fi
 }
