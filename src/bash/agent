@@ -1,6 +1,7 @@
 #!/bin/bash
 
 function getgpgkey () {
+    local keyVal
     keyVal=$(gpg -K |
           awk '/sec/{if (length($2) > 0) print $2}' |
           sed 's|.*/0x||' )
@@ -8,48 +9,53 @@ function getgpgkey () {
 }
 
 function getsshkey () {
+    local sshKeys
+    local Keys
+
     cd ${HOME}/.ssh/ &&
-    SSHKEYS=$(ls *.pub |
-                  cut -d. -f1 |
-                  cut -d- -f1 |
-                  cut -d_ -f2 |
-                  sort -u) &&
-    echo ${SSHKEYS}
-    for key in ${SSHKEYS}
+        sshKeys=$(ls *.pub |
+                      cut -d. -f1 |
+                      cut -d- -f1 |
+                      cut -d_ -f2 |
+                      sort -u) &&
+        cd ${HOME}
+
+    for key in ${sshKeys}
     do
-        [[ "${key}" == "gpg"]] &&
-            user=$(echo ${HOME}| sed 's|.*/||') &&
-            key=${user}_${key}
-        [[ -f .ssh/$key ]] &&
-            KEYS="${KEYS} ${key}" &&
-            [[ "${key}" == "id_dsa" ]] &&
-            echo "Warning you are still using dsa"
+        if [[ "${key}" != "gpg" ]]; then
+            if [[ -f ${HOME}/.ssh/id_${key} ]]; then
+                if [[ -z ${Keys} ]]; then
+                    Keys="id_${key}"
+                else
+                    Keys="${Keys} id_${key}"
+                fi
+                [[ "${key}" == "dsa" ]] &&
+                    echo "Warning: you are still using dsa keys."
+            fi
+        fi
     done
-    echo -ne ${KEYS}
+    echo -ne ${Keys}
 
 }
 
 function start_agents () {
-    unset KEYS
+    local keyVal
+    local sshKeys
+
     if [[ -n "$DESKTOP_SESSION" ]]; then
         eval $(gnome-keyring-daemon --start)
         export SSH_AUTH_SOCK
     else
-        # SSH Agent
-        if command -v keychain 2&> /dev/null; then
+        if command -v keychain > /dev/null 2>&1; then
             # ID GPG Keys
             keyVal=$(getgpgkey) &&
                 [[ -n ${keyVal} ]] &&
-                KEYS="${KEYS} ${keyVal}" &&
-                eval "$(keychain --eval --agents gpg ${KEYS})"
+                eval "$(keychain --eval --agents gpg ${keyVal})"
 
-            # Clear KEYS
-            unset KEYS &&
-                # ID SSH Keys
-                SSHKEYS=$(getsshkey) &&
-                [[ -n ${SSHKEYS} ]] &&
-                KEYS="${KEYS} ${SSHKEYS}" &&
-                eval "$(keychain --eval --agents ssh ${KEYS})"
+            # ID SSH Keys
+            sshKeys=$(getsshkey) &&
+                [[ -n ${sshKeys} ]] &&
+                eval "$(keychain --eval --agents ssh ${sshKeys})"
         fi
     fi
 }
