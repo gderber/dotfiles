@@ -12,22 +12,22 @@
 
 ## Description
 These are my configuration files for:
-- [BASH](docs/BASH.md)
+### [BASH](docs/BASH.md)
 ...
 
-- [Emacs](docs/EMACS.md)
+### [Emacs](docs/EMACS.md)
 ...
 
-- [Wget](docs/WGET.md)
+### [Wget](docs/WGET.md)
 ...
 
-- [Screen](docs/SCREEN.md)
+### [Screen](docs/SCREEN.md)
 ...
 
-- [Gnupg]()
+### [Gnupg]()
 ...
 
-- [SSH]()
+### [SSH]()
 ...
 
 
@@ -43,12 +43,12 @@ These are my configuration files for:
 - [Beets](http://beets.io)
 - [Gnu Make]()
 
-#### Method 1
+### Method 1
 #. git cl https://github.com/gderber/dotfiles.sh
 #. cd dotfiles
 #. Make install
 
-#### Method 2
+### Method 2
 #. curl https://gderber.github.io/dotfiles.sh | sh
 
 ## Usage
@@ -57,10 +57,10 @@ These are my configuration files for:
 
 
 
-### Altertatives
+### Alternatives
 #### Bash
-# http://tldp.org/LDP/abs/html/sample-bashrc.html
-# By Emmanuel Rouat [no-email]
+#. http://tldp.org/LDP/abs/html/sample-bashrc.html
+#. By Emmanuel Rouat [no-email]
 
 # https://github.com/demure/dotfiles/blob/master/subbash/sourcer
 
