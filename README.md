@@ -63,13 +63,9 @@ $ Make install
 
 ### Alternatives
 #### Bash
-#. http://tldp.org/LDP/abs/html/sample-bashrc.html
-#. By Emmanuel Rouat [no-email]
-
-# https://github.com/demure/dotfiles/blob/master/subbash/sourcer
-
-# https://github.com/gmarik/dotfiles/blob/master/.bash/bashrc
-
+- [Emmanuel Rouat](http://tldp.org/LDP/abs/html/sample-bashrc.html)
+- [Demure](https://github.com/demure/dotfiles/blob/master/subbash/sourcer)
+- [gmarik](https://github.com/gmarik/dotfiles/blob/master/.bash/bashrc)
 
 ### Projects using this library
 
