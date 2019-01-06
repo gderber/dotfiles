@@ -1,5 +1,4 @@
 # Dotfiles
-- - - -
 
 - [Description](#description)
 - [Installation](#installation)
