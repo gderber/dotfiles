@@ -30,6 +30,6 @@ FSLINTPATH="${FSLINT}:${FSLINT}/fstool"
 
 if [[ -n $SSH_CLIENT ]] || [[ -n $SSH_TTY ]]; then
     if [[ ! $TERM =~ screen ]]; then
-	screen -Rd
+        screen -Rd
     fi
 fi
