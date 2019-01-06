@@ -1,12 +1,50 @@
-# ----------------------------------------------------------------------
-#
-# Makefile for dotfiles
-#
-# By Geoff S Derber
-#
-#
-#
-# ---------------------------------------------------------------------
+### Makefile ---
+##
+## Filename: Makefile
+## Description: Installs / Uninstalls dotfiles in ${HOME}
+## Author: Geoff S Derber
+## Maintainer: 
+## Created: Sun Jan  6 12:25:15 2019 (-0500)
+## Version: 0.0.4
+## Package-Requires: ()
+## Last-Updated: Sun Jan  6 12:45:38 2019 (-0500)
+##           By: Geoff S Derber
+##     Update #: 8
+## URL: https://github.com/gderber/dotfiles
+## Doc URL: https://github.com/gderber/dotfiles
+## Keywords: dotfiles
+## Compatibility: 
+## 
+######################################################################
+## 
+### Commentary: 
+## 
+## 
+## 
+######################################################################
+## 
+### Change Log:
+## 
+## 
+######################################################################
+## 
+## DO WHAT THE FUCK YOU WANT TO BUT IT'S NOT MY FAULT PUBLIC LICENSE TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+##
+## 0. You just DO WHAT THE FUCK YOU WANT TO.
+##
+## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+## IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+## AUTHOR(S), CREATOR(S), DEVELOPER(S), OR DISTRIBUTOR(S) BE LIABLE FOR ANY CLAIM,
+## DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+## ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+## DEALINGS IN THE SOFTWARE.
+
+######################################################################
+## 
+### Code:
+
+
 NAME=dotfiles
 VERSION=0.0.4
 DESCRIPTION="My dotfiles"
@@ -33,6 +71,9 @@ SIG=$(PKG_DIR)/$(PKG_NAME).asc
 
 PREFIX=~
 DOC_DIR=$(PREFIX)/share/doc/$(PKG_NAME)
+
+USER=$(shell echo ${HOME}| sed 's|.*/||')
+
 
 pkg:
 	mkdir -p $(PKG_DIR)
@@ -82,6 +123,9 @@ install-bash:
 		ln -nrvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
 	done
 
+# Todo: a setup check if beets installed
+# If beets exists, ...
+# Else do not install
 install-beets:
 	mkdir -pv $(PREFIX)/.config/beets/
 	@for file in $(BEETS_FILES); \
@@ -147,3 +191,6 @@ install-backup:
 
 .PHONY: build sign clean test tag release install uninstall all
 
+
+######################################################################
+### Makefile ends here
