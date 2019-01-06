@@ -44,14 +44,16 @@ These are my configuration files for:
 - [Gnu Make]()
 
 ### Method 1
-1.
-   ```$ git cl https://github.com/gderber/dotfiles.sh```
-2. ```$ cd dotfiles```
-3. ```$ Make install```
+```
+$ git cl https://github.com/gderber/dotfiles.sh
+$ cd dotfiles
+$ Make install
+```
 
 ### Method 2
-1.
-   ```$ curl https://gderber.github.io/dotfiles.sh | sh```
+ ```
+ $ curl https://gderber.github.io/dotfiles.sh | sh
+ ```
 
 ## Usage
 
