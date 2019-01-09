@@ -15,6 +15,18 @@
 #
 #####################################################################
 
+# ===============================================================
+# VARIABLES - Boolean values (on/off)
+# ===============================================================
+  autodetach            on              # default: on
+  crlf                  off             # default: off
+  deflogin              off             # default: on
+# defsilence            off             # default: off
+  hardcopy_append       on              # default: off
+  nethack               on              # default: off
+#  startup_message       off             # default: on   # Display the copyright page
+  vbell                 off             # default: ???
+
 
 # ===============================================================
 # ESCAPE - the COMMAND CHARACTER
@@ -24,7 +36,8 @@
 
 termcapinfo xterm-255color|xterm-color|screen-256color ti@:te@
 term screen-256color
-shell -$SHELL
+# Make the shell in every window a login shell
+#shell -$SHELL
 setenv SSH_AUTH_SOCK "/tmp/ssh-agent-$USER"
 
 # ===============================================================
@@ -49,18 +62,6 @@ screen  -t bash      8
 screen  -t bash      9
 screen  -t EDIT      10 emacs -nw
 select 1
-
-# ===============================================================
-# VARIABLES - Boolean values (on/off)
-# ===============================================================
-  autodetach            on              # default: on
-  crlf                  off             # default: off
-# deflogin              off             # default: on
-# defsilence            off             # default: off
-  hardcopy_append       on              # default: off
-  nethack               on              # default: off
-#  startup_message       off             # default: on   # Display the copyright page
-  vbell                 off             # default: ???
 
 #
 # ===============================================================
