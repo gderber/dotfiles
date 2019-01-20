@@ -1,17 +1,59 @@
-Include ~/.ssh/config.d/olympus
-Include ~/.ssh/config.d/swg
-Include ~/.ssh/config.d/drbr
-Include ~/.ssh/config.d/hm
+Host apollo
+    HostName apollo.olympus.drbr.org
 
-Host github.com
-    IdentityFile ~/.ssh/id_ed25519
+Host aphrodite
+    HostName aphrodite.olympus.drbr.org
 
-Host *
-    StrictHostKeyChecking ask
-    UpdateHostKeys ask
-    SendEnv WINDOW
-    SendEnv LANG LC_*
+Host ariadne
+    HostName ariadne.olympus.drbr.org
 
+Host calliope
+    HostName calliope.olympus.drbr.org
+    ForwardX11 yes
+
+Host demeter
+    HostName demeter.olympus.drbr.org
+
+Host dionysus
+    HostName dionysus.olympus.drbr.org
+
+Host git
+     IdentityFile ~/.ssh/id_ed25519
+
+Host hera
+    HostName hera.olympus.drbr.org
+
+Host hestia
+    HostName hestia.olympus.drbr.org
+
+Host mnemosyne
+    HostName mnemosyne.olympus.drbr.org
+    ForwardX11 yes
+
+Host morpheus
+    HostName morpheus.olympus.drbr.org
+
+Host orion
+    HostName orion.olympus.drbr.org
+
+Host telete
+    HostName telete.olympus.drbr.org
+
+Host zeus
+    HostName zeus.olympus.drbr.org
+
+Host *.olympus.drbr.org
+    # Forward agent for pushing your ssh-agent. You will need to add your ssh key
+    # to the authorized_keys file on the remote system.
+    # Normally not a great idea to make this a global always on option unless you
+    # are sure the remote systems are secure.
+    ForwardAgent yes
+
+    GSSAPIAuthentication yes
+    GSSAPIKeyExchange yes
+    GSSAPIRenewalForcesRekey yes
+    GSSAPITrustDns yes
+    GSSAPIDelegateCredentials yes
 
     # All Options
     # Can speed up logins to some servers
@@ -19,9 +61,9 @@ Host *
     #GSSAPIKeyExchange no
     #ChallengeResponseAuthentication no
     # HashKnownHosts no
-
+    
     #Protocol 2
-
+    
     # Some servers will force log out if you haven't typed anything in a
     # while. This means send a packet every 60 seconds, after 3 of those
     # without a response then drop the connection.

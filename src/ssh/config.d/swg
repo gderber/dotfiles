@@ -1,0 +1,21 @@
+Host defiance
+     HostName defiance.swg.home
+
+Host endeavor
+     HostName endeavor.swg.home
+
+Host independence
+     HostName independence.swg.home
+
+Host liberty
+     HostName liberty.swg.home
+
+Host redemption
+     Hostname redemption.swg.home
+
+Host *.swg.home
+    # Forward agent for pushing your ssh-agent. You will need to add your ssh key
+    # to the authorized_keys file on the remote system.
+    # Normally not a great idea to make this a global always on option unless you
+    # are sure the remote systems are secure.
+    ForwardAgent yes

@@ -9,3 +9,8 @@
 
 # Automatically normalize line endings for all text-based files
 * text=auto
+ssh/config.d/olympus filter=git-crypt diff=git-crypt
+ssh/config.d/drbr filter=git-crypt diff=git-crypt
+ssh/config.d/swg filter=git-crypt diff=git-crypt
+ssh/config.d/hm filter=git-crypt diff=git-crypt
+#pam.d/passwd !filter=git-crypt !diff=git-crypt
