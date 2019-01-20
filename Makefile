@@ -7,9 +7,9 @@
 ## Created: Sun Jan  6 12:25:15 2019 (-0500)
 ## Version: 0.0.4
 ## Package-Requires: ()
-## Last-Updated: Sun Jan  6 12:45:38 2019 (-0500)
+## Last-Updated: Sun Jan 20 13:46:01 2019 (-0500)
 ##           By: Geoff S Derber
-##     Update #: 8
+##     Update #: 10
 ## URL: https://github.com/gderber/dotfiles
 ## Doc URL: https://github.com/gderber/dotfiles
 ## Keywords: dotfiles
@@ -28,7 +28,8 @@
 ## 
 ######################################################################
 ## 
-## DO WHAT THE FUCK YOU WANT TO BUT IT'S NOT MY FAULT PUBLIC LICENSE TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+## DO WHAT THE FUCK YOU WANT TO BUT IT'S NOT MY FAULT PUBLIC LICENSE TERMS AND
+## CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
 ##
 ## 0. You just DO WHAT THE FUCK YOU WANT TO.
 ##
@@ -57,7 +58,7 @@ GNUPG_FILES=gpg-agent.conf gpg.conf
 INPUT_FILES=editrc inputrc
 MISC_FILES=kshrc netrc profile screenrc toprc wgetrc
 PYTHON_FILES=pylintrc pythonrc
-SSH_FILES=config
+SSH_FILES=config config.d
 X_FILES=Xdefaults xscreensaver
 
 F1_EXISTS=$(shell [ -d $(PREFIX)/.emacs.d/spacemacs ] && echo 1 || echo 0 )
@@ -168,11 +169,10 @@ install-misc:
 	done
 
 install-ssh:
-	mkdir -p $(PREFIX)/.ssh
+	mkdir -pv $(PREFIX)/.ssh
 	chmod 700 $(PREFIX)/.ssh
 	@for file in $(SSH_FILES); \
 	do \
-		mkdir -pv $(PREFIX)/.ssh/; \
 		ln -rvsf $(PWD)/src/ssh/$$file $(PREFIX)/.ssh/$$file; \
 	done
 
