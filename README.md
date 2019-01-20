@@ -24,10 +24,10 @@ These are my configuration files for:
 ### [Screen](docs/SCREEN.md)
 ...
 
-### [Gnupg]()
+### [Gnupg](docs/GnuPG.md)
 ...
 
-### [SSH]()
+### [SSH](docs/SSH.md)
 ...
 
 

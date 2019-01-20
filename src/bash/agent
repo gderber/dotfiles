@@ -46,33 +46,47 @@ function getsshkey () {
 
 }
 
-function start_agents () {
-    local keyVal
+function gnome_agents () {
+    eval $(gnome-keyring-daemon --start)
+    export SSH_AUTH_SOCK
+}
+
+function keychain_agents () {
     local sshKeys
+    local keyVal
+    if command -v keychain > /dev/null 2>&1; then
+        # ID GPG Keys
+        keyVal=$(getgpgkey) &&
+            [[ -n ${keyVal} ]] &&
+            if [[ ! ${TERM} =~ screen ]]; then
+                eval "$(keychain --clear --systemd --eval --agents gpg ${keyVal})"
+                if [ -n "$GPG_AGENT_INFO" ]; then
+                    unset SSH_AUTH_SOCK
+                    SSH_AUTH_SOCK="${GPG_AGENT_INFO%%:*}.ssh"
+                    if [ -e "$SSH_AUTH_SOCK" ]; then
+                        export SSH_AUTH_SOCK
+                    fi
+                fi
+            else
+                eval "$(keychain --eval --agents gpg ${keyVal})"
+            fi
 
+        # ID SSH Keys
+        sshKeys=$(getsshkey) &&
+            [[ -n ${sshKeys} ]] &&
+            if [[ ! ${TERM} =~ screen ]]; then
+                eval "$(keychain --clear --eval --agents ssh ${sshKeys})"
+            else
+                eval "$(keychain --eval --agents ssh ${sshKeys})"
+            fi
+    fi
+}
+
+function start_agents () {
     if [[ -n "$DESKTOP_SESSION" ]]; then
-        eval $(gnome-keyring-daemon --start)
-        export SSH_AUTH_SOCK
+        gnome_agents
     else
-        if command -v keychain > /dev/null 2>&1; then
-            # ID GPG Keys
-            keyVal=$(getgpgkey) &&
-                [[ -n ${keyVal} ]] &&
-                if [[ ! ${TERM} =~ screen ]]; then
-                    eval "$(keychain --clear --eval --agents gpg ${keyVal})"
-                else
-                    eval "$(keychain --eval --agents gpg ${keyVal})"
-                fi
-
-            # ID SSH Keys
-            sshKeys=$(getsshkey) &&
-                [[ -n ${sshKeys} ]] &&
-                if [[ ! ${TERM} =~ screen ]]; then
-                    eval "$(keychain --clear --eval --agents ssh ${sshKeys})"
-                else
-                    eval "$(keychain --eval --agents ssh ${sshKeys})"
-                fi
-        fi
+        keychain_agents
     fi
 }
 
