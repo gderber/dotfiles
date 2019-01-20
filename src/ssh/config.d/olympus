@@ -20,6 +20,11 @@ Host dionysus
 Host git
      IdentityFile ~/.ssh/id_ed25519
 
+Host ha
+    HostName hestia.olympus.drbr.org
+    User homeassistant
+    IdentityFile ~/.ssh/id_ed25519
+
 Host hera
     HostName hera.olympus.drbr.org
 
