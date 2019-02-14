@@ -17,8 +17,8 @@ Host demeter
 Host dionysus
     HostName dionysus.olympus.drbr.org
 
-Host git
-     IdentityFile ~/.ssh/id_ed25519
+#Host git
+     #IdentityFile ~/.ssh/id_ed25519
 
 Host ha
     HostName hestia.olympus.drbr.org
