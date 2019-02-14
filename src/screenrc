@@ -38,7 +38,6 @@ termcapinfo xterm-255color|xterm-color|screen-256color ti@:te@
 term screen-256color
 # Make the shell in every window a login shell
 #shell -$SHELL
-setenv SSH_AUTH_SOCK "/tmp/ssh-agent-$USER"
 
 # ===============================================================
 # STARTUP of programs in an extra window:
@@ -60,7 +59,7 @@ screen  -t bash      6
 screen  -t bash      7
 screen  -t bash      8
 screen  -t bash      9
-screen  -t EDIT      10 emacs -nw
+screen  -t EDIT      10 emacs --fg-daemon
 select 1
 
 #

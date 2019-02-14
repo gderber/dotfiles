@@ -60,25 +60,20 @@ function keychain_agents () {
             [[ -n ${keyVal} ]] &&
             if [[ ! ${TERM} =~ screen ]]; then
                 eval "$(keychain --clear --systemd --eval --agents gpg ${keyVal})"
-                if [ -n "$GPG_AGENT_INFO" ]; then
-                    unset SSH_AUTH_SOCK
-                    SSH_AUTH_SOCK="${GPG_AGENT_INFO%%:*}.ssh"
-                    if [ -e "$SSH_AUTH_SOCK" ]; then
-                        export SSH_AUTH_SOCK
-                    fi
-                fi
             else
                 eval "$(keychain --eval --agents gpg ${keyVal})"
             fi
-
+        export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+        gpgconf --launch gpg-agent
+        
         # ID SSH Keys
-        sshKeys=$(getsshkey) &&
-            [[ -n ${sshKeys} ]] &&
-            if [[ ! ${TERM} =~ screen ]]; then
-                eval "$(keychain --clear --eval --agents ssh ${sshKeys})"
-            else
-                eval "$(keychain --eval --agents ssh ${sshKeys})"
-            fi
+#        sshKeys=$(getsshkey) &&
+#            [[ -n ${sshKeys} ]] &&
+#            if [[ ! ${TERM} =~ screen ]]; then
+#                eval "$(keychain --clear --eval --agents ssh ${sshKeys})"
+#            else
+#                eval "$(keychain --eval --agents ssh ${sshKeys})"
+#            fi
     fi
 }
 
