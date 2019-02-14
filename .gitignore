@@ -49,6 +49,8 @@ tramp
 src/emacs.d/spacemacs/
 src/emacs.d/spacemacs/**
 src/emacs.d/places
+src/emacs.d/elpa/**
+
 
 *.rel        # reftex files
 /auto/       # AUCTeX auto folder
