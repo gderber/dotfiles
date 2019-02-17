@@ -34,7 +34,6 @@ Host hestia
 Host hydra
     HostName hydra.olympus.home
     User VNs6XqNc7
-    IdentityFile ~/.ssh/id_rsa
 
 Host mnemosyne
     HostName mnemosyne.olympus.drbr.org
