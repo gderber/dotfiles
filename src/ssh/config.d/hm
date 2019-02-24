@@ -4,4 +4,3 @@ Host hm
     StrictHostKeyChecking yes
     VerifyHostKeyDNS ask
     VisualHostKey yes
-    IdentityFile ~/.ssh/id_rsa

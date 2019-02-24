@@ -23,7 +23,6 @@ Host dionysus
 Host ha
     HostName hestia.olympus.drbr.org
     User homeassistant
-    IdentityFile ~/.ssh/id_ed25519
 
 Host hera
     HostName hera.olympus.drbr.org
@@ -70,9 +69,9 @@ Host *.olympus.drbr.org
     #GSSAPIKeyExchange no
     #ChallengeResponseAuthentication no
     # HashKnownHosts no
-    
+
     #Protocol 2
-    
+
     # Some servers will force log out if you haven't typed anything in a
     # while. This means send a packet every 60 seconds, after 3 of those
     # without a response then drop the connection.

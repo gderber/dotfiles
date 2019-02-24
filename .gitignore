@@ -46,8 +46,6 @@ tramp
 .\#*
 .*~
 *_flymake.*  # flymake-mode
-src/emacs.d/spacemacs/
-src/emacs.d/spacemacs/**
 src/emacs.d/places
 src/emacs.d/elpa/**
 
