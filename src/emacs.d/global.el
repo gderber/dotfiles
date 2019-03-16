@@ -84,6 +84,7 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(column-number-mode t)
+ '(cookie-file "/usr/share/games/fortunes/startrek")
  '(line-number-mode t)
  '(display-battery-mode t)
  '(display-time-24hr-format t)
