@@ -84,14 +84,19 @@
 ;; Provide a useful error trace if loading this monster fails.
 (setq debug-on-error t)
 
+;; External Packages
+;;(load (expand-file-name "~/.emacs.d/epkgs/password-store/contrib/emacs/password-store"))
+(load (expand-file-name "~/.emacs.d/epkgs/emacswiki/header2"))
+(load (expand-file-name "~/.emacs.d/epkgs/emacswiki/fill-column-indicator"))
+(load (expand-file-name "~/.emacs.d/epkgs/emacswiki/highlight-chars"))
+(load (expand-file-name "~/.emacs.d/epkgs/emacswiki/column-marker"))
+
+;; Configuration
 (load (expand-file-name "~/.emacs.d/global"))
 (load (expand-file-name "~/.emacs.d/filetypes"))
-(load (expand-file-name "~/.emacs.d/column-marker"))
-(load (expand-file-name "~/.emacs.d/highlight-chars"))
-(load (expand-file-name "~/.emacs.d/fill-column-indicator"))
-(load (expand-file-name "~/.emacs.d/header2"))
-(set-language-environment "UTF-8")
 
+;;
+(set-language-environment "UTF-8")
 
 ;; (load (expand-file-name "~/.emacs.d/mode-line"))
 

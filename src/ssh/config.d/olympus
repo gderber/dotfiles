@@ -30,10 +30,6 @@ Host hera
 Host hestia
     HostName hestia.olympus.drbr.org
 
-Host hydra
-    HostName hydra.olympus.home
-    User VNs6XqNc7
-
 Host mnemosyne
     HostName mnemosyne.olympus.drbr.org
     ForwardX11 yes

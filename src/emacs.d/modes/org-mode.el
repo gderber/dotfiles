@@ -7,9 +7,9 @@
 ;; Created: Wed Sep  5 15:25:52 2018 (-0400)
 ;; Version: 
 ;; Package-Requires: ()
-;; Last-Updated: Wed Sep  5 15:26:12 2018 (-0400)
+;; Last-Updated: Fri Mar 15 13:37:00 2019 (-0400)
 ;;           By: Geoff S Derber
-;;     Update #: 1
+;;     Update #: 2
 ;; URL: 
 ;; Doc URL: 
 ;; Keywords: 
@@ -44,6 +44,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Code:
+(setq org-agenda-files
+      (file-expand-wildcards "~/Documents/Org/*"))
 
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
