@@ -79,7 +79,8 @@
 
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("marmalade" . "https://marmalade-repo.org/packages/")
-                         ("melpa" . "https://melpa.org/packages/")))
+                         ("melpa" . "https://melpa.org/packages/")
+                         ("orgmode" . "https://orgmode.org/elpa/")))
 
 ;; Provide a useful error trace if loading this monster fails.
 (setq debug-on-error t)
@@ -105,8 +106,8 @@
 (load (expand-file-name "~/.emacs.d/private"))
 
 ;; Space emacs
-;;(setq spacemacs-start-directory "~/.emacs.d/spacemacs/")
-;;(load-file (concat spacemacs-start-directory "init.el"))
+(setq spacemacs-start-directory "~/.emacs.d/spacemacs/")
+(load-file (concat spacemacs-start-directory "init.el"))
 
 ;;(cond ((eq system-type 'windows-nt)
        ;; Windows-specific code goes here.
