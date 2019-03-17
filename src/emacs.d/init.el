@@ -46,7 +46,7 @@
 ;; "Local Variables" section at the end of this file sets up outline mode
 ;; appropriately.
 ;;
-;; I place all my emacs packages in ~/.config/emacs
+;; I place all my emacs packages in ~/.emacs.d/epkgs/
 ;;
 ;;;;  Citations
 ;;
