@@ -128,7 +128,7 @@
  ;you can't do things like search the minibuffer history with M-s
  ;(cause that requires another minibuffer)
 (setq browse-url-browser-function          ;call netscape on URLs.
-      (quote browse-url-netscape))
+      (quote browse-url-firefox))
 ;;(setq browse-url-new-window-p t)           ;open a fresh netscape window.
 ;;(if (boundp 'running-xemacs)
 ;;    (progn
