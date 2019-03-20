@@ -126,3 +126,7 @@
 ;; Mode Specific Setups
 (load (expand-file-name "~/.emacs.d/modes/apache-mode"))
 (load (expand-file-name "~/.emacs.d/modes/org-mode"))
+
+;; Start an org-agenda mode buffer upon startup
+(add-hook 'after-init-hook (lambda() (org-agenda-list 14)))
+;;(add-hook 'after-init-hook (lambda() (initial-scratch-message my/fortune-scratch-message)))
