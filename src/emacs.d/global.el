@@ -1,7 +1,7 @@
 ;;(load "~/.config/emacs/highlight-chars")
 
 ;;;;; Global Functions ;;;;;
-(defun insert-date (prefix)
+(defun my/insert-date (prefix)
 ;;  "Insert the current date. With prefix-argument, use ISO format. With
 ;;   two prefix arguments, write out the day and month name."
   (interactive "P")
@@ -12,7 +12,7 @@
 	(system-time-locale "de_DE"))
     (insert (format-time-string format))))
 
-(defun dka-fix-comments ()
+(defun my/dka-fix-comments ()
   "Move through the entire buffer searching for comments that begin with
     \"//\" and fill them appropriately.  That means if comments start too
     close to the end of line (20 less than the fill-column) move the
@@ -34,6 +34,22 @@
       (if (and (not (end-of-line))
 	       (< fill-column (current-column)))
 	  (c-fill-paragraph)))))
+
+;; Supply random fortune cookie
+(defun my/fortune-scratch-message()
+  (interactive)
+  (let ((fortune
+         (when (executable-find "fortune")
+           (with-temp-buffer
+             (shell-command "fortune" t)
+             (while (not (eobp))
+               (insert ";;")
+               (forward-line))
+             (delete-trailing-whitespace (point-min) (point-max))
+             (concat (buffer-tring) "\n")))))
+    (if (called-interactivly-p 'any)
+        (insert fortune)
+      fortune)))
 
 
 ;;;;; Global Keybindings ;;;;;;
@@ -129,17 +145,21 @@
  ;(cause that requires another minibuffer)
 (setq browse-url-browser-function          ;call netscape on URLs.
       (quote browse-url-firefox))
+
 ;;(setq browse-url-new-window-p t)           ;open a fresh netscape window.
 ;;(if (boundp 'running-xemacs)
 ;;    (progn
 ;;      ;make the modeline time display show up on dark background.
- ;;     (setq display-time-display-time-foreground "tomato")
+;;      (setq display-time-display-time-foreground "tomato")
 ;;      ;I put my mail in a non-standard location.
 ;;      (setq display-time-mail-file (expand-file-name "~/nsmail/Inbox"))
 ;;      ; Make sure delete key always deletes forward in cc mode.
 ;;      (setq delete-key-deletes-forward t)
 ;;      )
 ;;)
+
+
+
 ;; Don't truncate lines in vertically split windows (suggested by Jeff).
 (setq truncate-partial-width-windows nil)
 
