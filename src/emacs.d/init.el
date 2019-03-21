@@ -80,18 +80,19 @@
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("marmalade" . "https://marmalade-repo.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")
+                         ("melpa-alt" . "http://melpa.milkbox.net/packages/")
                          ("orgmode" . "https://orgmode.org/elpa/")))
 
 ;; Provide a useful error trace if loading this monster fails.
 (setq debug-on-error t)
 
 ;; External Packages
-;;(load (expand-file-name "~/.emacs.d/epkgs/password-store/contrib/emacs/password-store"))
+(load (expand-file-name "~/.emacs.d/epkgs/password-store/contrib/emacs/password-store"))
 (load (expand-file-name "~/.emacs.d/epkgs/emacswiki/header2"))
 (load (expand-file-name "~/.emacs.d/epkgs/emacswiki/fill-column-indicator"))
 (load (expand-file-name "~/.emacs.d/epkgs/emacswiki/highlight-chars"))
 (load (expand-file-name "~/.emacs.d/epkgs/emacswiki/column-marker"))
-(load (expand-file-name "~/.emacs.d/epkgs/emacswiki/mediawiki"))
+(load (expand-file-name "~/.emacs.d/epkgs/mediawiki-el/mediawiki"))
 
 ;; Configuration
 (load (expand-file-name "~/.emacs.d/global"))
@@ -127,6 +128,7 @@
 ;; Mode Specific Setups
 (load (expand-file-name "~/.emacs.d/modes/apache-mode"))
 (load (expand-file-name "~/.emacs.d/modes/org-mode"))
+(load (expand-file-name "~/.emacs.d/modes/mediawiki-mode"))
 
 ;; Start an org-agenda mode buffer upon startup
 (add-hook 'after-init-hook (lambda() (org-agenda-list 14)))
