@@ -1,6 +1,3 @@
-[submodule "src/emacs.d/spacemacs"]
-  path = src/emacs.d/spacemacs
-  url = https://github.com/syl20bnr/spacemacs
 [submodule "src/emacs.d/epkgs/password-store"]
 	path = src/emacs.d/epkgs/password-store
 	url = https://git.zx2c4.com/password-store
