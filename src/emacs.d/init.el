@@ -91,6 +91,7 @@
 (load (expand-file-name "~/.emacs.d/epkgs/emacswiki/fill-column-indicator"))
 (load (expand-file-name "~/.emacs.d/epkgs/emacswiki/highlight-chars"))
 (load (expand-file-name "~/.emacs.d/epkgs/emacswiki/column-marker"))
+(load (expand-file-name "~/.emacs.d/epkgs/emacswiki/mediawiki"))
 
 ;; Configuration
 (load (expand-file-name "~/.emacs.d/global"))
