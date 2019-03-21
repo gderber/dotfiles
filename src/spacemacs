@@ -31,28 +31,97 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
-     markdown
-     ;; ----------------------------------------------------------------
-     ;; Example of useful layers you may want to use right away.
-     ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
-     ;; <M-m f e R> (Emacs style) to install them.
-     ;; ----------------------------------------------------------------
+     ;; 1. Chat
+     ;; erc
+     ;; jabber
+     ;; rcirc
+     ;; slack
+
+     ;; 2. Checkers
+     spell-checking
+     syntax-checking
+
+     ;; 3. Completion
+     auto-completion
      helm
-     ;; auto-completion
+     ;; ivy
+
+     ;; 4. Distributionss
+     ;; spacemacs
+     ;; spacemacs-base
+     ;; spacemacs-bootstrap
+
+     ;; 5. Emacs
      ;; better-defaults
+     ;; ibuffer
+     org
+
+     ;; 6. Email
+     gnus
+
+     ;; 7. Frameworks
+
+     ;; 8. Fun
+     games
+     xkcd
+
+     ;; 9. international
+     ;;(keyboard-layout :variables kl-layout 'dvorak)
+
+     ;; 10. Programming  and markup languages
+     c-c++
      emacs-lisp
-     ;; git
-     ;; markdown
-     ;; org
-     ;; (shell :variables
-     ;;        shell-default-height 30
-     ;;        shell-default-position 'bottom)
-     ;; spell-checking
-     ;; syntax-checking
-     ;; version-control
+     markdown
+     graphviz
+     html
+     lua
+     markdown
+     php
+     python
+     (shell :variables
+             shell-default-height 30
+             shell-default-position 'bottom
+             shell-default-shell 'ansi-term)
+     sql
+     yaml
+
+     ;; 11. Misc
+
+     ;; 12. Operating Systems
+
+     ;; 13. Pair Programing
+
+     ;; 14. Source Control
+     git
+     github
+     ;; perforce
+     version-control
+
+     ;; 15. Spacemacs distribution layers
+
+
+     ;; 16. Tags
+
+     ;; 17. Themes
+     colors
+     themes-megapack
+     theming
+
+     ;; 18. Tools
+     ansible
+     docker
+     finance
+     ;;(geolocation :variables
+     ;;             geolocation-enable-weather-forecast t)
+     nginx
+     pandoc
+     puppet
+     systemd
+     search-engine
      )
+
    ;; List of additional packages that will be installed without being
-   ;; wrapped in a layer. If you need some configuration for these
+   
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages '()
@@ -301,6 +370,9 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
+  (setq sentence-end-double-space t)
+  (global-git-commit-mode t)
+
   )
 
 (defun dotspacemacs/user-config ()
@@ -333,8 +405,9 @@ you should place your code here."
  '(line-number-mode t)
  '(package-selected-packages
    (quote
-    (mmm-mode markdown-toc markdown-mode gh-md which-key undo-tree hydra evil-unimpaired async aggressive-indent adaptive-wrap ace-window)))
+    (ztree mmm-mode markdown-toc markdown-mode gh-md which-key undo-tree hydra evil-unimpaired async aggressive-indent adaptive-wrap ace-window)))
  '(save-place t nil (saveplace))
+ '(save-place-mode t nil (saveplace))
  '(scroll-bar-mode (quote right))
  '(show-paren-mode t)
  '(size-indication-mode t)

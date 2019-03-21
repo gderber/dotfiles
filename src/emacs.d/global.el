@@ -146,6 +146,11 @@
 (setq browse-url-browser-function          ;call netscape on URLs.
       (quote browse-url-firefox))
 
+;;; (see The Unix password store)
+(setq auth-sources '(password-store))
+
+
+
 ;;(setq browse-url-new-window-p t)           ;open a fresh netscape window.
 ;;(if (boundp 'running-xemacs)
 ;;    (progn
@@ -201,3 +206,8 @@
 ;;    (server-start))
 ;;)
 ;;(define-key special-event-map [sigusr1] 'signal-restart-server)
+
+;; Server Settings
+(require 'server)
+(unless (server-running-p)
+  (server-start))
