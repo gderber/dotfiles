@@ -7,9 +7,9 @@
 ;; Created: Thu Mar 21 15:43:42 2019 (-0400)
 ;; Version: 
 ;; Package-Requires: ()
-;; Last-Updated: Thu Mar 21 16:23:40 2019 (-0400)
+;; Last-Updated: Thu Mar 21 21:07:14 2019 (-0400)
 ;;           By: Geoff S Derber
-;;     Update #: 9
+;;     Update #: 13
 ;; URL: 
 ;; Doc URL: 
 ;; Keywords: 
@@ -44,10 +44,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Code:
-;; (setq mediawiki-site-alist '(("Sitename", "http://example.com" "username" "password" "Page")
+
+(require 'mediawiki)
+;; (setq mediawiki-site-alist '(("Sitename", "http://example.com/" "username" "password" "Page")
 (setq mediawiki-site-alist '(("Bloodymage" "http://en.bloodymage.org/" "" "" "Main Page")
                              ("Xwinglegends" "http://en.xwinglegends.com/" "" "" "Main Page")
                              ("Olympus" "http://wiki.olympus.home/" "" "" "Main Page")))
-
+(setq mediawiki-site-default "Olympus")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; mediawiki-mode.el ends here
