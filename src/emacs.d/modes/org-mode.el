@@ -7,9 +7,9 @@
 ;; Created: Wed Sep  5 15:25:52 2018 (-0400)
 ;; Version: 
 ;; Package-Requires: ()
-;; Last-Updated: Mon Mar 18 20:15:49 2019 (-0400)
+;; Last-Updated: Sun Mar 24 12:07:01 2019 (-0400)
 ;;           By: Geoff S Derber
-;;     Update #: 13
+;;     Update #: 22
 ;; URL: 
 ;; Doc URL: 
 ;; Keywords: 
@@ -70,9 +70,38 @@
 ;; Prepare stuff for export backends
 (setq org-export-backends '(org latex icalendar html ascii))
 
-;; Set Files
 (setq org-agenda-files
       (file-expand-wildcards "~/Documents/Org/*"))
+
+;; Org Mode Variables
+(custom-set-variables
+ '(org-default-notes-file "~/notes.org")
+ '(org-agenda-ndays 14)
+ '(org-deadline-warning-days 14)
+ '(org-agenda-show-all-dates t)
+ '(org-agenda-skip-deadline-if-done t)
+ '(org-agenda-skip-scheduled-if-done t)
+ '(org-agenda-start-on-weekday nil)
+ '(org-reverse-note-order t)
+ '(org-fast-tag-selection-single-key (quote expert))
+ '(org-agenda-custom-commands
+   (quote (("d" todo "DELEGATED" nil)
+           ("c" todo "DONE|DEFERRED|CANCELLED" nil)
+           ("w" todo "WAITING" nil)
+           ("W" agenda "" ((org-agenda-ndays 21)))
+           ("A" agenda ""
+            ((org-agenda-skip-function
+              (lambda nil
+                (org-agenda-skip-entry-if (quote notregexp) "\\=.*\\[#A\\]")))
+             (org-agenda-ndays 1)
+             (org-agenda-overriding-header "Today's Priority #A tasks: ")))
+           ("u" alltodo ""
+            ((org-agenda-skip-function
+              (lambda nil
+                (org-agenda-skip-entry-if (quote scheduled) (quote deadline)
+                                          (quote regexp) "\n]+>")))
+                  (org-agenda-overriding-header "Unscheduled TODO entries: ")))))))
+
 
 ;; Key bindings
 (global-set-key "\C-cl" 'org-store-link)
@@ -147,10 +176,8 @@
   (interactive)
   (switch-to-buffer "*scratch*"))
 
-
 (setq org-todo-keywords
-      (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-              (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
+      (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)" "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
 
 (setq org-todo-keyword-faces
       (quote (("TODO" :foreground "red" :weight bold)
