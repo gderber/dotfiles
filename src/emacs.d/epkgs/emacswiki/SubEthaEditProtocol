@@ -1,0 +1,345 @@
+== Meta Information ==
+
+The purpose of this page is to describe the protocol used by the
+SubEthaEdit collaborative editor. This information can then be used to
+interface other editors with SubEthaEdit, for example Emacs.
+
+For projects working on interfacing Emacs and SubEthaEdit see:
+* SubEthaEmacs
+* [[Rudel]]
+
+=== Reverse Engineering Requirements ===
+
+Before getting on to the meat of this page: Please do /not/ add any
+information of /questionable/ source.  This means that information
+gleaned from examination of the binary you got from
+http://codingmonkeys.de is right out, including simply running strings
+on it.  What's in is information gleaned by any of the methods
+described in http://samba.org/ftp/tridge/misc/french_cafe.txt --
+specifically, anything that only involves running the program, and
+examining the information it sends across the wire.  While it is my
+belief that reverse engineering for the purpose of interoperability is
+a protected right, it's not 100% clear, esp as you go from
+jurisdiction to jurisdiction.  I figure that if Andrew Tridgel feels
+OK saying in open court that he did these things against Microsoft,
+we're probably safe from the presumably less litigious codingmonkeys.
+
+
+=== SubEthaEdit is free software ===
+
+SubEthaEdit became MIT [https://github.com/subethaedit/SubEthaEdit/commit/6ba20f3d9988f09703bf3018b86fcd9cb8717ed4#diff-61e0bdf7e1b43c5c93d9488b22e04170 licensed in October 2018]. 
+
+==== Discussion ====
+
+The reverse engineering requirements were written when SubEthaEdit was proprietary. How does the MIT License change these?
+
+== Introduction ==
+
+The SubEthaEdit protocol has a fair number of parts. You've probably
+heard that it uses Bonjour (AKA <nowiki>ZeroConf</nowiki>,
+Rendezvous).  While this is true, its use of Bonjour isn't
+interesting; it's only useful when you have multiple users on the same
+subnet.  In any case, it simply advertises
+<nowiki><username>@<computername>._see</nowiki>, with no additional
+data that I can see.  I have no particular interest in supporting this
+part of the protocol: sessions will be initiated by giving the
+hostname or IP and optionally port.  (The default port is 6942, which
+codingmonkeys says can be remembered because 6*9=42 -- it's a
+[http://en.wikipedia.org/wiki/Hitchikers_guide Hitchhiker's Guide to
+the Galaxy] reference.)
+
+== The BEEP Protocol ==
+
+The actual conversations between SubEthaEdit client and server are
+done on top of the BlocksExtensibleExchangeProtocol (RFC 3080 and RFC
+3081), which is a generic, channel multiplexed, transport protocol
+that uses XML and MIME.  (Very simple versions of both in case of the
+SubEthaEdit protocol -- the only MIME header used is Content-Type.)
+
+The BEEP protocol manages multiple virtual channels for independent
+data streams over a single connection. Messages in the special channel
+0 are fully specified in RFC 3080, all other channels are freely
+usable by application protocols. Each channel has an associated
+profile, identified by an URI, that defines the protocol for messages
+exchanged on that channel.
+
+The authors of SubEthaEdit decided to ignore the recommendation of the
+RFC authors to use MIME. Instead, the payloads exchanged on the
+application channels consist of three-letter major command codes,
+mostly followed by three-letter minor command codes, often followed by
+bencoded data.
+
+[new]
+Note by a SEE author: we did this for the obvious reason that: a)
+having our own profiles means that doesn't worry anybody else and b)
+since we use a lot of very small messages, the redundant MIME headers
+would just add up and use unnecessary bandwidth).
+
+[new]
+Messages generally look similar to the following example:
+{{{
+MSG 1 0 . 0 97
+GRTd3:url27:see://codingmonkeys.de:67423:uid36:770da15c-0cb0-10da-a8ba-4a773bbddd094:vers3:200e
+END
+}}}
+Here, the bencoded data starts immediately after '##GRT##'.  Bencoding
+is the data format used by bittorent; it is specified (very briefly)
+at http://www.bittorrent.com/protocol.html.  The dialect that
+SubEthaEdit uses has a small extension: Strings may have a '.' (ASCII
+0x2e) after the length instead of a ':'.  These dot-strings are used
+for user-identifiers, and other such things that are not
+human-readable strings, but rather a bunch of random bytes.  I suspect
+the correct interpretation is that '.' strings contain binary data
+without semantics, whereas ':' strings are always UTF-8.  (Note that
+the length for strings of both types is in /bytes/, not logical
+characters.)
+
+== Structure of a Typical Session ==
+
+The following section describes the structure of a typical session
+(with encryption disabled). The roles "Initiating" and "Listening"
+peer refer to the network connection. Although the description here
+distinguishes these roles, the protocol seems to be symmetrical.
+
+# BEEP Protocol Setup Sequence  
+  TODO
+# Handshake Protocol
+** Initiating => Listening
+### Initiating peer requests channel
+    (profile: ##http://www.codingmonkeys.de/BEEP/SubEthaEditHandshake##)
+### Initiating peer sends ##SubEthaEditHandshake## ##GRT## message
+### Listening peer replies with ##SubEthaEditHandshake## ##ACK##
+    message
+### Initiating peer closes the channel
+** Listening => Initiating (identical, but the channel remains open. why?)
+# Status Protocol
+** Initiating => Listening
+### Initiating peer requests status channel
+    (profile: ##http://www.codingmonkeys.de/BEEP/TCMMMStatus##)
+### Initiating peer sends ##TCMMMStatus## ##USRCHG##, ##FCAYES##,
+    ##STAVIS## and ##USRRCH## messages
+### Listening peer acknowledges all messages with empty replies
+** Listening => Initiating
+### Listening peer requests status channel
+    (profile: ##http://www.codingmonkeys.de/BEEP/TCMMMStatus##)
+### Listening peer sends ##TCMMMStatus## ##USRCHG##, ##FCAYES##,
+    ##STAVIS##, ##USRRCH## messages
+### Listening peer sends ##DOCANN## messages for its documents
+### Initiating peer acknowledges all messages with empty replies
+# Session Protocol
+  This exchange happens each time one of the peers wishes to
+  participate in an actual editing session. The content and structure
+  depends on the nature of the document, the number of participants and
+  possibly other parameters. //Note that the roles "Requesting" and
+  "Serving" do not correspond to the "Listening" and "Initiating"
+  roles above.//
+** Requesting => Serving
+### Requesting peer requests channel
+    (profile ##http://www.codingmonkeys.de/BEEP/SubEthaEditSession##)
+### Requesting peer sends ##SubEthaEditSession## ##JONJON## message
+### Serving peer sends empty reply
+### Serving peer replies with ##SubEthaEditSession## ##JONACK##
+    message
+### Requesting peer sends empty reply
+### Serving peer sends ##SubEthaEditSession## ##SESINF## message
+### Requesting peer sends ##SubEthaEditSession## ##USRREQ## reply
+### /to be continued/
+
+== BEEP Profiles used by SubEthaEdit ==
+
+As soon as an initiating SEE instance has an open socket, it sends
+{{{
+<greeting>
+  <profile uri="http://www.codingmonkeys.de/BEEP/SubEthaEditHandshake"/>
+  <profile uri="http://www.codingmonkeys.de/BEEP/TCMMMStatus"/>
+  <profile uri="http://www.codingmonkeys.de/BEEP/SubEthaEditSession"/>
+</greeting>
+}}}
+on BEEP channel 0, advertising support for three BEEP profiles:
+* <nowiki>http://www.codingmonkeys.de/BEEP/SubEthaEditHandshake</nowiki>
+* <nowiki>http://www.codingmonkeys.de/BEEP/TCMMMStatus</nowiki>
+* <nowiki>http://www.codingmonkeys.de/BEEP/SubEthaEditSession</nowiki>
+
+The listening instance replies with an almost identical message, the
+difference being one additional profile:
+* <nowiki>http://iana.org/beep/TLS</nowiki>
+
+Upon receiving this message from the listening end, the initiating
+client can request a <nowiki>SubEthaEditHandshake</nowiki> channel
+from the server:
+{{{
+MSG 0 1 . 301 136
+Content-Type: application/beep+xml
+
+<start number="1"><profile uri="http://www.codingmonkeys.de/BEEP/SubEthaEditHandshake"/></start>
+END
+}}}
+or request TLS encryption:
+{{{
+MSG 0 1 . 263 135
+Content-Type: application/beep+xml
+
+<start number='1'><profile uri='http://iana.org/beep/TLS'><![CDATA[<ready />]]></profile></start>END
+}}}
+
+=== The Handshake Profile (SubEthaEditHandshake) ===
+
+; ##GRT## Message: This is sent immediately upon initiation of the
+  channel.
+  The listening peer answers with a ##GRT## message that is
+  identically structured but can have different dictionary values.
+  Takes a dictionary with the following values:
+** ##url## => String. URL of the remote end of the connection --
+   sometimes has a <nowiki>see://</nowiki> protocol on it, sometimes
+   does not.  Always seems to include the port. Example:
+   ##see://codingmonkeys.de:6942##. In the response from the listening
+   peer, the semantics are reversed: it is the IP-address and port of
+   the initiating peer. Example: ##212.204.60.78:65164##
+** ##uid## => UUID of... something.  Undetermined if this is the client
+   install, the user, or what.  Normal hex, dash-separated format,
+   without curly braces.  (As specified in RFC 4122)
+   Example: ##c26bff50-3f16-b1f6-e60c-8858649bdc56##
+** ##vers## => String. The version of the protocol in use?  Only known
+   value is "200". 
+** ##uag## => String. Only present in the listening peer's response
+   (?). Probably "User Agent". Seems to describe the software
+   version. Example: ##SubEthaEdit/3.5.1 (3263)##
+; ##ACK## Message: Acknowledges a message from the other end of the
+  connection.
+  Possibly the simplest payload, it takes no extra data of any sort.
+  FIXME: what packet is this acking? This seems to be send by the
+  initiating peer after it received the 'GRT' response from the
+  listening peer.
+; empty Message: It seems like the listening peer replies to the
+  ##ACK## message of the initiating peer by sending a BEEP message that
+  has no payload. This message seems to conclude the handshake.
+
+...more later.
+
+=== The Status Profile (TCMMMStatus) ===
+
+A TCMMMStatus channel is created by both sides of the connection. The
+listening peer requests a TCMMMStatus channel after receiving the
+'ACK' message on the handshake channel.
+
+; ##STAVIS## Message: Status Visible - Probably changes status of the
+  sending peer to visible
+
+; ##STAINV## Message: Status Invisible - Probably changes status of
+  the sending peer to invisible
+
+; ##FCAYES## Message: FCA (?) Yes - No idea
+
+; ##USRCHG## Message: User Change (?) - Gives a short description of a user, a dictionary with the following entries:
+** ##cnt## => An integer, presumably some sort of count (of what?)
+** ##name## => User name as string
+** ##uID## => A 16 byte id string unique for the user (presumably)
+
+; ##USRRCH## Message: User Reachability - Probably transmitting a
+  SubEthaEdit URL that can be used to reach the sending peer on the
+  Internet.
+** ##uid## => 36 byte id string; Seems to equal to the id used in the
+   ##GRT## message of the ##SubEthaEditHandshake## profile.
+** ##url## => URL with ##see://## schema, IP address and port of the
+   initiating peer.
+
+; ##USRREQ## Message: User Request (?) - Probably a list of users that
+  the receiving peer should send full information for. List of
+  dictionaries of the following form
+** ##name## => String
+** ##uID## => 16 byte id of the requested user (?)
+** ##cnt## => Integer
+
+; ##USRFUL## Message: User Full (?) - A longer user description, including:
+** ##cnt## => An integer, counting something.. ?
+** ##hue## => As an integer, color of something, probably highlight
+   color of this user's text
+** ##uID## => Users unique ID, same as in USRCHG
+** ##name## => Users name, same as in USRCHG
+** ##mail## => Users email address, probably taken from Address Book
+   data
+** ##PNG## => The users icon, as a PNG file (contains the actual
+   picture data as a byte string), probably taken from NetInfo data
+** ##AIM## => Users AIM screenname, probably taken from Address Book
+   data
+
+; ##DOCANN## Message: Document Announce (?) - Announces each document
+  that the peer has to offer. A list of dictionaries of the following
+  form
+** name => Name of the document
+** sID => ID of something
+** hID => 16 byte id. Probably unique id of the user hosting the
+   document (or creator?).
+** acc => No idea
+** sec => Integer. Only known value: 1. Probably some security
+   (encryption?) information.
+
+=== The Session Profile (SubEthaEditSession) ====
+
+Started by the client (either side?) to join a particular document.
+
+; ##JONJON## Message: Join request - sent by the client
+** ##UserNotification## => a dictionary containing:
+*** ##cnt## => An integer, counting ?
+*** ##name## => Users name
+*** ##uID## => Users unique ID
+** ##SessionID## => UUID denoting the session, see GRT
+
+; ##JONACK## Message: Join Acknowledge - Empty acknowledge command
+
+; ##SESINF## Message: Session Information - Information about the
+  session, from the document owning peer 
+** ##ContentLength## => Integer - doc length?
+** Participants => a dictionary containing:
+*** ##ReadWrite## => a list of dictionaries containing:
+**** ##User## => a dictionary containing:
+***** ##cnt## => integer, counter (?)
+***** ##name## => users name
+***** ##uID## => Users unique id
+**** ##SessionProperties## => an empty dictionary ?
+**** ##User## => ..
+** ##Contributors## => a list of dictionaries of:
+*** ##cnt##
+*** ##name##
+*** ##uID##
+** ##DocumentSessionInformation## => a dictionary containing:
+*** ##FileType## => String. Only known value "SEETextType"
+*** ##UseTabs## => Integer (0/1)
+*** ##DocumentMode## => String. Known values: "SEEMode.Base" |
+    "SEEMode.Conference" 
+*** ##LineEnding## => Integer. Known values: 1
+*** ##TabWidth## => Integer 4
+*** ##WrapLines## => Integer. Known values: 1
+*** ##WrapMode## => Integer. Known values: 0 | 1
+
+; ##USRREQ## Message: //Probably identical to// ##USRREQ## //in
+    TCMMMStatus profile above.//
+
+; ##SESCON## Message: Session Connection (?) - Original document status ?
+** ##TextStorage## => dictionary containing:
+*** ##String## => String containing document content
+*** ##Encoding## => Integer 30
+** ##Attributes## => dictionary containing:
+*** ##ChangedByUserID## => list of dictionary containing:
+**** ##val## => UUID
+**** ##loc## => Integer 0
+**** ##len## => Integer 1508
+** ##WrittenByUserID## => list of dictionary containing:
+*** ##val## => UUID
+*** ##loc## => Integer
+*** ##len## => Integer
+
+; ##DOCMSG## Message: Document Message - Sent when document string or
+  the text range selected by one of the editors changes.
+** ##op## => dictionary containing:
+*** ##ot## => String. Known values: "sel" | "txt" | "nop"
+*** ##len## => Integer (not present with ot => "nop")
+*** ##uid## => 16 byte user unique id
+*** ##loc## => Integer (not present with ot => "nop") - cursor location
+*** ##str## => String that was added (only present when ot => "txt")
+** #C => Integer
+** #S => Integer
+
+----
+
+CategoryInterface

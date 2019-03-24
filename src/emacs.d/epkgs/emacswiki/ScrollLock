@@ -1,0 +1,13 @@
+[[ja:スクロールロック]]
+On all the Windows machines I've currently got access to, the Scroll Lock key causes Emacs to ignore the Caps Lock key.
+The feature seems to be undocumented everywhere I can think to look.
+
+The feature can be useful sometimes because `C-h c' is bound to a different command from `C-h C'.  So it keeps you from shooting yourself in the foot by setting caps lock on if you have a bad habit of doing that and want to break yourself of it.
+
+On the other hand, being undocumented, it can be a shock to have your Caps Lock key ignored by Emacs if you don't know what caused it.  Just tap your Scroll Lock key again to put things "right".
+
+    (global-set-key (kbd "<Scroll_Lock>") 'scroll-lock-mode)
+
+FWIW, that’s not what I see, with a recent Windows 7 laptop. For me, the key labeled “Scroll Lock” has no effect, and ‘C-h k’ for it says that it is undefined. And (for me) ‘C-h k’ calls that key <scroll>, not <Scroll_Lock>. I wonder whether the behavior you are seeing is even going through Emacs.
+– DrewAdams
+
