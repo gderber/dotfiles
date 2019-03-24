@@ -1,0 +1,187 @@
+See also EshellFunctions for more elaborate examples.
+
+== Reloading the aliases file ==
+
+The eshell aliases are stored in a file whose name is in the variable ##eshell-aliases-file## (this defaults to something like ~/.emacs.d/eshell/aliases). If you edit it by hand then (as the manual says), you'll need to refresh eshell's cache of the values. To do this, run the ##eshell-read-aliases-list## function (which, of course, you can do by typing its name in eshell!)
+
+== open file ==
+
+I used this in my .emacs so that I can simply open file instead of
+find-file.  This has the added advantage that I can M-x open file when
+I can't remember what C-x C-f does ;P
+
+    (defalias 'open 'find-file)
+    (defalias 'openo 'find-file-other-window)
+
+== Alias 'll' to 'ls -l' ==
+
+Make sure that the positional parameters are included:
+
+    ~ $ alias ll 'ls -l $*'
+
+== Alias 'emacs' to 'find-file' ==
+
+    ~ $ alias emacs 'find-file $1'
+
+Note that without the quotes, the positional parameter will get lost:
+
+    ~ $ alias emacs find-file $1
+    ~ $ alias
+    alias emacs find-file
+
+Note also that $* will not work because `find-file' expects exactly one parameter.
+Using $* instead of $1 will pass a list of parameters to find-file, and find-file will barf:
+
+    ~ $ alias emacs 'find-file $*'
+    ~ $ emacs test.txt
+    Wrong type argument: stringp, ("test.txt")
+
+Note, that $* will work with the following advice (put it into .emacs):
+
+<pre>
+(defadvice find-file (around find-files activate)
+  "Also find all files within a list of files. This even works recursively."
+  (if (listp filename)
+      (loop for f in filename do (find-file f wildcards))
+    ad-do-it))
+</pre>
+
+Or the all-eshell version:
+
+    alias emacs 'for i in ${eshell-flatten-list $*} {find-file $i}'
+
+== Alias 'w3m' to 'w3m-find-file' ==
+
+The same idea is for checking html files. I generate a lot of html 
+documentation using Doxygen and want to see the document without leaving emacs.
+If you have [[emacs-w3m]] and [[w3m]] installed; then you may want to alias 
+w3m to w3m-find-file same as emacs to find-file:
+
+    ~ $ alias w3m 'w3m-find-file $1'
+
+--AntonKulchitsky
+
+== Alias 'clear' to 'recenter 0' ==
+
+    ~ $ alias clear recenter 0
+
+== What about permanent aliases? ==
+
+The trick is that all aliases will be stored automatically, thus you
+do not need to edit anything equivalent to your ##".bash_alias"## manually.
+The variable `eshell-aliases-file' defines the file in which aliases are stored.
+Refer to the comments in the source file ##"em-alias.el"## for details.
+
+== More about permanent aliases ==
+
+You also can define new eshell commands in your .emacs file. There is a simple example.
+To define 'emacs' command as 'find-file' as above you may write:
+
+      (defun eshell/emacs (file)
+          (find-file file))
+
+This way you can define pretty complicated functions 
+using all emacs lisp power. From the other side, it may be just overkill 
+for such simple definitions. See [[EshellFunctions]] for more information about this. --AntonKulchitsky
+
+== Sharing aliases with bash ==
+Many people have lines like this in their .bashrc file:
+    alias ll='ls -l'
+Eshell needs a different syntax:
+    alias ll 'ls -l'
+To integrate both, either:
+* a) eshell accepts bash's syntax
+* b) bash reads eshell's alias file
+* c) both shells use a new neutral command which defines alias using the right syntax depending on the caller
+* d) the user is forced to maintain two files, ideally with a script which can create one from the other
+
+I have used solution d: I use a line in .bashrc which, after all aliases have been defined, creates the alias file for eshell (eshell-aliases-file):
+
+    alias | sed -E "s/^alias ([^=]+)='(.*)'$/alias \1 \2 \$*/g; s/'\\\''/'/g;" >~/.emacs.d/eshell/alias 
+
+This takes care of allowing eventual parameters ($*) and allows single quotes as part of the expanded alias.
+That line takes only 0m0.007s so I don't mind running it each time I open bash.
+
+-- 2.m7.2010 [[DanielClemente]]
+
+… And if you're using zsh, try this cryptic line, it handles all the strange cases with quotes, at least all the ones in my file, and you can debug it by stopping in the intermediate pipes:
+
+    alias | sed 's/^alias //' | sed -E "s/^([^=]+)='(.+?)'$/\1=\2/" | sed "s/'\\\\''/'/g" | sed "s/'\\\\$/'/;" | sed -E 's/^([^=]+)=(.+)$/alias \1 \2/' >~/.emacs.d/eshell/alias
+
+-- 10.m9.2017 [[DanielClemente]]
+
+==Reading directly from ~/.bash_aliases==
+
+
+    (add-hook 'eshell-mode-hook 'eshell-load-bashrc-aliases)
+    (defun re-n-matches ()
+      (1- (/ (length (match-data)) 2)))
+
+    ;; from xah-lee http://ergoemacs.org/emacs/elisp_read_file_content.html
+    (defun get-string-from-file (filePath)
+      "Return filePath's file content."
+      (with-temp-buffer
+      (insert-file-contents filePath)
+      (buffer-string)))
+
+    (defun match-strings-all (&optional string)
+      "Return the list of all expressions matched in last search.
+      STRING is optionally what was given to `string-match'."
+      (loop for i from 0 to (re-n-matches)
+    	collect (match-string-no-properties i string)))
+      
+    (defun re-find-all (regexp string &optional groups yes-props)
+      "like python's re.find_all"
+      (let (
+    	;;(groups (or groups (list (regexp-count-capture-groups regexp))))
+    	(match-string-fun (if (not yes-props) 'match-string 'match-string-no-properties))
+    	(start 0)
+    	(matches nil )
+    	)
+        (while (setq start (and (string-match regexp string start) (match-end 0)))
+    	(setq matches (cons (cdr (match-strings-all string)) matches))
+    	)
+        (setq matches (reverse matches))
+        (if (not (cdar matches))
+    	(mapcar 'car matches)
+          matches
+          )
+        )
+      )
+    
+    
+    (defun apply-eshell-alias (alias &rest definition)
+      "basically taken from eshell/alias function"
+        (if (not definition)
+    	(setq eshell-command-aliases-list
+    	      (delq (assoc alias eshell-command-aliases-list)
+    		    eshell-command-aliases-list))
+          (and (stringp definition)
+    	   (set-text-properties 0 (length definition) nil definition))
+          (let ((def (assoc alias eshell-command-aliases-list))
+    	    (alias-def (list alias
+    			     (eshell-flatten-and-stringify definition))))
+    	(if def
+    	    (setq eshell-command-aliases-list
+    		  (delq def eshell-command-aliases-list)))
+    	(setq eshell-command-aliases-list
+    	      (cons alias-def eshell-command-aliases-list))))
+      )
+    (defun eshell-load-bashrc-aliases ()
+      (interactive)
+      (mapc (lambda (alias-def) (apply 'eshell/alias alias-def))
+    	(re-find-all "^alias \\([^=]+\\)='?\\(.+?\\)'?$"
+    		     (get-string-from-file  (concat (getenv "HOME") "/" ".bash_aliases"))
+    		     )
+    	)
+      )
+    
+
+----
+
+-- 2019-01-24 [[Arthur Miller]]:
+
+I have edited code above - added get-string-from-file and commented away unnecessary line (groups (or ... )))) to make it work on my Emacs, however this is noticeably slow. The solution will neither take into consideration that users might have their aliases spread in
+different files, for example if they use something bash-it. Currently as I know the best solution is to export aliases from bash to alias file as suggested in 'sed' snippet.
+
+CategoryEshell

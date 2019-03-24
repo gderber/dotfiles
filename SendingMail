@@ -1,0 +1,162 @@
+Mail is sent using SMTP (<b>S</b>imple <b>M</b>ail <b>T</b>ransfer
+<b>P</b>rotocol).  
+If you are on a Unix machine, you will probably have a daemon running on your
+machine, which accepts mail on the default SMTP port.  This usually
+works without problems.
+
+On a typical desktop machine, however, there is no local SMTP daemon running,
+or it is not correctly configured.  You can talk to the SMTP server of your
+ISP, however.  This page describes how to do this using [::SmtpMail].
+
+== Configuration ==
+
+On my Windows NT machine, for example, this is my setup:
+
+ (setq smtpmail-default-smtp-server "mail.bsiag.com"
+       smtpmail-local-domain "bsiag.com")
+ (load-library "smtpmail")
+
+Furthermore, you need to tell Emacs to use `smtpmail-send-it' whenever
+you want to send mail.
+
+If you are using MailMode (the default), add this:
+
+ (setq send-mail-function 'smtpmail-send-it)
+
+If you are using MessageMode (part of Gnus, see CategoryGnus), add this:
+
+ (setq message-send-mail-function 'smtpmail-send-it)
+
+=== Using Encryption ===
+There are several ways to achieve encrypted communication with the server when sending emails.  One possibility is to use SSL:
+
+    (setq send-mail-function    'smtpmail-send-it
+          smtpmail-smtp-server  "example.org"
+          smtpmail-stream-type  'ssl
+          smtpmail-smtp-service 465)
+
+Since no credentials are given in this configuration, Emacs will look them up in <code>$(HOME)/.authinfo</code> or <code>$(HOME)/.authinfo.gpg</code> (encrypted).  The content of this file should follow this scheme:
+
+    machine example.org login [your login name] password [your password]
+
+If the authinfo file is encrypted, Emacs will prompt you for the password when you send the first email but not when sending subsequent emails.
+
+An alternative to SSL is STARTTLS:
+
+    (setq send-mail-function    'smtpmail-send-it
+          smtpmail-smtp-server  "example.org"
+          smtpmail-stream-type  'starttls
+          smtpmail-smtp-service 587)
+
+You can use the variable `gnutls-algorithm-priority' to control which encryption algorithms should be used.  For example the following setting restricts the range of algorithms that are offered to the server to those implementing perfect forward secrecy:
+
+    (setq gnutls-algorithm-priority "PFS")
+
+See the section about priority strings of the documentation of !GnuTLS for details: http://gnutls.org/manual/gnutls.html#Priority-Strings 
+
+The default `smtpmail-stream-type' nil means STARTTLS if possible.  This is convenient, but vulnerable to a man-in-the-middle pretending STARTTLS not available so inducing you not to encrypt.
+
+==== Fixing Issues ====
+Some servers use sloppy implementations of the TLS and SSL standards and it may happen that connections are dropped unexpectedly.  In these situations, it can help to update !GnuTLS or to add a setting that allows GnuTLS to be more forgiving with respect to deviations from the standards:
+
+ (setq gnutls-algorithm-priority "NORMAL:%COMPAT")
+
+See the section about priority strings of the documentation of GnuTLS for details: http://gnutls.org/manual/gnutls.html#Priority-Strings
+
+Set variables `smtpmail-debug-info' and `smtpmail-debug-verb' to record interaction in a trace buffer.
+
+== Examples ==
+
+Here is another setup example:
+
+ (setq smtpmail-default-smtp-server "smtpserver") ; needs to be specified before the (require)
+ (require 'smtpmail)
+ (setq send-mail-function 'smtpmail-send-it)
+ (setq message-send-mail-function 'smtpmail-send-it)
+ (setq user-full-name "Joe")
+ (setq smtpmail-local-domain "gmx.de")
+ (setq user-mail-address (concat "Joe.R.User@" smtpmail-local-domain))
+
+The manual for smtpmail.el can be found at http://josefsson.org/smtpmail.html.
+
+== Emulators (eg. for Windows) ==
+
+Those using CYGWIN might want to try the sSMTP Sendmail emulator, like this:
+
+ (setq message-send-mail-function 'message-send-mail-with-sendmail)
+ (if (equal system-type 'windows-nt)
+    (setq sendmail-program "c:/cygwin/usr/sbin/ssmtp.exe"))
+
+See also [[GnusMSMTP]]
+
+== Authentification ==
+
+Note that older versions of this library (eg. Emacs 20) do not
+allow authentification.  You cannot provide usernames and passwords.
+Therefore there are lots of ways people try to stop abuse:
+
+# If the server doesn't like your IP address it might answer "Relaying
+  denied" and refuse to send your mail
+# If the server wants to fake it, they might ask you to fetch mail
+  before trying to send any.  The reason is that when you are
+  GettingMail, you will need a username and a password.
+
+Later versions of this library support the variable `smtpmail-auth-credentials'.
+See SmtpAuth.
+
+== Mail queueing ==
+
+Sometimes, it can be useful to just queue the mails and send them later all at once (dialup users, etc...),
+then just add:
+
+<pre>
+(setq smtpmail-queue-mail t)
+</pre>
+
+When your network connection is ready, just do 
+
+<pre>
+M-x smtpmail-send-queued-mail RET
+</pre>
+
+== No Address Rewriting ==
+
+If your smtp server is a non-address-rewriting MTA (like the qmail default), and
+if you'd like your domain name to be added automatically to the addresses, see
+SendMailAddressRewrite.
+
+== Managing Multiple SMTP Accounts ==
+There are multiple internal and external solutions to managing multiple email identities with different SMTP servers.
+
+Message mode and smtpmail.el have internal support for a special header called <code>X-Message-SMTP-Method</code>.
+This header is not really sent to your email recipient, but it tells smtpmail to override <code>smtpmail-smtp-server</code> and/or <code>message-send-mail-function</code>
+just for this message. For example, if you usually use your system's Mail Transfer Agent to send mail but want to send some mail through <code>external.smtp.com</code>
+at port 465, you could add the header line <code>X-Message-SMTP-Method: smtp external.smtp.com 465</code>  to your message. The full syntax of this header
+is described in the [https://gnu.org/software/emacs/manual/html_node/message/Mail-Variables.html#Mail-Variables Message mode manual]. The smtpmail library will look
+up your login credentials for each smtp server
+using the [https://gnu.org/software/emacs/manual/auth.html auth-source] library, meaning they can be encrypted using gpg or your OS keyring.
+
+It's a pain to add this header line manually whenever you want to switch SMTP servers, obviously. But if you use Gnus, you could use [http://gnus.org/manual/gnus_76.html#Posting-Styles posting styles] to add it automatically.
+For example, our gnus-posting-styles could contain an entry
+
+        ((header "Delivered-To" "somebodyelse@othermail.com")
+         (From "Somebody Else <somebodyelse@othermail.com>")
+         (X-Message-SMTP-Method "smtp smtp.othermail.com 465"))
+
+This means that when we are replying to a message with a "Delivered-To" header of somebodyelse@othermail.com, Gnus will set the From line and the X-Message-SMTP-Method line appropriately to respond using the correct alternate name and SMTP server.
+
+You can also add the <code>X-Message-SMTP-Method</code> header when composing a new message that isn't a reply. I (wgreenhouse) like to do this by setting up keybindings to commands that call `compose-mail' with the alternate header lines (note the <code>OTHER-HEADERS</code> argument of `compose-mail'). An external library like GnusAlias could also help here.
+
+See MultipleSMTPAccounts for some external solutions.
+
+If you have more than one email address and have to send them using different SMTP servers, then you might want to take a look at esmtpmail.el a fork from smtpmail.el
+
+== Specific Servers Etc ==
+
+Yahoo <code>smtp.mail.yahoo.com</code>, circa Jan 2019, is best used by port 465 always-SSL.  The symptom on its ports 25 or 587 with STARTTLS is for smtpmail to hang a while then error out with 450 mailbox unavailable.  The cause is Yahoo hellos not showing AUTH on the unencrypted, so smtpmail assumes no authentication required, where in fact it is.  Smtpmail would recognise a 530 auth required and go again, but the Yahoo server gives only the unenlightening 450.
+
+
+See also: WritingMail
+----
+CategoryMail
+WThirtyTwoSendMAPI

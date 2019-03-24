@@ -1,0 +1,93 @@
+Context sensitive help is help that matches the current context, for example the current [[major mode]] and the symbol at [[point]].
+
+(If you're interested in a one-liner for the symbol at point, take a look at ElDoc.)
+
+
+== Mouse-3 Contextual Menu ==
+
+Library [[Mouse3]] (<tt>[[mouse3.el]]</tt>) gives you a context-specific popup menu by clicking the right mouse button (`mouse-3') twice (slower than a double-click).
+
+The menu differs depending on whether the [[region]] is active.  If it is then you get a menu of actions on the region.  Otherwise you get a menu of actions on a thing at point. Actions can be anything; in particular, they can include contextual help information.
+
+By default, each of these menus also includes, at the beginning of the menu, a submenu
+that has, as its own submenus, the global menus that are currently available.
+
+You can also provide mode-specific behavior by either replacing the
+default `mouse-3' popup menu or augmenting it with mode-specific entries.
+
+
+
+== Emacs Lisp ==
+
+Emacs has two key bindings programmers are very familiar with:
+
+* `C-h f' gives you the documentation for the function at point
+* `C-h v' gives you the documentation for the variable at point
+
+== Perl ==
+
+CPerl mode comes with the function `cperl-perldoc' that calls `perldoc' on the symbol at point.
+Here's a simple addition to your config file to make `C-h f' call it, even if you use ordinary
+Perl mode instead of CPerl mode.
+
+{{{
+(add-hook 'perl-mode-hook 'my-context-help-for-perl-mode)
+
+(defun my-context-help-for-perl-mode ()
+  (require 'cperl-mode);; for help
+  (local-set-key (kbd "C-h f") 'cperl-perldoc))
+}}}
+
+== Python ==
+
+Python mode has support for ElDoc, and a key binding to go along with it: `C-c f`.
+If that doesn't do what you expect it to do, give the following code a try.
+
+{{{
+(add-hook 'python-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-h f") 'pydoc-at-point)))
+
+(defun pydoc-at-point ()
+  "Run `pydoc' on the word around point."
+  (interactive)
+  (pydoc (python-eldoc--get-symbol-at-point)))
+
+(defun pydoc (word)
+  "Run `pydoc' on WORD."
+  (interactive
+   (list (let* ((default-entry (python-eldoc--get-symbol-at-point))
+                (input (read-string
+                        (format "pydoc entry%s: "
+                                (if (string= default-entry "")
+                                    ""
+                                  (format " (default %s)" default-entry))))))
+           (if (string= input "")
+               (if (string= default-entry "")
+                   (error "No pydoc args given")
+                 default-entry)
+             input))))
+  (require 'man)
+  (let* ((case-fold-search nil)
+	 (Man-switches nil)
+	 (manual-program "pydoc"))
+    (Man-getpage-in-background word)))
+}}}
+
+== Go ==
+
+Go has commonly used helper programs `godoc' and `godef' which can be used to find documentation
+and source definitions.
+
+An example of how to enable `C-h f' as context sensitive help function:
+
+{{{
+;; https://github.com/dominikh/go-mode.el
+(use-package go-mode
+  :config
+  :bind (:map go-mode-map
+	      ("C-h f" . godoc-at-point)))
+}}}
+
+----
+CategoryHelp

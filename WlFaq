@@ -1,0 +1,679 @@
+Please also read the [http://wiki.gohome.org/wl/ FAQ] at the home page. 
+
+== If I add folders to an access group outside of Wanderlust, how do I make Wanderlust pick up those changes? ==
+In the folder manager, close the access group, then use ##C-u <RET>## to open it again. Wanderlust will scan the access group for new folders.
+
+== How can I get WL's mail composition mode to do completion from aliases in my ~/.mailrc file? ==
+In your .wl:
+
+{{{
+;; Use ~/.mailrc
+(setq wl-address-init-function 'my-wl-address-init)
+(defun my-wl-address-init ()
+  (wl-local-address-init)
+  (setq wl-address-completion-list
+        (append wl-address-completion-list (build-mail-aliases))))
+}}}
+
+== How can I enable new mail notifications for Gmail and other IMAP servers? ==
+
+Wanderlust expects IMAP servers to tell it about new mail via a
+'Recent' field. Since Gmail and some other IMAP servers do not supply
+a meaningful value for this field, new mail notification does not
+work. It is possible to force Wanderlust to re-sync and work out
+whether there are new messages by specifying a list of folder names in
+##wl-strict-diff-folders##. 
+
+Because this way of checking for new mail is slower, it is useful to
+only check for new mail when idle.
+
+Example .wl:
+
+{{{
+;; Check these folders for new mail
+(setq wl-biff-check-folder-list 
+      '("%INBOX:\"user@gmail.com\"/clear@imap.gmail.com:993"
+        "%INBOX:\"user@other.domain\"/clear@imapserver.other.domain:993"))
+
+;; Check every 60 seconds
+(setq wl-biff-check-interval 60)
+
+;; Check only when idle
+(setq wl-biff-use-idle-timer t)
+
+;; Use strict diff so wl-biff works with Gmail and others
+(setq wl-strict-diff-folders wl-biff-check-folder-list)
+}}}
+
+(Note that for the counts in the ##Folder## view to be updated correctly, the items in ##wl-biff-check-folder-list## must match the folder names in .wl-folders *exactly*.)
+
+== Offline ==
+
+=== How do I force Wanderlust to pre-fetch all messages in a folder for offline access? ==
+
+First:
+{{{
+(setq wl-summary-incorporate-marks '("N" "U" "!" "A" "F" "$"))
+}}}
+
+Now, from the ##Folder## buffer, use the command ##wl-folder-prefetch-current-entity## (bound to ##I##) on any entity that you wish to prefetch all messages of.
+
+
+=== How does the cache work? How can I purge it? ===
+Even when using IMAP, wl caches the messages (by default it caches the message being read, and the following one), and stores them in elmo-cache-directory i.e. ~/.elmo. This cache can get quite large. Especially if you tend to run online most of the time, you may want to purge it periodically, which can be done by either doing "M-x elmo-cache-expire-by-size" or putting something similar in .wl:
+{{{
+;;days since last access, i.e atime. (default: 50)
+(elmo-cache-expire-by-age  14)
+
+;;kilobytes (default 30000)
+(elmo-cache-expire-by-size 1024)
+}}}
+
+=== Integration with Offline IMAP and fast searches ===
+Integration with [https://github.com/nicolas33/offlineimap offlineimap] is simple and easy since wanderlust understands the [http://en.wikipedia.org/wiki/Maildir MailDir] format. Storing emails locally improves the speed of reading messages significantly even compared to using Wanderlusts native facility for caching messages. You can run offlineimap from emacs by using [http://julien.danjou.info/software/offlineimap.el offlineimap.el].
+
+Using the [http://en.wikipedia.org/wiki/Maildir MailDir] format also has the advantage of being able to use native text-based search for all messages.  By default wanderlust is designed to use Namazu, but you can easily replace it with [http://www.djcbsoftware.nl/code/mu/ mu search].  Once you have mu setup you can integrate it into wanderlust with the following in either your init.el or .wl :
+
+
+{{{
+
+(elmo-search-register-engine
+ 'mu 'local-file
+ :prog "mu"
+ :args '("find" pattern "-o" "plain" "-f" "l")
+ :charset 'utf-8)
+
+(setq elmo-search-default-engine 'mu)
+
+}}}
+
+
+== Speed ==
+
+=== I am annoyed by emacs freezing whenever I use wl to send an email ===
+
+If you configured Wanderlust to use a 'smarthost' then, instead, configure a MTA (e.g., exim4) to talk to the smarthost. Then configure Wanderlust to use the local MTA: in your ##.wl## file, set ##wl-smtp-posting-server## to ##nil## and ##wl-local-domain## to ##gmail.com## (or whatever domain name is appropriate given the MTA configuration...).
+
+=== When I update, Wanderlust is slow and spends a long time with the message "Updating marks..." ===
+
+If you only use Wanderlust to access a mailbox, you can set
+##wl-summary-auto-sync-marks## to ##nil## in your ##.wl## file.
+
+=== I want a configuration that only shows/downloads threads with new posts within the last N hours (e.g. the last 24).  ===
+
+Create a filter folder,
+
+{{{
+/since:yesterday/%INBOX
+}}}
+
+== Unicode ==
+
+Release 2.14 was created before emacs23 was released. As a consequence, there may occur some problems with unicode
+support. They can be fixed by using a snapshot from the CVS repository. For a working variant, please see
+[http://permalink.gmane.org/gmane.mail.wanderlust.general/2768] .
+
+
+== Attachments ==
+
+=== How can I attach files? ===
+There is no `wl-attach-file'.
+
+Try M-x mime-edit-insert-file RET and answer some questions (file name, content type and subtype and transfer encoding). Encoding base64 seems to work. Then don't touch the text that is added to your message. When you send the mail, the file will be included.
+
+If you find a simpler, sane version (e.g. choose just a file and then you're sure it will work) please describe it here.
+
+[new]
+No need to M-x: mime-edit-insert-file is bound to <code>C-c C-x TAB</code>. At least for me the three prompts for MIME media type, subtype and encoding normally are just fine (RET RET RET). If this is not the case try to customize `mime-file-types'.
+
+~~dmaus
+
+
+=== How can I prevent WL from splitting large attachments into many messages? ==
+Add the following to your ##.wl## file:
+{{{
+(setq mime-edit-split-message nil)
+}}}
+
+
+=== How can I easily attach multiple files? ===
+This code will allow you to include multiple files, like "~/images*.png" or similar:
+{{{
+;;Cobbled together from posts by Erik Hetzner & Harald Judt to
+;; wl-en@lists.airs.net by Jonathan Groll (msg 4128)
+
+(defun mime-edit-insert-multiple-files ()
+  "Insert MIME parts from multiple files."
+  (interactive)
+  (let ((dir default-directory))
+    (let ((next-file (expand-file-name
+                      (read-file-name "Insert file as MIME message: "
+		      dir))))
+      (setq file-list (file-expand-wildcards next-file))
+      (while (car file-list)
+        (mime-edit-insert-file (car file-list))
+        (setq file-list (cdr file-list))))))
+
+(global-set-key "\C-c\C-x\C-a" 'mime-edit-insert-multiple-files)
+}}}
+**TODO** probably don't want this as a global key-binding. 
+
+
+=== Hack for v-key in message window (for attachments) ===
+Maybe another useful tip for somebody... I added this to my .emacs:
+{{{
+(add-hook
+ 'mime-view-mode-hook
+ '(lambda ()
+    "Disable 'v' for mime-play."
+    ;; Key bindings
+    (local-set-key [?v] () )
+    ))
+}}}
+Because 'v', in the summary window, hides the message-reading window, but if you hit 'v' without realizing that the cursor is in the message window, wl launches an external process which (on my machine) never produces any output and never terminates. If I get an attachment, I only want to extract it anyway by 'e' so it's no loss to me.
+
+James
+
+
+
+== Summary Buffer ==
+
+=== How to check for new messages ===
+Press the 's' key (##wl-summary-sync##), then it asks you the update method (allowed: ##no-sync first last cache-status mark rescan rescan-noscore rescan-thread update update-entirely all all-entirely##). You probably want to say 'update' (the default), which will query the server for what has changed since last time; if you want to re-check everything, say 'all'.
+
+
+=== How can I make my "Sent" folder show TO rather than FROM in the list ===
+Provided you sent folder has the word "Sent" somewhere use:
+{{{
+(setq wl-summary-showto-folder-regexp ".*Sent.*")
+}}}
+And also add your email-addresses to <code>wl-user-mail-address-list</code>.
+{{{
+;; You should set this variable if you use multiple e-mail addresses.
+(setq wl-user-mail-address-list  '("my.name@gmail.com"
+                                   "myname@gmail.com"
+                                   "myname@company.com"))
+}}}
+
+=== How can I sort messages in summary buffer on reverse date ===
+Ty adding something like the following to your .wl (note: not sure it works):
+
+{{{
+  (defun wl-summary-overview-entity-compare-by-rdate (x y)
+    (not (wl-summary-overview-entity-compare-by-date x y)))
+  (add-to-list 'wl-summary-sort-specs 'rdate)
+
+  ;; Or the infinitesimally more efficient:
+  ;; (wl-summary-overview-entity-compare-by-size y x)
+
+  ;;http://osdir.com/ml/mail.wanderlust.general/2004-06/msg00052.html
+  ;;You could define yourself a sort helper function:
+  (defun wl-summary-sort-by-rdate ()
+    (interactive)
+    (wl-summary-rescan "rdate")
+    (goto-char (point-min)))
+
+  ;;and bind that to a key, or (kludgier) define an after advice for
+  ;;wl-summary-rescan that moves the cursor if the sort argument begins
+  ;;with "r". I haven't tested this, but it would go something like:
+
+  (defadvice wl-summary-rescan (after wl-summary-rescan-move-cursor activate)
+    (if (string-match "^r" (ad-get-arg 0))
+        (goto-char (point-min))))
+}}}
+
+=== I need to resort the summary buffer by date ===
+This has been reported for when getting email with offlineimap, they
+can appear unsorted in the summary buffer, if so this will help:
+{{{
+  ;; sort the summary
+  (defun my-wl-summary-sort-hook ()
+    (wl-summary-rescan "date"))
+
+  (add-hook 'wl-summary-prepared-hook 'my-wl-summary-sort-hook)
+}}}
+
+=== How can I make the cursor to always move downwards ("n") when marking "d" or "o" ===
+When marking a message in the summary buffer for deletion the default behavior is to move in the last direction, that being "n" or "p". To disable this, and have it always move to next "n", put:
+{{{
+;;don't remember "n"/"p" direction when flagging messages:
+(setq wl-summary-move-direction-toggle nil)
+}}}
+
+
+== Writing/reading html mails ==
+
+===How can I read html-mails with a proper pager? ===
+
+With recent Wanderlust and Emacs versions, this will happen automatically, and use w3m if it's available, shr otherwise.
+
+In order to use w3m, make sure that you have w3m installed and mime-w3m.el in your load path, then say:
+{{{
+(require 'w3m)
+(require 'mime-w3m)
+}}}
+
+Under Emacs 24.4 and later, you can force using shr (Emacs' built-in HTML formatter) by just saying:
+{{{
+(setq mime-view-text/html-previewer 'shr)
+}}}
+
+=== Keys in w3m are not very intuitive ===
+Say
+{{{
+(setq w3m-key-binding 'info)
+}}}
+
+Alternatively, you can do something like this:
+{{{
+(eval-after-load "w3m"
+ '(progn
+ (define-key w3m-mode-map [left] 'backward-char)
+ (define-key w3m-mode-map [right] 'forward-char)
+ (define-key w3m-mode-map [up] 'previous-line)
+ (define-key w3m-mode-map [down] 'next-line)
+ (define-key w3m-minor-mode-map [left] 'backward-char)
+ (define-key w3m-minor-mode-map [right] 'forward-char)
+ (define-key w3m-minor-mode-map [up] 'previous-line)
+ (define-key w3m-minor-mode-map [down] 'next-line)
+))
+}}}
+
+
+=== I cant see inline images in html-messages without jumping to them ===
+In default settings, mime-w3m shows only images embedded in a message. 
+Please check URLs of images and the value of mime-w3m-safe-url-regexp.
+
+
+=== How can I send html messages? ===
+If you have to or it is appropriate: Yes, code below does the trick of
+converting the message body into html before sending.  It requires
+[OrgMode] to be installed because the conversion is done by Org mode's
+html export function.
+
+Org is shipped with Emacs since 22.1 (iirc); you might also profit of
+the minor modes orgstruc-mode, orgstruc++-mode and orgtbl-mode for
+editing messages even if you don't want to send html messages: these
+minor modes give the power of Org's outlining features (headlines,
+bullet lists) and the table editor.  For information on these minor
+modes see
+[http://orgmode.org/manual/Orgstruct-mode.html#Orgstruct-mode here]
+and [http://orgmode.org/manual/Orgtbl-mode.html#Orgtbl-mode here].
+
+Back to sending html messages: Putting code below in your startup file
+adds following four functions:
+
+   - dmj/wl-send-html-message
+
+     Function that does the job: Convert everything between "--text
+     follows this line--" and first mime entity (read: attachment) or
+     end of buffer into html markup using `org-export-region-as-html'
+     and replaces original body with a multipart MIME entity with the
+     plain text version of body and the html markup version.  Thus a
+     recipient that prefers html messages can see the html markup,
+     recipients that prefer or depend on plain text can see the plain
+     text.
+
+     Line breaks in the signature are preserved.
+
+     Cannot be called interactively: It is hooked into SEMI's
+     `mime-edit-translate-hook' if message should be html message.
+
+   - dmj/wl-send-html-message-draft-init
+
+     Cannot be called interactively: It is hooked into WL's
+     `wl-mail-setup-hook' and `wl-draft-reedit-hook' and provides a
+     buffer local variable to toggle.
+
+   - dmj/wl-send-html-message-draft-maybe
+
+     Cannot be called interactively: It is hooked into WL's
+     `wl-draft-send-hook' and hooks `dmj/wl-send-html-message' into
+     `mime-edit-translate-hook' depending on whether html message is
+     toggled on or off
+
+   - dmj/wl-send-html-message-toggle
+
+     Toggles sending of html message.  If toggled on, the letters
+     "HTML" appear in the mode line.
+
+     Call it interactively!  Or bind it to a key in `wl-draft-mode'.
+
+Everything besides a keybinding of `dmj/wl-send-html-message-toggle'
+is done upon loading the code.  If you have to send html messages
+regularily you can set a global variable
+`dmj/wl-send-html-message-toggled-p' to the string "HTML" to enable
+html messages by default.
+
+{{{
+(defun dmj/wl-send-html-message ()
+  "Send message as html message.
+  Convert body of message to html using
+  `org-export-region-as-html'."
+  (require 'org)
+  (save-excursion
+    (let (beg end html text)
+      (goto-char (point-min))
+      (re-search-forward "^--text follows this line--$")
+      ;; move to beginning of next line
+      (beginning-of-line 2)
+      (setq beg (point))
+      (if (not (re-search-forward "^--\\[\\[" nil t))
+          (setq end (point-max))
+        ;; line up
+        (end-of-line 0)
+        (setq end (point)))
+      ;; grab body
+      (setq text (buffer-substring-no-properties beg end))
+      ;; convert to html
+      (with-temp-buffer
+        (org-mode)
+        (insert text)
+        ;; handle signature
+        (when (re-search-backward "^-- \n" nil t)
+          ;; preserve link breaks in signature
+          (insert "\n#+BEGIN_VERSE\n")
+          (goto-char (point-max))
+          (insert "\n#+END_VERSE\n")
+          ;; grab html
+          (setq html (org-export-region-as-html
+                      (point-min) (point-max) t 'string))))
+      (delete-region beg end)
+      (insert
+       (concat
+	"--" "<<alternative>>-{\n"
+	"--" "[[text/plain]]\n" text
+        "--" "[[text/html]]\n"  html
+	"--" "}-<<alternative>>\n")))))
+
+(defun dmj/wl-send-html-message-toggle ()
+  "Toggle sending of html message."
+  (interactive)
+  (setq dmj/wl-send-html-message-toggled-p
+        (if dmj/wl-send-html-message-toggled-p
+            nil "HTML"))
+  (message "Sending html message toggled %s"
+           (if dmj/wl-send-html-message-toggled-p
+               "on" "off")))
+
+(defun dmj/wl-send-html-message-draft-init ()
+  "Create buffer local settings for maybe sending html message."
+  (unless (boundp 'dmj/wl-send-html-message-toggled-p)
+    (setq dmj/wl-send-html-message-toggled-p nil))
+  (make-variable-buffer-local 'dmj/wl-send-html-message-toggled-p)
+  (add-to-list 'global-mode-string
+               '(:eval (if (eq major-mode 'wl-draft-mode)
+                           dmj/wl-send-html-message-toggled-p))))
+
+(defun dmj/wl-send-html-message-maybe ()
+  "Maybe send this message as html message.
+
+If buffer local variable `dmj/wl-send-html-message-toggled-p' is
+non-nil, add `dmj/wl-send-html-message' to
+`mime-edit-translate-hook'."
+  (if dmj/wl-send-html-message-toggled-p
+      (add-hook 'mime-edit-translate-hook 'dmj/wl-send-html-message)
+    (remove-hook 'mime-edit-translate-hook 'dmj/wl-send-html-message)))
+
+(add-hook 'wl-draft-reedit-hook dmj/wl-send-html-message-draft-init)
+(add-hook 'wl-mail-setup-hook 'dmj/wl-send-html-message-draft-init)
+(add-hook 'wl-draft-send-hook 'dmj/wl-send-html-message-maybe)
+}}}
+
+
+`org-mime-org-buffer-htmlize' also works fine, you need to have
+`org-plus-contrib' installed and set `org-mime-library' to `semi'.
+
+
+== How can I change which headers wl displays when viewing a message? ==
+The headers wl displays when viewing and editing a message are
+controlled by two variables: `wl-message-ignored-field-list' and
+`wl-message-visible-field-list'.  Both are lists whose elements are
+regular expressions that are used to determine which headers are
+displayed and which are not.
+
+If you for instance only want a basic set of headers like From:, To:,
+Cc:, Subject: and Date: to be displayed you could set these variables
+as followed:
+
+{{{
+;; ignore  all fields
+(setq wl-message-ignored-field-list '("^.*:"))
+
+;; ..but these five
+(setq wl-message-visible-field-list
+'("^To:"
+  "^Cc:"
+  "^From:"
+  "^Subject:"
+  "^Date:"))
+}}}
+
+In addition you can control the order of these headers using the
+variable `wl-message-sort-field-list':
+
+{{{
+(setq wl-message-sort-field-list
+ '("^From:"
+   "^Subject:"
+   "^Date:"
+   "^To:"
+   "^Cc:"))
+}}}
+
+Finally, you can toggle to full header view with "H" key. Do note, that if you have mime-buttons turned off, you probably want to include <code>"^Content-Disposition:"</code> in the above lists, so that you can see if there's an attachment in the message.
+
+
+== Messages in threads get paired up with wrong parent ==
+If two unrelated emails share the same subject, wl might/will group them together as being part of the same thread, to disable this set wl-summary-search-parent-by-subject-regexp to nil.
+
+
+== How can I TAB-complete on the folder petname?==
+Default behavior is to give the path when completing a folder. Set
+<code>(setq wl-use-folder-petname '(modeline read-folder))</code>, to
+have it autocomplete also on folder petname when doing refiling, for
+instance.
+
+
+== When I open a multifolder I get an error: Wrong type argument: arrayp, nil ==
+It might be that you've hit the default limit of messages in a
+multifolder that WL will handle properly.  The current limit is 100000
+Messages -- you might have to adjust this limit by setting the
+variable `elmo-multi-divide-number' to an appropriate value.
+
+{{{
+(setq elmo-multi-divide-number 1000000)
+}}}
+
+It may also be that your <code>elmo-network-session-idle-timeout</code> is set too small. Try setting it to nil.
+
+== WL hangs when I wake from hibernation ==
+
+The problem seems to be that elmo doesn't realize that the connection its IMAP or other connection has timed out on the other side, and so keeps trying it.  You can work around it by typing M-t M-t when you come back from hibernation.
+
+If you want this to happen automatically, you will need your system to run a command approximately like this before hibernation:
+
+{{{
+    /usr/bin/emacsclient --socket-name /tmp/emacs1000/server --eval "(wl-toggle-plugged 'off)"
+}}}
+
+and then toggle back on after resume.
+
+Since hibernation/suspend-to-ram sometiems happen in ways you can't control -- e.g., if you leave your laptop on somewhere and run out of battery power -- it's best to havethis doen automatically.
+
+If you use the hibernate script for hibernation/suspend, you can add a scriptlet /etc/hibernate/scriptlets.d/wanderlust that will
+do this for you automatically; here's a very simple example:
+
+{{{
+AddConfigHandler WanderlustOptions
+
+WanderlustSuspend() {
+    /usr/bin/emacsclient --socket-name /tmp/emacs1000/server --eval "(wl-toggle-plugged 'off)"
+}
+
+WanderlustResume() {
+    /usr/bin/emacsclient --socket-name /tmp/emacs1000/server --eval "(wl-toggle-plugged 'on)"
+}
+
+WanderlustOptions() {
+    case $1 in
+        *)
+            return 1
+    esac
+
+    if [ -z "$WANDERLUST_HOOKED" ] ; then
+        AddSuspendHook 01 WanderlustSuspend
+        AddResumeHook 01 WanderlustResume
+        WANDERLUST_HOOKED=1
+    fi
+    return 0
+}
+}}}
+
+A better way to do this would be to check each running emacsserver instance. In any case I found this didn't always solve the problem, possibly because plugging back in after resume may occur before your new internet connection has been negotiated, which would give you the same issue.
+
+I now use pm-utils instead, and have this in /etc/pm/sleep.d/09_wl_fix:
+
+{{{
+. "${PM_FUNCTIONS}"
+
+suspend_wl()
+{
+	# Get WL to go offline
+        /usr/bin/emacsclient --socket-name /tmp/emacs1000/server --eval "(wl-toggle-plugged 'off)"
+}
+
+resume_wl()
+{
+	# Wake up NetworkManager and make it do a new connection
+        echo "waking up -- wl is plugged off"
+}
+
+case "$1" in
+	hibernate|suspend)
+		suspend_wl
+		;;
+	thaw|resume)
+		resume_wl
+		;;
+	*) exit $NA
+		;;
+esac
+
+}}}
+
+
+for now it's doing the trick!
+
+== How can I stop [[CategoryBBDB|BBDB]] checking for name mismatches? ==
+
+By default BBDB checks for possible mismatches of a message's author
+name and the corresponding BBDB entry.  To disable this feature you
+have to remove the responsible function form WL's message redisplay
+hook:
+
+{{{
+(remove-hook 'wl-message-redisplay-hook 'bbdb-wl-get-update-record)
+}}}
+
+== If I receive a message with an encoded header field, WL does not decode it ==
+
+Perhaps your correspondents are sending you incorrect headers?  You can tell SEMI to accept some incorrectly encoded headers by saying:
+{{{
+(setq mime-header-accept-quoted-encoded-words t)
+}}}
+
+== How can I set wl to be less sensitive to glitches in my network connection? ==
+Try setting this:
+(setq elmo-network-session-idle-timeout 300)
+
+== How can I stop wl from autosaving my draft every second I make a change? ==
+Wanderlust automatically saves the draft every second there's a change. If your draft folder is an IMAP, this gets tiresome fast.
+{{{
+;;Only save draft when I tell it to (C-x C-s or C-c C-s):
+(setq wl-auto-save-drafts-interval nil)
+}}}
+
+Alternatively, you can use a local folder for draft by saying something like
+{{{
+(setq wl-draft-folder "+drafts")
+}}}
+
+== How can I unsubscribe from the wanderlust mailing list? ==
+For English mail list, send an email to <code>wl-en-ctl@ml.gentei.org</code> with "unsubscribe" in body.
+
+== I want to contribute to Wanderlust, where can I learn more? ==
+Patches, modifications, or suggestions can be sent to the mail list. To learn Luna, the tiny OOP core that powers WL, reading Peter Seibel's "Practical Common Lisp", Chapter 16 and 17 is highly recommended [http://www.gigamonkeys.com/book/ link]. This book is worth reading not just for understanding WL.
+
+== How can I remove the mime-buttons? ==
+The mime buttons is what shows up in the beginning and end of your messages as <code>[1 <text/plain; iso-8859-1 (quoted-printable)>]</code>. You can toggle on/off with C-c m (in summary buffer), or set <code>(setq mime-view-buttons-visible nil) </code>
+
+== Wanderlust sometimes seem to hang emacs when I try to save mails with non-ascii characters — what should I do? ==
+
+In older versions of Wanderlust, mime-encoding did not play nice with Emacs 23. If you cannot upgrade, a workaround is to outsource the mime-encoding; add the following to your Wanderlust init file:
+
+{{{
+(setq mel-b-ccl-module nil)
+(setq mel-q-ccl-module nil)
+(setq base64-external-encoder '("mimencode"))
+(setq base64-external-decoder '("mimencode" "-u"))
+(setq base64-external-decoder-option-to-specify-file '("-o"))
+(setq quoted-printable-external-encoder '("mimencode" "-q"))
+(setq quoted-printable-external-decoder '("mimencode" "-q" "-u"))
+(setq quoted-printable-external-decoder-option-to-specify-file '("-o"))
+(setq base64-internal-decoding-limit 0)
+(setq base64-internal-encoding-limit 0)
+(setq quoted-printable-internal-decoding-limit 0)
+(setq quoted-printable-internal-encoding-limit 0)
+(setq-default mime-transfer-level 8)
+(setq mime-header-accept-quoted-encoded-words t)
+}}}
+
+== Wanderlust is asking me all these questions about how to open an attachment! How do I make Wanderlust just open it? ==
+First,
+
+{{{
+(setq mime-view-mailcap-files '("~/.mailcap"))
+}}}
+
+This needs to be done *before* SEMI is loaded. You can use ##customize-variable## for this. Next, use the following (and only the following) in your ##~/.mailcap## file:
+
+{{{
+application/*; xdg-open %s
+image/*; xdg-open %s
+text/*; xdg-open %s
+video/*; xdg-open %s
+audio/*; xdg-open %s
+}}}
+
+Finally:
+
+{{{
+(setq mime-play-find-every-situations nil
+  mime-play-delete-file-immediately nil)
+}}}
+
+This depends on having a command, ##xdg-open##, that can deal with all types of files. This should be present on modern Linux desktops. I believe there is a similar command on a Mac.
+
+== Wanderlust is asking me all these questions about how to save (extract) an attachment! How do I make Wanderlust just save it? ==
+
+To stop Wanderlust from asking if you want to ##wl-mime-save-content## or ##mime-save-content##, try
+{{{
+
+;; Shut up, I just want to save the thing.
+(defun mime-preview-extract-current-entity (&optional ignore-examples)
+  "Extract current entity into file (maybe).
+It decodes current entity to call internal or external method as
+\"extract\" mode.  The method is selected from variable
+`mime-acting-condition'."
+  (interactive "P")
+  (cl-letf (((symbol-function #'mime-play-entity)
+             (lambda (entity &optional situation ignored-method)
+               (mime-save-content entity situation))))
+    (mime-preview-play-current-entity ignore-examples "extract")))
+}}}
+== See Also ==
+WanderLust
+
+----
+CategoryMail

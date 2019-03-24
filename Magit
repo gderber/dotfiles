@@ -1,0 +1,61 @@
+Magit is an interface to the version control system [https://git-scm.com Git],
+implemented as an [https://www.gnu.org/software/emacs Emacs] package.
+Magit aspires to be a complete Git porcelain.  While we cannot (yet)
+claim that Magit wraps and improves upon each and every Git command,
+it is complete enough to allow even experienced Git users to perform
+almost all of their daily version control tasks directly from within
+Emacs.  While many fine Git clients exist, only Magit and Git itself
+deserve to be called porcelains.  [https://magit.vc/about.html (more)]
+
+* Homepage: https://magit.vc
+* Development: https://github.com/magit/magit
+
+https://magit.vc/screenshots/status.png
+
+== Crash course ==
+
+Getting started with Magit is really easy:
+ 
+* ##M-x magit-status## to see git status, and in the status buffer:
+* ##s## to stage files
+* ##c c## to commit (type the message then ##C-c C-c## to actually commit)
+* ##b b## to switch to another branch
+
+Other handy keys:
+
+* ##P u## to do a git push
+* ##F u## to do a git pull
+* try to press ##TAB##
+
+You might also want to read the [https://magit.vc/manual/magit/Getting-started.html official Getting-started guide].
+
+== Screencasts ==
+
+* 2016.03 [https://www.youtube.com/watch?v=mtliRYQd0j4 Rewrite git history with Emacs, magit and git rebase] (15:04)
+* 2016.03 [https://www.youtube.com/watch?v=LDafmAJa-4w Emacs Tutorial - Introduction to Magit] (13:15)
+* 2015.10 [https://www.youtube.com/watch?v=vQO7F2Q9DwA Magit introduction and demonstration] (14:10)
+* 2015.08 [https://www.youtube.com/watch?v=4ccCNQaTJ10 EmacsConf 2015 - Lightning talk - Magit] (14:28)
+* 2015.04 [https://www.youtube.com/watch?v=zobx3T7hGNA Magit basics] (6:10)
+* 2014.11 [https://www.youtube.com/watch?v=VO7xj2ArpZw EmacsATX: Magit] (38:15)
+* 2009.01 [https://vimeo.com/2871241 Meet Magit] (20:48)
+
+== Extensions ==
+
+Various packages exist which extend Magit, including:
+
+* [https://github.com/magit/forge forge] Support for PRs and Issues in Git Forges such as GitHub
+* [https://github.com/justbur/evil-magit evil-magit] evil key bindings for Magit
+* [https://github.com/magit/magit-annex magit-annex] use ##git annex## within Magit
+* [https://github.com/terranpro/magit-gerrit magit-gerrit] Magit extension for Gerrit Code Review
+* [https://github.com/jtatarik/magit-gitflow magit-gitflow] ## git flow## extension for Magit
+* [https://github.com/sigma/magit-gh-pulls magit-gh-pulls] Magit extension for dealing with GitHub pull requests
+* [https://github.com/magit/magit-stgit magit-stgit] StGit extension for Magit
+* [https://github.com/magit/magit-svn magit-svn] use Magit with ##git svn## repositories
+* [https://github.com/magit/magit-topgit magit-topgit] Topgit extension for Magit
+* [https://github.com/magit/orgit orgit] support for Org links to Magit buffers
+
+You can find even more extensions by searching for "magit" on
+https://melpa.org.  You might also want to search for "git".
+
+----
+[[Git]] CategoryVersionControl

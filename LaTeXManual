@@ -1,0 +1,23 @@
+A free reference manual for LaTeX2e in the [https://www.ctan.org/ CTAN]
+is written in GNU [[Texinfo]], and available in Info, PDF, and HTML:
+
+https://www.ctan.org/tex-archive/info/latex2e-help-texinfo
+
+There's also another free user manual for LaTeX, started six years ago, in 1999.
+It is far from completion, but has some interesting commentary and a great
+command reference appendix.  It is written in GNU [[Texinfo]] and is availble as
+a helpful Emacs InfoMode.  PDF versions are also available:
+
+http://users.ninthfloor.org/~ashawley/gnu/latex/
+
+The documentation's project page, that has been stale since 2002, is here:
+
+https://savannah.nongnu.org/projects/latex-manual/
+
+There's a more complete free manual on LaTeX available from the India TeX
+Users Group (TUG).  Unfortunately, it was written in LaTeX of all things:
+
+http://www.tug.org.in/tutorials.html
+
+----
+CategoryTex

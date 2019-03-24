@@ -1,0 +1,32 @@
+= SCPaste =
+
+SCPaste is a simple tool to post the contents of a buffer to a public place.
+
+It uses htmlize to convert font-lock coloring to HTML and then
+copies the file via SCP. See https://p.hagelb.org.
+
+[new]
+A version using tramp-mode is available here:
+https://github.com/metaperl/scpaste/blob/master/scpaste.el#L90
+
+It does completely work, but I have no desire to continue with scpaste because it lacks line numbers for files.
+-- TerrenceBrannon
+
+[new:YannHodique:2008-04-02 20:47 UTC]
+Hi, you may be interested in using TrampMode for dealing with transport (and generalizing it). For example, something like 
+<code>(htmlize-file "~/.emacs" "/ssh:host:dotemacs.html")</code> would not be that far from what you're doing.
+
+
+
+[new]
+You might consider using HtmlFontify which can take care of a bit more fontification than [[Htmlize]].
+HtmlFontify will hopefully also be part of GNU Emacs soon.
+
+[new:PhilHagelberg:2008-04-03 02:48 UTC]
+YannHodique: of course; why didn't I think of that? Then we get Windows compatibility for free. I will also check out HtmlFontify; if that's going to be included in Emacs then it makes sense to incorporate it. Thanks!
+
+[new:PhilHagelberg:2011-06-17 18:53 UTC]
+scpaste 0.5 now uses htmlfontify. I have tramp turned off because it
+was interfering with some basic Emacs operations at some point, but
+perhaps that bug has been fixed; would be happy to see a patch that
+switches to using tramp rather than shelling out.

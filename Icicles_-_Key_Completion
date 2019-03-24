@@ -1,0 +1,652 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Tripping]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Multi M-x]] ||
+
+----
+
+
+== Key Completion ==
+
+Here's another weird '''Icicles''' feature: [[Completion]] of ''[[key sequence]]s'', instead of [[command]]s or other [[minibuffer]] input text.   (This feature works only for Emacs 22 and later.)
+
+''What on earth for?'' Have you ever wanted to use one of those myriad `C-x' key sequences, but forgot just what it was? The standard solution to that is to use `C-x C-h', to display all of the `C-x' [[key binding|bindings]] together with their commands.
+
+OK, but then you have to scroll down the list of bindings, searching for the command you want, and then use its key binding. You can use `C-M-s' to search for a substring of the command name, in case you do not recall the exact name, but why not use '''Icicles''' completion for this? Why not ''match against possible key sequences and commands''?
+
+
+
+
+
+
+
+
+
+[:CompletingKeys]
+=== Completing Keys ===
+
+To complete keys in '''Icicles''', start the key sequence as usual, and then hit `S-TAB'. For example, use `C-x' or `C-x 4', and then hit `S-TAB' to complete the [[prefix key|prefix]] `C-x' or `C-x 4' (or whatever). You're then completing against candidates that are composed of two parts, separated by the value of option '''`<tt>[[Icicles - Customization and General Tips#icicle-complete-keys-separator|icicle-complete-keys-separator]]</tt>'''' ('''##"  =  "##''' by default):
+
+* a key binding that completes what you've typed so far -- e.g. `C-j' (that is, `C-x C-j')
+* the command it is bound to -- e.g. `dired-jump-other-window'
+
+So, for example, this is a single completion candidate:
+
+  C-j  =  dired-jump-other-window
+
+You can match your [[minibuffer]] input against the key name, the command name, or both.
+
+Suppose, for instance, that you want to use a version-control command, and you remember that all such commands are bound to key sequences that begin with `C-x v'.  You enter as much of the key sequence as you remember (`C-x v'), and then you hit `S-TAB'. You can then use completion (either [[Icicles - Apropos Completions|apropos]] or [[Icicles - Background on Input Completion|prefix]]) against the matching key sequences and command names to invoke the right command. And, as a bonus, you are reminded of its key sequence.  You can thus use '''Icicles''' key completion to execute a command and, at the same time, learn its key binding.
+
+(The documentation always refers to the key that performs key
+completion as `S-TAB'.  Actually, it is `S-TAB' only by default.
+You can customize it, using [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>''''.)
+
+
+
+
+
+
+
+
+
+
+
+[:StartWithS-TAB]
+=== `S-TAB' Is Everywhere - Start With It ===
+
+In ''Icicle'' mode, whenever you are not in the minibuffer or [[buffer]] `*Completions*', key `S-TAB' (`S-tab') initiates key completion. That is, you do not need to first type part of a key sequence to use it -- you can ''start with it''. Hit `S-TAB' at any time, and you're completing a key sequence, even if you have not yet hit any keys. This lets you see all key sequences that are available in a given context. For example, in [[DiredMode|Dired]], keys special to that mode are included (and are highlighted as local bindings -- see [[#HighlightLocalBindings]], below).
+
+When completing a key sequence, you can type part of a command name, then hit `S-TAB' again to [[apropos completion|apropos-complete]] against the command name. In this respect, `S-TAB' acts like `M-x', but the key binding is also part of the completion candidate, so you can also match key names.
+
+
+
+
+
+
+
+
+
+
+
+
+[:CompletingKeysByName]
+=== Completing Keys By Name ===
+
+So, just how do you complete input against a set of binding-plus-command completion candidates? You can always [[Icicles - Cycling Completions|cycle]] among the candidates, of course, and then choose one. But what about completion? Just type text to match candidates, then use `S-TAB' or `TAB' as usual to complete the text. ''Text''? Yes. Completion candidates are always, ultimately, strings. 
+
+Suppose that you type `C-x S-TAB' to show all key sequences that begin with `C-x'. You might see a candidate that looks like this: 
+
+  C-q  =  toggle-read-only
+
+You can then type "##C-q##" or "##d-onl##" or any other substring, and then use `S-TAB' to complete the candidate. (This second use of `S-TAB' invokes the command `icicle-apropos-complete', which has nothing to do with `icicle-key-complete', which was invoked by the first `S-TAB'. The first was invoked outside the minibuffer; the second was invoked from the minibuffer, during completion.)
+
+
+
+
+
+
+
+
+
+
+
+[:CompletingPrefixKeys]
+=== Completing Prefix Keys ===
+
+What happens if the completion candidate is itself a [[prefix key]]? For example, `C-x S-TAB' shows some candidates whose commands are shown as "##...##", like this:
+
+  4  =  ...      5  =  ...
+  6  =  ...      C-k  =  ...
+  ESC  =  ...    RET  =  ...
+
+These represent prefix keys (`C-x 4', `C-x C-k', and so on). If you choose such a candidate, then you just continue completing -- buffer `*Completions*' is updated to show the completions of the compound prefix: `C-x 4', `C-x RET', or whichever you choose. The minibuffer prompt shows the completion so far; if you choose `RET', for instance, then it shows `C-x RET' while prompting you for the rest of the key sequence.
+
+
+
+[:Sorting]
+By default, completion candidates are sorted in buffer
+`*Completions*' with ''local bindings'' listed first.  You can use
+`##C-M-,##' at any time during key completion to toggle between this order
+and sorting with the ''prefix-key'' candidates shown first.  You can
+use `##C-,##' at any time to change the sort order among these two
+orders and sorting by ''command name''.
+
+Here are some screenshots, from `S-TAB' in the Buffer Menu (`C-x C-b'), to illustrate this.
+
+[[image:IciclesKeyCompletionsSortLocalFirst]]
+
+[[image:IciclesKeyCompletionsSortPrefixFirst]]
+
+[[image:IciclesKeyCompletionsSortByCmdName]]
+
+
+
+
+
+
+
+
+
+
+
+
+[:TopLevelKeyCompletionFromPrefixKeys]
+[:NotCompletingPrefixKeys]
+=== Top-Level Key Completion from a Prefix Key ===
+
+In contrast to the previous section, ''Completing Prefix Keys'',
+this section could alternatively be called '''''Not''''' ''Completing
+(Ignoring) Prefix Keys''.
+
+Command `icicle-complete-keys' is normally (i.e., by default)
+invoked from `S-TAB', either at top level or by using a prefix key
+followed by `S-TAB'.  In the latter case, it completes that prefix
+key.  This is a primary use case: show the completions of a prefix
+key.
+
+But what if you wanted to perform top-level key completion, but
+invoke that operation from a key (`S-TAB' or another) that is on a
+prefix keymap?
+
+For example, what if you want to use, say, `##C-x C-^##' for top-level key completion?  If you just bind
+`icicle-complete-keys' to `##C-x C-^##' then when you use that key
+sequence '''Icicles''' will complete prefix key `C-x'.  You need some
+way to tell '''Icicles''' to ignore the `C-x' here.  You can do that by
+customizing [[option]] 
+'''`<tt>[[Icicles - Customization and General Tips#icicle-complete-keys-ignored-prefix-keys|icicle-complete-keys-ignored-prefix-keys]]</tt>''''
+to include the prefix key you want to ignore (`C-x' in this case).
+
+You probably do not want to do this for `C-x', since it is useful
+to be able to complete `C-x' itself.  But you might, for example,
+want to make key completion available from a menu or some other
+prefix key whose completions you do not need to be reminded of.
+
+To add top-level key completion to, say, the menu-bar '''Edit''' menu,
+you would customize `icicle-complete-keys-ignored-prefix-keys' by
+adding `##<menu-bar> <edit>##' as a prefix key to ignore.  Then
+you would add `icicle-complete-keys' as a '''Complete Keys''' menu item on the '''Edit'''
+menu, as follows:
+
+  (global-set-key [menu-bar edit icicle-complete-keys]
+                  '("Complete Keys" . icicle-complete-keys))
+
+This has already been done for you: menu item '''Show Available Keys (Complete Key)''' in the [[menu bar|menu-bar]] '''Icicles''' menu performs top-level
+key completion.  Use it to see which keys are possible in the current context.
+
+
+
+
+
+
+
+
+
+
+
+
+[:NavigateKeyHierarchy]
+=== Navigate the Key-Binding Hierarchy ===
+
+Choosing a completion candidate such as `##C-x  =  ...##' effectively navigates down the key-binding hierachy (prefix-key hierarchy), to complete against all keys with prefix `C-x'.  Choosing `##5  =  ...##' to complete the prefix `C-x' then navigates down another level, to complete keys that have prefix `C-x 5'.
+
+What about navigating back up the hierarchy, say from the `C-x 5' keys to the `C-x' keys, or from the `C-x' keys to the keys with no prefix?  The special completion candidate '''`##..##'''' does that.  By default, it is always the first candidate in the `*Completions*' list.  It is of course not available unless you are completing a prefix; that is, it is not available at the top level.
+
+The screenshots above are all at the top level (in buffer `##*Buffer List*##'). The following screenshot is for the prefix key `ESC' -- it is what you see after choosing `##ESC  =  ...##' at the top level. Notice the special candidate '''`##..##'''', which is listed first and highlighted (using face 
+'''`<tt>[[Icicles - Customization and General Tips#icicle-multi-command-completion|icicle-multi-command-completion]]</tt>''''). (The fact that you see a candidate `##ESC  =  ...##' here too means that `##ESC ESC##' is a prefix key at the top level.) 
+
+[[image:IciclesKeyCompletionsDotDot]]
+
+This feature means that you can navigate the key-binding hierachy just as you would navigate the file-system hierarchy (using, say, `C-x C-f') or the [[menu bar]] hierarchy (using library '''LaCarte''').
+
+In fact, since menu-bar  bindings are also [[key binding]]s, you can also use key completion to navigate the menu-bar hierarchy -- just complete the [[prefix key]] '''`menu-bar''''!  Start with `S-TAB', choose
+`##menu-bar  =  ...##', then choose a menu, and so on.  But menu-bar
+menu completion is handy enough that it has its own ''Icicle'' mode key binding, by default: '''`S-f10''''.
+
+'''Icicles''' key completion thus provides a general ''browser for key bindings'', which you can also use to learn about keys and their associated comands, without necessarily executing them -- see [[#KeyCommandHelp|Key and Command Help]], below.
+
+
+
+: '''Gotcha:''' `S-TAB' uses [[apropos completion]], by default, so remember that typing `##.##' matches any character (except a newline). To match only the literal string `##..##' (to go up a level), do one of the following:
+
+* Turn on escaping of [[regexp]] special characters -- use `##C-`##' in the minibuffer to toggle this.
+* Use [[prefix completion]] (`TAB').
+* Escape the regexp special character explicitly: `##\.\.##' (or use `##^\.##').
+
+* [[Icicles - Cycling Completions|Cycle]]  to candidate `##..##'.
+
+
+
+
+
+
+
+
+
+
+
+[:HighlightLocalBindings]
+[:HighlightMenuItems]
+=== Local Bindings and Menu Items Are Highlighted ===
+
+Sometimes it helps to know which key sequences are [[local key binding|local bindings]],
+that is, bindings that are specific to the current mode.  For
+example, DiredMode defines keys specific to Dired buffer, such as
+`##* %##', `##% g##', and `##!##'.
+
+To help you distinguish local key bindings
+from others ([[global key binding|global]] and [[minor-mode key binding|minor-mode]] bindings), local bindings are
+highlighted in buffer `*Completions*' using face
+'''`<tt>[[Icicles - Customization and General Tips#icicle-special-candidate|icicle-special-candidate]]</tt>''''.  Otherwise,
+the key portion of a candidate (left side of `##KEY  =  COMMAND##') is
+highlighted with face '''`<tt>[[Icicles - Customization and General Tips#icicle-candidate-part|icicle-candidate-part]]</tt>''''. 
+
+However, to make menu items stand out, they are highlighted with
+face '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-menu-local|icicle-key-complete-menu-local]]</tt>''''
+for menus specific to the
+current mode, and face '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-menu|icicle-key-complete-menu]]</tt>'''' for other menu
+items.  By default, these are the same as faces
+`icicle-special-candidate' and `icicle-candidate-part',
+respectively, except that they are also boxed.
+
+Here is a screenshot:
+[[image:IciclesKeyCompletionsMenus]]
+
+
+
+
+
+
+
+
+
+
+
+
+[:CompletingKeysByHittingThem]
+=== Completing Keys By Just Hitting Them ===
+
+It may seem odd that you must complete a key sequence by entering the ''names'' of keys, rather than just hitting the keys themselves: e.g. typing "##C-f##" rather than hitting `C-f'. However, if keys themselves were used for completing, then they could not be used normally during key-sequence completion. You could not move the [[cursor]] around the minibuffer using `C-f' or `right' (right arrow), because those keys would be treated as input for completion. You could not use `up' or `down' to cycle among completion candidates for the same reason.  Likewise, you could not use printing (self-inserting) keys, such as `a' and `##$##', to match command names. Having to use key names, instead of keys, for completion is a small price to pay for being able to complete key sequences. 
+
+Nevertheless, '''Icicles''' also provides a way for you to type key sequences directly, even if it is something of a workaround: precede each key with '''`M-q'''' (`icicle-insert-key-description', during key completion) -- think of `q' for "quote". This inserts the key description of whatever key you hit next. This key description (name) can be used to match key-completion candidates. So, for example, instead of typing "##C-f##", you can hit `M-q' and then hit `C-f'. The key description "##C-f##" is inserted in the minibuffer. If you use `M-q C-M-right', then "##C-M-right##" is inserted. Try it: `##S-TAB M-q C-M-right##' -> "##C-M-right##". Then hit `TAB' or `S-TAB' to complete the candidate all the way to this:
+
+  C-M-right  =  enlarge-frame-horizontally
+
+: '''Note:''' Whether or not angle brackets are used is governed by user option '''`<tt>[[Icicles - Customization and General Tips#icicle-key-descriptions-use-angle-brackets-flag|icicle-key-descriptions-use-<>-flag]]</tt>'''' (aka
+`icicle-key-descriptions-use-angle-brackets-flag').  By default, this is `nil', so angle brackets are not used, which I think improves readability.  If you set this to non-`nil', then you will see "##<C-M-right>##" instead of "##C-M-right##", both as a completion candidate and as what is inserted when you use `M-q'.  You can also provide a [[prefix argument]] to `M-q' to flip the behavior of `##icicle-key-descriptions-use-<>-flag##' for that occurrence only.
+See also my library '''<tt>[[naked.el]]</tt>''', which lets you use the
+no-angle-brackets style also outside of '''Icicles'''.
+
+
+
+
+
+
+
+
+
+
+
+
+[:KeyCommandHelp]
+=== Key and Command Help ===
+
+That points out another use of key completion, opposite to learning the bindings of commands: learning the commands bound to given keys. In other words, `##S-TAB M-q##' does both what `C-h w' (`where-is') does and what `C-h c' (`describe-key-briefly') does.  It also does what `C-h b' (`describe-bindings') does.
+
+The point here is not that `##S-TAB M-q##' is quicker than `C-h w' or `C-h c' or `C-h b' -- it's not. The point is that key completion can be handy in several ways, and it can teach you various things about keys and commands as you use it.
+
+In addition to this key-completion help about bindings, you can display help on the commands that are the right sides of the `S-TAB' completion-candidate equations, by using the [[multi-command]] help keys (see [[Icicles - Help on Candidates]]). That is, while completing, you can use `C-M-mouse-2', `C-M-RET', `C-M-next', and so on to describe the command named in the current completion candidate.
+
+
+
+
+
+
+
+
+
+
+
+
+[:S-TABIsAMultiCommand]
+=== `S-TAB' Is a Multi-Command ===
+
+Yes, `S-TAB' as `icicle-complete-keys' is a [[multi-command]].  This means that you can, within the
+same execution of `S-TAB', invoke any number of keys by clicking
+(`C-mouse-2') their names in buffer `*Completions*' or choosing them any
+other way (`C-RET', `C-next', and so on).
+
+Since you can navigate up and down the key-binding hierarchy, you
+could even stay within a single `S-TAB' invocation to do nearly
+everything you want in Emacs (see [[#ThreeKeyEmacs]], below)!
+
+
+
+
+
+
+
+
+
+
+
+[:PossibleConfusion]
+=== Possible Source of Confusion ===
+
+Keep in mind that `S-TAB' has two different uses in '''Icicles''' when you are providing input in the minibuffer:
+
+* If input completion is available, then `S-TAB' performs [[apropos completion]] (it is, in effect, bound to `icicle-apropos-complete').
+
+* If input completion is not available, then `S-TAB' performs key completion (it is, in effect, bound to `icicle-complete-keys').
+
+In addition, in buffer `*Completions*' `S-TAB' moves backward among
+the candidate completions.
+
+This is by design; it takes advantage of the fact that these contexts are mutually exclusive.  However, this economy comes at a risk of potential confusion.  It's important that you know whether or not completion is available when you are inputting text.  If input completion is not available, but you think it is, then hitting `S-TAB' might give you a surprise by key completing. That behavior is normal -- you can use key-completion to input special characters, for instance.  But if you think that you are instead completing the original input requested, then you can become confused.
+
+'''Icicles''' provides ''completion status indicators'' so that you can
+easily tell when completion is available for minibuffer input.
+There are two indicators: (1) at the beginning of the minibuffer
+prompt and (2) in the `Icy' minor-mode lighter in the [[mode line]].
+See [[Icicles - Nutshell View#CompletionStatusIndicators|Completion Status Indicators]].  If completion is not
+indicated when you are prompted for input, it means that `S-TAB' is available, not for input completion, but for key completion.  Another clue can be found in the prompt text.  For key completion, it says "##Complete keys: ##".
+
+If you nevertheless find the overloaded use of `S-TAB' confusing, you can change the bindings of the key `S-TAB' in these different
+contexts.  To do that, you can customize options '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-keys|icicle-apropos-complete-keys]]</tt>'''', '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>'''', and '''`<tt>[[Icicles - Customization and General Tips#icicle-completion-list-key-bindings|icicle-completion-list-key-bindings]]</tt>''''. 
+
+
+
+
+
+
+
+
+
+
+[:CompleteKeysInMinibuffer]
+=== Complete Keys in the Minibuffer Also ===
+
+In the [[minibuffer]], `S-TAB' performs [[apropos completion]] of your
+typed input.  So it is not available for key completion.  But you
+can still complete keys in the minibuffer.  You just use '''`M-S-TAB'''' instead of `S-TAB'.  (If your window manager steals `M-S-TAB' then
+try `ESC S-TAB'.)
+
+And just as the actual keys that perform key completion outside
+the minibuffer are customizable using [[option]] `<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>', so too for the key-completion keys in
+the minibuffer: It is actually the keys defined by option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys-for-minibuffer|icicle-key-complete-keys-for-minibuffer]]</tt>'''' that are used --
+`M-S-TAB' is just the key used by default.
+
+`M-S-TAB' works in any minibuffer, whether or not it is reading
+input using completion.  And you can of course use [[progressive completion]] to pare down the set of matches.  There are lots of
+'''Icicles''' minibuffer keys -- too many for most people to remember.
+`M-S-TAB' is a great way to see what they are in any given
+context.
+
+Here are some screenshots taken after `M-x', with local key bindings sorted first.
+
+The first (shrunk), shows all of the local bindings. As you can see, there are '''lots''' of them.
+
+[[image:IciclesKeyCompsMiniAllLocal]]
+
+The rest show the matches you see if you type some text in the minibuffer: 
+
+Cycling commands -- match ''<tt>next</tt>'':
+
+[[image:IciclesKeyCompsMiniMatchNext]]
+
+
+Help commands -- match ''<tt>help</tt>'':
+
+[[image:IciclesKeyCompsMiniMatchHelp]]
+
+
+Toggle commands -- match ''<tt>toggle</tt>'':
+
+[[image:IciclesKeyCompsMiniMatchToggle]]
+
+
+Completion commands -- match ''<tt>complete</tt>'':
+
+[[image:IciclesKeyCompsMiniMatchComplete]]
+
+
+Control-Meta prefix -- match ''<tt>C-M-</tt>'':
+
+[[image:IciclesKeyCompsMiniMatchCM]]
+
+
+Meta-key prefix -- apropos-match ''<tt>^M-</tt>'':
+
+[[image:IciclesKeyCompsMiniMatchM]]
+
+
+Alternative action commands -- match ''<tt>C-S-</tt>'':
+
+[[image:IciclesKeyCompsMiniMatchCS]]
+
+
+Candidate action commands -- match ''<tt>candidate</tt>'' but not ''<tt>next</tt>'' and not ''<tt>previous</tt>'' (progressive completion):
+
+[[image:IciclesKeyCompsMiniMatchCandidateOnly]]
+
+
+
+
+
+
+
+
+
+[:ThreeKeyEmacs]
+=== Three-Key Emacs? ===
+
+'''Icicles''' key completion piles a lot of stuff into `S-TAB'.  Just
+as `M-x' lets you execute any Emacs command, so does `S-TAB'.  But
+`S-TAB' also lets you insert characters.  You might say that it gives you ''all of Emacs in one key binding''.
+
+Of course, you need a couple other keys, as well. How many? Suppose you had limited accessibility in terms of input devices. Maybe you use Emacs on a cell phone, without voice recognition -- or whatever.  '''''How many keys, buttons, or whatnot do you need to use Emacs?'''''
+
+# You need one for `C-g', to interrupt commands.
+# You need one to start telling Emacs what to do.
+# You might need one to choose from a set of possible things to do.
+# You need one to tell Emacs that you're done telling it what to do.
+
+(#2 and #3 might be combined somehow.)
+
+What does vanilla Emacs offer out of the box in this regard?
+
+* You can get by with just `mouse-1' and the [[menu bar]] menus, but they
+  do not cover all of Emacs. You cannot use them to enter text, for
+  instance. Of course, you could add more menus, to be able to do more.
+
+* You can use `M-x' plus `RET' to execute any command. But how would
+  you insert text?
+
+* Similarly, for `##M-:##', which lets you evaluate any EmacsLisp
+  [[sexp]]. You still need a way to type characters.
+
+'''Icicles''' key completion lets you do almost anything in
+Emacs with three or four keys, buttons, or whatever:
+
+* `S-TAB' -- Offers every key sequence as a possible choice to
+  execute. 
+
+* `next' -- Cycles among candidates, for choosing.
+
+* `RET' -- Chooses the current candidate.
+
+* And of course `C-g', to cancel the current operation.
+
+`S-TAB' includes key `M-x', which offers all commands (even those not bound) as possible choices. It also includes key `##M-:##', which lets you execute any EmacsLisp expression. That's almost all of Emacs! (See also [[MousePlus#M-xViaMouse2|M-x via `mouse-2']].)
+
+You could even perhaps get away with only three mouse buttons, and no keyboard:
+
+* `mouse-1' -- Choose candidates, scroll, and so on (direct access, no cycling).
+
+* `mouse-2' -- Do what `S-TAB' does (bind it to `icicle-complete-keys' and `icicle-apropos-complete').
+* `mouse-3' -- Do what `C-g' does (bind it to `keyboard-quit' and `icicle-abort-recursive-edit').
+
+Here, `mouse-2' and `mouse-3' are not even used as mouse ([[pointer]]) functions; any keys or buttons would do. You could use just `mouse-1' plus a Shift key and a Control key.
+
+Would you ''want'' to use Emacs only this way? Of course not, if you had a
+choice.  Typing the character `a' by cycling through every possible
+key binding/command combination and hitting `RET' when you get to
+`##a  =  self-insert-command##' would be the epitome of tedium. Likewise, doing everything with a single pointer-device button. Using only three or four keys or buttons is definitely not the ideal way to take advantage of Emacs.
+
+But you are probably not limited to just 3 or 4 keys or buttons. The
+real point here is that '''Icicles''' `S-TAB' opens the door to almost
+everything in Emacs.  And if you do have a normal keyboard, then you
+can type letters and such to match command names and key sequences.
+Key `next' matches substrings (regexps, actually), which makes choice
+even quicker.
+
+
+
+
+
+
+
+[:SelfInsert]
+[:UniCode]
+=== Entering Special and Foreign Characters ===
+
+Command `self-insert-command' is bound to each key that is
+associated with a character that can be inserted in text.  It is
+the binding of the key `a' and the key `##$##', for example.  It is also the
+binding of keys that your keyboard might not even have -- keys that
+correspond to special or odd characters and characters in other
+languages.
+
+To '''Icicles''' key completion, these keys are like other keys.  However, because there are many, ''many'' keys bound to `self-insert-command', it can be distracting and slow to
+allow such keys as completion candidates.  If option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-complete-keys-self-insert-ranges|icicle-complete-keys-self-insert-ranges]]</tt>'''' is `nil' (the default
+value), then such keys are excluded as candidates.  This is
+probably what you want.
+
+If the option is non-`nil', then you can use key completion to insert
+the characters whose codes are in the range(s) defined by
+the option value.  This lets you see the candidate characters in
+`*Completions*' (WYSIWYG), but it is not a terribly convenient or
+quick way to insert characters.
+
+Starting with Emacs 23, vanilla Emacs has ''Unicode'' support, and you
+can insert any Unicode characters using either an input method or  '''`C-x 8 RET''''.   `C-x 8 RET' is bound by default in Emacs to command `insert-char' (called `ucs-insert' prior to Emacs 24).  If you use my library <tt>[[ucs-cmds.el]]</tt> then you might want to remap that command to command '''`ucsc-insert'''', which is an enhancement.
+
+
+[:icicle-read-char-by-name-multi-completion-flag]
+For Emacs 23-25, if option '''`<tt>[[Icicles - Customization and General Tips#icicle-read-char-by-name-multi-completion-flag|icicle-read-char-by-name-multi-completion-flag]]</tt>''''  is
+non-`nil' then '''Icicles''' enhances this in a few ways:
+
+* It shows in `*Completions*',
+for each candidate Unicode character, its name and code point, as well as the character itself.
+
+* When you cycle among the matching candidates, the name and code point of the current candidate are shown in the [[mode line]].
+The code point is shown in hexadecimal, octal, and decimal
+notations.
+
+* Completion candidates are in fact [[multi-completion]]s, meaning that
+you can match the name or the code point, or both.
+
+* You can even match the character itself.  Why might you
+want to do that?  To see the corresponding Unicode character
+name(s), including any old names.  For example, for the character
+'''`''' (grave accent) you get these two completion candidates:
+
+          GRAVE ACCENT      60      `
+          SPACING GRAVE     60      `
+
+The main purpose for this is to show you the characters and code points together with their names (WYSIWYG).  The characters are shown in `*Completions*'
+using the same font as the frame from which you invoked `C-x 8 RET'.  That you can also match against the characters themselves is
+just a nice-to-have.
+
+The most important features of the '''Icicles''' version of `C-x 8 RET'
+are (a) seeing the characters and code points (WYSIWYG) and (b) being able to use
+[[progressive completion]], so you can use multiple simple patterns
+instead of a single complex pattern.
+
+
+
+I recommend that you use
+`insert-char' (or better, `ucsc-insert'), not key completion, to insert Unicode characters.
+
+There are thousands of Unicode characters.  So if you do use a non-`nil' value for
+`icicle-complete-keys-self-insert-ranges' then use only small
+ranges for better performance, e.g., `##((0 . 687))##' covers Latin
+characters.  For Emacs 22, the option is effectively Boolean: any
+non-`nil' value allows all self-inserting keys as candidates
+(there are far fewer available characters in Emacs 22).
+
+For each Unicode character, the completion candidate is
+`##CHAR  =  UNICODE-NAME##', where ##UNICODE-NAME## is the name of the
+Unicode character.  This is so that you can complete against the
+name.  But again, I recommend that you use `C-x 8 RET',
+not key completion, to insert a Unicode character.
+
+
+
+
+
+
+
+[:KeymapsInaccessibleFromGlobalMap]
+=== Handling Keymaps That Are Inaccessible From the Global Map ===
+
+Actually, `S-TAB' is not bound to `icicle-complete-keys' in every keymap.  That would be inconvenient, in general. By default, it is so bound in each keymap that is accessible from the [[global keymap]], as determined by function `accessible-keymaps'.
+
+You've seen, above, how you can navigate through prefix keys, starting with the global map. In [[DiredMode|Dired]], for instance, you can use `S-TAB' at the top level, then choose the prefix key `##*##' in `*Completions*', then choose a key, such as `##/##' (to mark directories), in the `##*##' keymap.
+
+However, the act of binding of `S-TAB' in keymaps that are accessible from the global map does not bind it in the `##*##' prefix keymap itself. To handle this case, '''Icicles''' explicitly does for `dired-mode-map' what it does for the global map: it binds `S-TAB' in each keymap that is accessible from `dired-mode-map'.  Because of this, you can use `##* S-TAB##' to show all key completions of `##*##'.
+
+This treatment of `dired-mode-map' is done by default.  Similarly for a few other keymaps.  But you might have other keymaps that you would like to treat similarly -- keymaps that '''Icicles''' might be unaware of.  You do this by including them in the [[list]] value of user option '''`<tt>[[Icicles - Customization and General Tips#icicle-keymaps-for-key-completion|icicle-keymaps-for-key-completion]]</tt>'''', along with `dired-mode-map' and the others provided in the default value.  The list entries are EmacsLisp [[symbol]]s that are bound to [[keymap]]s, each of which should define at least one [[prefix key]].  If you add a keymap [[variable]] to this list, then `S-TAB' will be bound so that you can use it to complete the prefix keys defined by that map.
+
+Notice that there is no keymap variable that corresponds to prefix key `##*##' in DiredMode.  You need only provide a keymap (variable `dired-mode-map') from which the prefix key is accessible; it is not necessary to also provide a variable that corresponds to the prefix keymap itself.
+
+If a keymap listed in `icicle-keymaps-for-key-completion' is not defined when ''Icicle'' mode is entered, then it is ignored.  If you later define that keymap, then just exit and reenter ''Icicle'' mode for the `S-TAB' binding to take effect.  For example, use `M-x icy-mode' twice after entering CalendarMode, to be able to complete `calendar-mode' prefix keys such as `t' -- `##t S-TAB##'.
+
+
+
+
+[:AutomaticKeyCompletion]
+=== Automatic Key Completion ===
+
+There are now a few other libraries, such as ##guide-key.el## and
+##which-key.el##, that provide some of what '''Icicles''' key completion
+offers.
+
+They offer mostly on-the-fly help while you hit keys, not
+completion against the associated command names, browsing of
+prefix-key hierarchies, etc.  Instead of on-demand control of key
+help (`S-TAB'), they show help automatically, after an idle delay.
+
+Similarly, you can opt for automatic display of '''Icicles''' key
+completions by turning on minor mode
+`icicle-auto-complete-keys-mode'.  User option '''`<tt>[[Icicles - Customization and General Tips#icicle-auto-complete-key-delay|icicle-auto-complete-key-delay]]</tt>'''' specifies how many seconds to
+wait before displaying the key completions.
+
+By default this mode is off, because I think help on demand is
+generally more useful.
+
+
+
+
+
+
+
+
+----
+
+|| *Previous:*  [[Icicles - Tripping]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Multi M-x]] ||
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+CategoryKeys
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+CategoryDocumentation
+CategoryHelp
+CategoryProgrammerUtils
+CategoryCode
+CategoryAccessibility
+CategoryMenus

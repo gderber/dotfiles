@@ -1,0 +1,997 @@
+[[es:ModoTramp]]
+TRAMP [:TRAMP] (Transparent Remote Access, Multiple Protocols) is a package for editing remote files, similar to AngeFtp or efs. Whereas the others use FTP to connect to the remote host and to transfer the files, TRAMP uses a remote shell connection (rlogin, telnet, ssh). It can transfer the files using rcp or a similar program, or it can encode the file contents (using uuencode or base64) and transfer them right through the shell connection.
+
+Tramp was formerly called RCP or rcp.el.
+
+It allows you transparent access to files on remote access.  "Transparent" means that usually the user doesn't have to worry about anything.  All that changes is the filename convention to indicate that the file resides on a remote system.
+One of the neat things about using Tramp via a remote shell, is that Emacs will then automatically invoke other remote shell commands directly on that server, e.g. when viewing a remote file, try <code>M-x shell</code>, <code>M-x rgrep</code>, etc.
+
+You can speed up Tramp by using ssh's "ControlMaster" feature — see http://linux.com/feature/54498 . (Note that this is used automatically in recent versions of Tramp.)
+
+Tramp Documentation:
+
+* http://www.gnu.org/software/tramp/
+
+== Quick-start tramp  ==
+
+Faster than the default scp
+
+    (setq tramp-default-method "ssh")
+
+For GNU Emacs
+
+    C-x C-f /remotehost:filename  RET (or /method:user@remotehost:filename)
+
+For [S]XEmacs use the syntax
+
+    C-x C-f /[method/user@remotehost]/filename
+
+You can also edit local files as root with either of the following (note the double colon, which is required)
+
+    C-x C-f /su::/etc/hosts
+    C-x C-f /sudo::/etc/hosts
+
+Windows with Cygwin tools installed, assuming no password is required:
+
+    (setq tramp-default-method "sshx")
+
+== Windows ==
+
+Windows issues are discussed on a separate page: [[Tramp on Windows]].
+
+== Alternatives ==
+
+A good alternative to Tramp that doesn't do anything at the Emacs level is sshfs. Sshfs allows mounting on the fly a remote filesystem via ssh on a local mount point and to copy from it (see https://wiki.archlinux.org/index.php/Sshfs). It could be as simple (under emacs): 
+ 'sshfs host: localmountpoint'
+or, if username, id and gid are different as complex as 
+ 'sshfs usernameathost@host: localmountpoint -o idmapfile,uidfile=uid,gidfile=gid'.
+
+== Troubleshooting ==
+
+=== Older emacs versions===
+
+    (require 'tramp)
+
+=== SELinux issues ===
+
+If you do something like this
+
+  C-x C-f /sudo::/etc/sysconfig/iptables
+
+with a default install of Tramp (well the one bundled with Emacs23) and have
+SELinux enabled then Tramp will overwrite the SELinux context with "user_u:object_r:tmp_t"
+from whatever it was.  In the case of iptables having a system context it will prevent your
+firewall from restarting!
+
+This is likely to be due to intermediate tmp files (guessing here) with the Tramp/sudo interaction.  Not sure how one might configure around this.
+
+=== Tramp hangs ===
+
+If you're wondering why tramp just hangs then check that ssh hasn't
+just suddenly died.  This may be due to pppd, routers or whatever.  In
+any case neither ssh on the client nor sshd on the server notice that
+the connection has disappeared.  When the next command is sent,
+however, ssh notices that the line has been dropped and exits.  And
+now you have a problem - however, just hitting C-g and then attempting the save/get/whatever operation again should just work (until the next time ssh is dropped).
+
+Another thing that can cause tramp to hang (I saw this with Solaris at the remote end) is using
+an ancient /bin/sh as the remote shell. Switching to bash fixed it.
+
+I had a hang when I saw "Sending the Perl `mime-encode' implementations."  Setting my default method to "scp" fixed it (though now it's slower).
+
+If Tramp hangs with Solaris at the local end, try using "scpx" as your default tramp method. Also check that the hostname you are invoking Tramp with, matches what is in the ##~/.ssh/known_hosts## file; e.g. if the known_hosts file specifies the host with an IP, use an IP in the Tramp invocation.
+
+If you're using SVN or DARCS (or likely other things) with VC, see below for problem descriptions.
+
+=== Tramp hangs #2 ===
+
+If you are a victim of the following:
+
+{{{
+tramp: Waiting for remote host to process data...
+}}}
+
+It could be a problem with sending large chunks to the remote host.
+Please type ##C-h v tramp-chunksize RET## and follow the instructions
+shown there.
+
+You could also ##(setq tramp-chunksize 500)## to see if that helps.
+
+=== Tramp hangs #3 ===
+
+If you use zsh and Tramp hangs every time you try to connect, try placing this in your .zshrc:
+
+{{{
+[[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ '
+}}}
+
+Make it foolproof by putting it at the very top of your .zshrc and adding a return to ensure that nothing later in your .zshrc re-enables PS1:
+
+{{{
+[[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ ' && return
+}}}
+
+Even better, avoid changing your ##dumb## terminal's prompt (eg, in ##M-x shell##), and instead use a specific ##TERM##: set ##tramp-terminal-type## to ##"tramp"##, and then check for *that* in your ##.zschrc##:
+
+{{{
+[[ $TERM == "tramp" ]] && unsetopt zle && PS1='$ ' && return
+}}}
+
+Alternatively, I had success using the following in my .zshrc:
+
+{{{
+unsetopt prompt_cr
+}}}
+
+I've noticed that preexec and precmd call also be noxious if they do fancy stuff.
+I've ended up with:
+
+{{{
+if [[ "$TERM" == "dumb" ]]
+then
+  unsetopt zle
+  unsetopt prompt_cr
+  unsetopt prompt_subst
+  if whence -w precmd >/dev/null; then
+      unfunction precmd
+  fi
+  if whence -w preexec >/dev/null; then
+      unfunction preexec
+  fi
+  PS1='$ '
+fi
+
+}}}
+
+[new:EzeBirman:2013-01-12 07:40 UTC]
+None of the above worked for me so I decided to just change the SHELL environment variable. There is no added benefit from running zsh inside tramp anyway.
+{{{
+  (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
+}}}
+--EzeBirman
+
+=== Tramp hangs #4: UTF8 LANG ===
+
+To connect to a very old system I had to switch the remote, default LANG to a ''non''-utf8 one (in ##/etc/sysconfig/i18n##) Otherwise tramp would hang right after sending ##exec /bin/sh##. Tracing showed any utf8 LANG to somehow output extra CRs characters, causing tramp to wait the prompt forever. This could be locale bug.
+
+=== Tramp hangs #5: Control-j .inputrc mapping ===
+
+If you have Control-j mapped in your ##~/.inputrc## to something e.g. like this:
+
+{{{
+Control-j: menu-complete
+}}}
+
+it can cause tramp to never finish recognizing the shell prompt.
+
+=== Tramp hangs #6: Not recognising the remote shell prompt ===
+
+If you are using a customised prompt in your shell, tramp can hang if it doesn't recognise the remote shell prompt. The obvious symptom is that tramp hangs with the message "Waiting for prompts from remote shell", but it can also hang or freeze up after this, before successfully opening the requested file.
+
+To detect the remote prompt, tramp first tries the variable shell-prompt-pattern; if that fails, it tries tramp-shell-prompt pattern. You should try modifying tramp-shell-prompt-pattern first.
+
+The default for tramp-shell-prompt-pattern in some recent tramps is:
+
+    \\(?:^\\|\r\\)[^]#$%>\n]*#?[]#$%>] *\\(^[\\[[0-9;]*[a-zA-Z] *\\)*"
+
+(Note that the ^[ is a real control-[, and the \r may be a control-m.)
+
+My system (NixOS) recently made fancy coloured prompts the default. An ANSI escape sequence immediately follows the $, which breaks the default expression. Adding <code>.*</code> to tramp-shell-prompt-pattern is an easy fix:
+
+    \\(?:^\\|\r\\)[^]#$%>\n]*#?[]#$%>].* *\\(^[\\[[0-9;]*[a-zA-Z] *\\)*"
+
+See also http://comments.gmane.org/gmane.emacs.tramp/6996.
+
+=== Tramp hangs #7: Debian bug in Emacs 24.5 ===
+
+If you're using Emacs 24.5 on Debian/Ubuntu, you may encounter Debian bug #810640 : https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=810640
+
+Problem solved in Emacs 25.
+
+=== Tramp tries to connect to remote hosts on emacs startup ===
+
+This happens when you used ido to browse directories on a remote host and it saved them in `ido-dir-file-cache`. Ido will then save this cache to `ido-save-directory-list-file` which is loaded when emacs starts up.
+You can use the following code to clean the cache of tramp entries when emacs quits:
+{{{
+  (defun ido-remove-tramp-from-cache nil
+    "Remove any TRAMP entries from `ido-dir-file-cache'.
+    This stops tramp from trying to connect to remote hosts on emacs startup,
+    which can be very annoying."
+    (interactive)
+    (setq ido-dir-file-cache
+	  (cl-remove-if
+	   (lambda (x)
+	     (string-match "/\\(rsh\\|ssh\\|telnet\\|su\\|sudo\\|sshx\\|krlogin\\|ksu\\|rcp\\|scp\\|rsync\\|scpx\\|fcp\\|nc\\|ftp\\|smb\\|adb\\):" (car x)))
+	   ido-dir-file-cache)))
+  ;; redefine `ido-kill-emacs-hook' so that cache is cleaned before being saved
+  (defun ido-kill-emacs-hook ()
+    (ido-remove-tramp-from-cache)
+    (ido-save-history))
+}}}
+---JoeBloggs
+
+=== Tramp overwrites /dev/null causing many problems ===
+
+If your shell history is full, and you use tramp a lot, it sometimes overwrites /dev/null which causes lots of problems.
+See here: https://groups.google.com/forum/#!topic/gnu.emacs.bug/1wJG_qVU_K4
+To fix it run the following shell commands: 
+{{{
+sudo rm /dev/null 
+sudo mknod /dev/null c 1 3
+sudo chmod 666 /dev/null
+}}}
+---JoeBloggs
+== Tips and tricks ==
+
+[:AdHocMultiHops]
+=== The NEW (Emacs 24.3+) ad-hoc multi-hop syntax -- the replacement for multi: ===
+
+Note that some of the Tips and tricks below still refer to the old ##multi:## syntax, which was removed in Emacs 23 (in Emacs 23 you must configure proxies manually to facilitate multi-hops).
+
+As of Emacs 24.3, an analog of the old ##multi:## syntax has been layered on top of the modern `tramp-default-proxies-alist' approach, meaning that you can once again perform multi-hops without any prior configuration. For details, see:
+
+ C-h i g (tramp) Ad-hoc multi-hops RET
+
+With the new syntax, each 'hop' is separated by ##|##. The example in the manual is:
+
+ C-x C-f /ssh:bird@bastion|ssh:you@remotehost:/path
+
+Which connects firstly as ##bird@bastion##, and from there to ##you@remotehost:/path##
+
+==== /su: or /sudo: on remote hosts ====
+
+You can also use this syntax to sudo/su to root (or of course any other user) on a remote host:
+
+ C-x C-f /ssh:you@remotehost|sudo:remotehost:/path/to/file RET
+
+*Important*: be sure to specify the hostname explicitly: ##sudo:remotehost:## rather than ##sudo::## (see below).
+
+As this still uses the proxy mechanism underneath, `tramp-default-proxies-alist' should now include the value ##("remotehost" "root" "/ssh:you@remotehost:")##
+
+Meaning that the proxy ##/ssh:you@remotehost:## is going to be used whenever you request a file as ##root@remotehost##.
+
+##root## is the default user for these methods, but you can of course also change to a non-root user with:
+
+ C-x C-f /ssh:you@remotehost|sudo:them@remotehost:/path/to/file RET
+
+==== Always specify the remote hostname explicitly ====
+
+You are probably used to using ##sudo::## or ##su::## and omitting the hostname. If you are /staying/ on the localhost then this is still fine, but if you are hopping to a remote server then you /must/ specify the hostname for every hop -- even if it is the same as for the previous hop. Always use ##sudo:hostname:## or ##su:hostname:## with remote hosts.
+
+The trap here is that ##sudo::## /does/ actually appear to work -- /however/ when you do that the HOST for the dynamic proxy entry will be the hostname you /originated/ from rather than the host you connected to. This will not only look confusing (as the wrong host will be displayed in the file paths), but it will also mean that any subsequent attempt to use ##sudo::## on your localhost will instead be proxied to the remote server! (and the proxy would also presumably be clobbered if you did the same thing on a second server, causing further issues).
+
+In short, don't use ##::## when you multi-hop!
+
+=== Using Tramp to open files sudo'd to root ===
+
+One lazy afternoon, one "sudo vi foo" too many (or rather "udo vi foo", while my term was blocked because of the stupid ^S handling), I came up with this and was, subsequently, happy:
+
+It may be worth knowing that the sudo method and tail.el doesn't get along. At least on [[bkhl]]'s machine, opening stuff with /sudo: wont work if tail.el is loaded.
+
+{{{
+(defvar find-file-root-prefix (if (featurep 'xemacs) "/[sudo/root@localhost]" "/sudo:root@localhost:" )
+  "*The filename prefix used to open a file with `find-file-root'.")
+
+(defvar find-file-root-history nil
+  "History list for files found using `find-file-root'.")
+
+(defvar find-file-root-hook nil
+  "Normal hook for functions to run after finding a \"root\" file.")
+
+(defun find-file-root ()
+  "*Open a file as the root user.
+   Prepends `find-file-root-prefix' to the selected file name so that it
+   maybe accessed via the corresponding tramp method."
+
+  (interactive)
+  (require 'tramp)
+  (let* ( ;; We bind the variable `file-name-history' locally so we can
+	 ;; use a separate history list for "root" files.
+	 (file-name-history find-file-root-history)
+	 (name (or buffer-file-name default-directory))
+	 (tramp (and (tramp-tramp-file-p name)
+		     (tramp-dissect-file-name name)))
+	 path dir file)
+
+    ;; If called from a "root" file, we need to fix up the path.
+    (when tramp
+      (setq path (tramp-file-name-localname tramp)
+	    dir (file-name-directory path)))
+
+    (when (setq file (read-file-name "Find file (UID = 0): " dir path))
+      (find-file (concat find-file-root-prefix file))
+      ;; If this all succeeded save our new history list.
+      (setq find-file-root-history file-name-history)
+      ;; allow some user customization
+      (run-hooks 'find-file-root-hook))))
+
+(global-set-key [(control x) (control r)] 'find-file-root)
+}}}
+This rebinds C-x C-r. I don't have any use for find-file-read-only, so I guess that's the closest to C-x C-f you can come, QWERTY-keymap-wise. (-; --AndreasFuchs
+[new]
+You'll be pleased to note that it's good Dvorak-wise too :D --ErikBourget
+
+[new]
+Great stuff Andreas!  I edited the above suggestion to improve the
+handling of history list and added a "find-file-root-hook".  The
+latter is very useful for doing some system file specific things. For
+example, the following can help to discourage careless editing of
+system files:
+
+{{{
+(defface find-file-root-header-face
+  '((t (:foreground "white" :background "red3")))
+  "*Face use to display header-lines for files opened as root.")
+
+(defun find-file-root-header-warning ()
+  "*Display a warning in header line of the current buffer.
+   This function is suitable to add to `find-file-root-hook'."
+  (let* ((warning "WARNING: EDITING FILE AS ROOT!")
+	 (space (+ 6 (- (window-width) (length warning))))
+	 (bracket (make-string (/ space 2) ?-))
+	 (warning (concat bracket warning bracket)))
+    (setq header-line-format
+	  (propertize  warning 'face 'find-file-root-header-face))))
+
+(add-hook 'find-file-root-hook 'find-file-root-header-warning)
+}}}
+
+-- KahlilHodgson
+
+[new:rubikitch:2007-08-21 16:55 UTC]
+{{{
+(defun find-file-hook-root-header-warning ()
+  (when (and buffer-file-name (string-match "root@localhost" buffer-file-name))
+    (find-file-root-header-warning)))
+(add-hook 'find-file-hook 'find-file-hook-root-header-warning)
+}}}
+
+Using find-file-hook is better, I think. -- [[rubikitch]]
+
+[new]
+The code above depends on function ##tramp-file-name-path##, which appears to me not to be defined anywhere in the current release of TRAMP (2.1.13) nor in any of four random earlier releases I downloaded and checked. No luck on google (some usages, no definition), koders or krugle either.
+
+-- PhilHudson
+
+[new]
+##tramp-file-name-path## has been replaced by ##tramp-file-name-localname## in CVS on 2003-02-15. I updated the above snippets. From the commit message:
+
+[...]Replace term `path' with `localname' unless it is used for a search path.  In GNU, the word `path' is reserved for search paths.[...]
+
+-- BerndWachter
+
+[new]
+And the following can help us maintain a record of any changes we make
+to system files:
+
+{{{
+(defvar find-file-root-log "~/system/root-log"
+  "*ChangeLog in which to log changes to system files.")
+
+(defun find-file-root-log-do-it()
+  "Add an entry for the current buffer to `find-file-root-log'."
+  (let ((add-log-mailing-address "root@localhost")
+	(add-log-full-name "")
+	(add-log-file-name-function 'identity)
+	(add-log-buffer-file-name-function
+	 (lambda () ;; strip tramp prefix
+	   (tramp-file-name-localname
+	    (tramp-dissect-file-name
+	     (or buffer-file-name default-directory)))
+	   )))
+    (add-change-log-entry nil find-file-root-log 'other-window)))
+
+(defun find-file-root-log-on-save ()
+  "*Prompt for a log entry in `find-file-root-log' after saving a root file.
+   This function is suitable to add to `find-file-root-hook'."
+  (add-hook 'after-save-hook 'find-file-root-log-do-it 'append 'local))
+
+(add-hook 'find-file-root-hook 'find-file-root-log-on-save)
+}}}
+
+Or we may just have some personal preferences:
+
+{{{
+(defun my-find-file-root-hook ()
+  "Some personal preferences."
+  ;; Turn auto save off and simplify backups (my version of tramp
+  ;; barfs unless I do this:-)
+  (setq buffer-auto-save-file-name nil)
+  (set (make-local-variable 'backup-by-copying) nil)
+  (set (make-local-variable 'backup-directory-alist) '(("."))))
+
+(add-hook 'find-file-root-hook 'my-find-file-root-hook)
+}}}
+
+-- KahlilHodgson
+
+[new]
+I often view or edit file remotely and extended the above procedure to handle files already open with tramp. The code is a bit ugly but it is working. It is meant to replace toggle-read-only function. I have only tested it on Emacs.
+
+{{{
+(defun really-toggle-read-only (&optional force)
+  "Change whether this buffer is visiting its file read-only by really
+trying to acquire the rights with sudo (and tramp)"
+  (interactive "P")
+  (let* ((currentfilename buffer-file-name)
+	 (newfilename
+	  ;; We first check that the buffer is linked to a file
+	  (if (not currentfilename)
+	      ;; If not, we just toggle the read-only mark
+	      nil
+	    ;; What is the current state
+	    (if buffer-read-only
+		;; The buffer is read-only, we should acquire rights to edit it
+		(if (and (not force) (file-writable-p currentfilename))
+		    ;; The file is writable, we don't need to acquire rights
+		    nil
+		  (if (buffer-modified-p)
+		      (error "Buffer is read-only and has been modified. Don't know what to do.")
+		    ;; To acquire rights, we need to use sudo
+		    ;; Do we have a tramp file name ?
+		    (if (eq (string-match tramp-file-name-regexp currentfilename) 0)
+			;; Yes, we add sudo to it
+			(let* ((v (tramp-dissect-file-name currentfilename))
+			       (l (tramp-file-name-localname v)))
+			  (if (or (string= "sudo"
+					   (let ((m (tramp-file-name-method v)))
+					     (if (not (stringp m))
+						 (car (last (append m nil)))
+					       m)))
+				  (eq (string-match "^sudo::" l) 0))
+			      (error "This file is already opened with sudo")
+			    ;; We add sudo
+			    (let ((toarray (lambda (a) (if (and (not (stringp a)) (arrayp a))
+							   a (vector a)))))
+			      (tramp-make-tramp-file-name
+			       "multi"
+			       (vconcat (apply toarray (list (tramp-file-name-method v))) ["sudo"])
+			       (vconcat (apply toarray (list (tramp-file-name-user v))) ["root"])
+			       (vconcat (apply toarray (list (tramp-file-name-host v))) ["localhost"])
+			       l))))
+		      ;; It is not a tramp file-name
+		      (tramp-make-tramp-file-name
+		       nil "sudo" nil "" currentfilename))))
+	      ;; The buffer is not read-only, we must drop rights
+	      (if (buffer-modified-p)
+		  (error "Buffer is modified, save it first first.")
+		(if (eq (string-match tramp-file-name-regexp currentfilename) 0)
+		    ;; We should remove sudo
+		    (let* ((v (tramp-dissect-file-name currentfilename))
+			   (l (tramp-file-name-localname v))
+			   (m (tramp-file-name-method v)))
+		      ;; Two cases, either sudo is in local file name part or in the methods
+		      (if (eq (string-match "^sudo::" l) 0)
+			  ;; Necessary, we have a multi (otherwise, sudo would not have been
+			  ;; in the localname)
+			  ;; Do we have more than one method left ?
+			  (if (> (length m) 1)
+			      ;; Yes, still multi
+			      (tramp-make-tramp-file-name
+			       "multi"
+			       m
+			       (tramp-file-name-user v)
+			       (tramp-file-name-host v)
+			       (progn (string-match "^sudo::\\(.*\\)$" l)
+				      (match-string 1 l)))
+			    ;; We don't need multi anymore
+			    (tramp-make-tramp-file-name
+			     nil
+			     (car (append m nil))
+			     (car (append (tramp-file-name-user v) nil))
+			     (car (append (tramp-file-name-host v) nil))
+			     (progn (string-match "^sudo::\\(.*\\)$" l)
+				    (match-string 1 l))))
+			;; sudo should be in the methods
+			(if (and (stringp m) (string= m "sudo"))
+			    l
+			  (if (and (not (stringp m)) (string= (car (last (append m nil))) "sudo"))
+			      ;; Do we still need multi ?
+			      (if (> (length m) 2)
+				  (tramp-make-tramp-file-name
+				   "multi"
+				   (apply 'vector (butlast (append
+							    m nil)))
+				   (apply 'vector (butlast (append
+							    (tramp-file-name-user v) nil)))
+				   (apply 'vector (butlast (append
+							    (tramp-file-name-host v) nil)))
+				   l)
+				(tramp-make-tramp-file-name
+				 nil
+				 (car (append m nil))
+				 (car (append (tramp-file-name-user v) nil))
+				 (car (append (tramp-file-name-host v) nil))
+				 l))
+			    ;; No sudo found
+			    nil))))
+		  ;; This is not a tramp file
+		  nil))))))
+    (if newfilename
+	(find-alternate-file newfilename)
+      (toggle-read-only))))
+}}}
+
+There are some bugs: for example, you need to always use the former user@host (and not just host). This is because tramp-make-tramp-file-name with multi as the first paremeter does not accept nil as one of the member of the user vector.
+
+ -- VincentBernat
+
+[new]
+I use [InteractivelyDoThings ido], it's very handy. So I always open the file use ido-find-file and then open it with TRAMP:
+
+{{{
+(defun find-alternative-file-with-sudo ()
+  (interactive)
+  (when buffer-file-name
+    (find-alternate-file
+     (concat "/sudo:root@localhost:"
+	     buffer-file-name))))
+(global-set-key (kbd "C-x C-r") 'find-alternative-file-with-sudo)
+}}}
+
+[new:jpkotta:2009-09-22 02:16 UTC]
+I really like the above.  It doesn't work when you run it more than once on a buffer, so made it toggle.  Also it works on dired buffers.
+{{{
+(defun find-alternative-file-with-sudo ()
+  (interactive)
+  (let ((fname (or buffer-file-name
+		   dired-directory)))
+    (when fname
+      (if (string-match "^/sudo:root@localhost:" fname)
+	  (setq fname (replace-regexp-in-string
+		       "^/sudo:root@localhost:" ""
+		       fname))
+	(setq fname (concat "/sudo:root@localhost:" fname)))
+      (find-alternate-file fname))))
+}}}
+
+
+=== How do you set up TrampMode to make multi-hop methods less painful to work with? ===
+
+Say I can ssh to node 'secret' only from 'remote', I'd use:
+
+    /multi:ssh:foo@remote:ssh:bar@secret:~/.emacs
+
+Can I set TrampMode up so that a method like:
+
+    /secret:~/.emacs
+
+would access the same file in the same manner?  I.e., can I set it up to use an abbreviated path?  -- Dirk
+
+=== How do you do a three-step multi? - or - Why doesn't multi work? ===
+
+This works in debian lenny (2009), which comes with emacs 22.2 and tramp 2.0.55:
+
+   /multi:ssh:me@localhost:ssh:other@localhost:   # gets me to dired on other
+   /multi:ssh:me@foo:ssh:me@bar:sudo:me@localhost:  # edits
+
+It *is* awesome!
+
+Multi-hops seems like an obsolete format.  The current documentation (May 2005) says stuff about proxies.
+
+First set up a proxy triplet:
+
+; host + user > proxy
+(add-to-list 'tramp-default-proxies-alist
+		  '("\\`.*\\.firewalled\\.site\\.edu\\'"
+		    nil
+		    "/ssh:proxy\\.firewalled\\.site\\.edu:"))
+
+Then use as normal:
+
+ C-x C-f /hidden.firewalled.site.edu:
+
+[new]
+I am also interested in being able to use prefixes/abbrebiations as Dirk asked. So I raise this question again in order to let this page pop up in RecentChanges, so that smart people will notice it ;-)  -- Jurijs Oniscuks
+
+[new]
+One way of doing this would be to define your own function to add to `FILE-NAME-HANDLER-ALIST', to be invoked instead of tramp:
+
+something like:
+
+{{{
+(defvar my-tramp-abbrevs '(("secret" . "some-long-method")
+			   ("host2" . "some-other-method")))
+
+(defun my-file-name-handler (filename &rest rest)
+  (setq filename
+	(catch 'done
+	  (loop for (abbrev . name) in my-tramp-abbrevs
+		if (string= abbrev (something-to-extract-filename))
+		(throw 'done (substitute-abbrev-with-full-name)))
+	  (throw 'done filename)))
+  (let ((file-name-handler-alist (cdr file-name-handler-alist)))
+    (find-file filename)))
+}}}
+
+This is rather rough, and most probably needs some serious testing, since it's done without recourse to an Emacs installation.
+
+Basically, you add your own handler to the front of file-name-handler-alist, then, check the filename to see if it matches one of the abbreviations you've defined.  If yes, the abbreviation is substituted.  Then, we reinvoke find-file, and let the other file-name-handlers kick in.  -- LawrenceMitchell
+
+[new]
+By the way, it might be worth asking on the tramp list to see if anyone else has a fully-fledged, and working, abbreviation scheme.
+
+[new]
+I just use AbbrevMode.  It works well for me.  -- JoelHolveck
+
+[new]
+Here's a method proposed by bojohan on #emacs, that involves using environment variables:
+
+  (setenv "SECRET" "/ssh:user@secret.tld:")
+
+Then you only need to load:
+
+  /$SECRET/path/to/file
+
+-- MichelValdrighi
+
+[new]
+I find using a [[bookmark]] works quite well: just open a frequently accessed file/directory using tramp and type C-x r m. Then you can give it as short a name as you like. See BookMarks for more details. --EmorySmith
+
+[new]
+Why is multi:... an obsolete format? Was it deemed too easy or something? Why should I have to set up a proxy variable just to open a file once? I understand the desire to add more features (and the proxy thing looks like a useful feature) but not at the expense of existing simplicity.
+
+I hope there's a sensible explanation. I would love to be pointed to a logical explanation of why trying to open /multi:ssh:foo:ssh:bar: will cause the heat death of the universe but I fear there may be no such thing.
+
+-- Matthew
+
+=== Editing files via sudo doesnt work with vc-svn.el. ===
+
+I get this in *Subversion Output*:
+
+  svn: '/sudo:root@localhost:/home/elements' is not a working copy
+
+In *Messages*:
+
+  apply: Error running Subversion to check status of `shadow'
+
+And in my .emacs I have:
+
+  (add-to-list 'vc-handled-backends 'SVN)
+
+--HenrikHolmboe
+
+[new]
+If you don't need to use vc-svn at all - i use psvn (http://www.xsteve.at/prg/vc_svn/) exclusively - here's a quick fix to effectively disable vc-svn entirely so that you can edit files with tramp/sudo.
+
+Find the function `vc-svn-registered' in vc-svn.el (should be around line 112) and replace it with the following:
+
+{{{
+;; hack to disable vc-svn
+(defun vc-svn-registered (file) nil)
+}}}
+
+--EmorySmith
+
+[new]
+I use this in my .emacs to disable vc-svn on files accessed with tramp:
+{{{
+(defadvice vc-svn-registered (around my-vc-svn-registered-tramp activate)
+  "Don't try to use SVN on files accessed via TRAMP."
+  (if (and (fboundp 'tramp-tramp-file-p)
+	   (tramp-tramp-file-p (ad-get-arg 0)))
+      nil
+    ad-do-it))
+}}}
+
+--MartinKuehl
+
+This is a similar advice for DVC mode (thanks to folks at ru_emacs):
+{{{
+(defadvice dvc-current-active-dvc (around dvc-current-active-dvc-no-tramp activate)
+  "Don't try to use DVC on files accessed via TRAMP."
+  (if (and (fboundp 'tramp-tramp-file-p)
+       (tramp-tramp-file-p (dvc-uniquify-file-name default-directory)))
+      nil
+   ad-do-it))
+}}}
+
+[new]
+'''Editing files not under DARCS version control via TRAMP doesn't work when using Jorgen SchÃÂ¤fer's vc-darcs.el v1.3 or earlier''', please upgrade to 1.4. See VcDarcs
+
+=== I want to completely turn off backups for Tramp. ===
+
+[new]
+I guess the simplest way would be a hook, but I can't figure out what the name of the Tramp hook is. tramp-mode-hook doesn't seem to work -- [[bkhl]]
+
+[new]
+try here: http://www.gnu.org/software/tramp/#Auto_002dsave-and-Backup --EmorySmith
+
+[new]
+how about just overwriting tramp-auto-save ? -- [[Gyom]]
+
+{{{
+(require 'tramp)
+(defun tramp-set-auto-save ()
+  (auto-save-mode -1))
+}}}
+
+=== Helpful variables you can set for debugging ===
+
+{{{
+(require 'tramp)
+(setq tramp-debug-buffer t)
+(setq tramp-verbose 10)
+}}}
+
+-- CarsonReynolds (adopted from PhilSuh)
+
+[new]
+See also `How to Customize Traces' in the TRAMP info manual (`C-h i'). The tramp-debug-buffer variable seems to be missing and, I guess, deprecated in GNU Emacs 23.
+
+=== Connecting to a different port ===
+
+Use the self-described "kludgy" hostname (see documentation for tramp-open-connection-rsh function): ##C-x C-f /ssh:test@host#2222:/tmp##
+
+-- BradRobelForrest
+
+The kludge does not work with plink (at least with plink v.0.60 and tramp coming with emacs 22.2.1), since tramp uses the hard-coded argument -p to specify the port, while plink wants -P (upper case). Need to introduce a customizable variable to this end.
+
+-- MstislavElagin
+
+=== Using CVS on the remote server ===
+
+If you are using editing files remotely on CVS, and that CVS server is itself a remote machine requiring passphrase via ssh, try this trick. Add "-A" to your argument list for ssh.  "-A" will forward your SSH keys to the remote machine (say remotemachine1), which can then use those keys for the authentication to the remote CVS server (say remotemachine2).  Check this from the command line first:
+
+ $ ssh -A remotemachine1
+ $ cd <to-working-checkout-using-remotemachine2-as-repository>
+ $ cvs log file
+
+If this is working, you should not be prompted for a passphrase.  (You will need to ensure your SSH key on your local machine is also on the remote CVS server remotemachine2).
+
+To setup TRAMP to use these options: use "M-x customize-option tramp-methods", then insert a "-A" in "ssh" in the "tramp-login-args" just before "-e" and "none".
+
+A simpler solution if you don't mind all of your SSH commands forwarding the SSH keys (this has security implications, so be careful), is to add:
+
+ ForwardAgent yes
+
+in your ##~/.ssh/config## file.
+
+(Tested with Emacs from CVS 22.0.50 and Tramp 2.0.47).
+
+=== Using sftp or psftp without ssh ===
+
+Because tramp uses plink to login with all putty variants, and ssh to login with all openssh variants, its not possible to use psftp or sftp connection using Tramp.  There's not a way to override the tramp-login-program aspect of the alist tramp-methods.  Unfortunately, nothing's changed since 2004.[http://lists.gnu.org/archive/html/tramp-devel/2004-03/msg00046.html][http://lists.gnu.org/archive/html/tramp-devel/2004-03/msg00047.html]  Tramp can only do SFTP over SSH, and AngeFtp doesn't currently support SFTP, and with no plans to handle it, since Tramp supports SFTP over SSH.
+
+This is problematic with hosting accounts where access is only via sftp... other protocols (such as ssh) are disabled.
+
+=== Using tramp to quickly edit files as root ===
+
+I find the following shortcuts to be highly useful for quickly editing files as root; esp via emacsclient (i.e. as an alternative to sudo vi)
+
+{{{
+(eval-after-load "tramp"
+  '(progn
+     (defvar sudo-tramp-prefix 
+       "/sudo::" 
+       (concat "Prefix to be used by sudo commands when building tramp path "))
+
+     (defun sudo-file-name (filename) (concat sudo-tramp-prefix filename))
+
+     (defun sudo-find-file (filename &optional wildcards)
+       "Calls find-file with filename with sudo-tramp-prefix prepended"
+       (interactive "fFind file with sudo ")      
+       (let ((sudo-name (sudo-file-name filename)))
+         (apply 'find-file 
+                (cons sudo-name (if (boundp 'wildcards) '(wildcards))))))
+
+     (defun sudo-reopen-file ()
+       "Reopen file as root by prefixing its name with sudo-tramp-prefix and by clearing buffer-read-only"
+       (interactive)
+       (let* 
+           ((file-name (expand-file-name buffer-file-name))
+            (sudo-name (sudo-file-name file-name)))
+         (progn           
+           (setq buffer-file-name sudo-name)
+           (rename-buffer sudo-name)
+           (setq buffer-read-only nil)
+           (message (concat "Set file name to " sudo-name)))))
+
+     (global-set-key "\C-x+" 'sudo-find-file)
+     (global-set-key "\C-x!" 'sudo-reopen-file)))
+}}}
+
+---StefanPlantikow
+
+I fixed Stefan's example to make sudo work with local and remote files with the following:
+{{{
+(set-default 'tramp-default-proxies-alist (quote ((".*" "\\`root\\'" "/ssh:%h:"))))
+(eval-after-load "tramp"
+  '(progn
+     (defvar sudo-tramp-prefix 
+       "/sudo:" 
+       (concat "Prefix to be used by sudo commands when building tramp path "))
+     (defun sudo-file-name (filename)
+       (set 'splitname (split-string filename ":"))
+       (if (> (length splitname) 1)
+         (progn (set 'final-split (cdr splitname))
+                (set 'sudo-tramp-prefix "/sudo:")
+                )
+         (progn (set 'final-split splitname)
+                (set 'sudo-tramp-prefix (concat sudo-tramp-prefix "root@localhost:")))
+         )
+       (set 'final-fn (concat sudo-tramp-prefix (mapconcat (lambda (e) e) final-split ":")))
+       (message "splitname is %s" splitname)
+       (message "sudo-tramp-prefix is %s" sudo-tramp-prefix)
+       (message "final-split is %s" final-split)
+       (message "final-fn is %s" final-fn)
+       (message "%s" final-fn)
+       )
+
+     (defun sudo-find-file (filename &optional wildcards)
+       "Calls find-file with filename with sudo-tramp-prefix prepended"
+       (interactive "fFind file with sudo ")      
+       (let ((sudo-name (sudo-file-name filename)))
+         (apply 'find-file 
+                (cons sudo-name (if (boundp 'wildcards) '(wildcards))))))
+
+     (defun sudo-reopen-file ()
+       "Reopen file as root by prefixing its name with sudo-tramp-prefix and by clearing buffer-read-only"
+       (interactive)
+       (let* 
+           ((file-name (expand-file-name buffer-file-name))
+            (sudo-name (sudo-file-name file-name)))
+         (progn           
+           (setq buffer-file-name sudo-name)
+           (rename-buffer sudo-name)
+           (setq buffer-read-only nil)
+           (message (concat "File name set to " sudo-name)))))
+
+     ;;(global-set-key (kbd "C-c o") 'sudo-find-file)
+     (global-set-key (kbd "C-c o s") 'sudo-reopen-file)))
+}}}
+--- Chris Allen
+
+=== Using sudo to edit the current file ===
+A simple version of the ones above.  Designed to allow you to reopen an existing file with sudo, without needing to navigate to it or loose your place in the file.  Also works on local or remote files.
+{{{
+(set-default 'tramp-default-proxies-alist (quote ((".*" "\\`root\\'" "/ssh:%h:"))))
+(require 'tramp)
+(defun sudo-edit-current-file ()
+  (interactive)
+  (let ((position (point)))
+    (find-alternate-file
+     (if (file-remote-p (buffer-file-name))
+         (let ((vec (tramp-dissect-file-name (buffer-file-name))))
+           (tramp-make-tramp-file-name
+            "sudo"
+            (tramp-file-name-user vec)
+            (tramp-file-name-host vec)
+            (tramp-file-name-localname vec)))
+       (concat "/sudo:root@localhost:" (buffer-file-name))))
+    (goto-char position)))
+}}}
+--- Russell Sim
+
+=== Dired sudo edit current file (24.3+) ===
+Hi. I had trouble getting the above to work with my emacs 24.3 with this new multi syntax for tramp. Always got the "sudo is only for local file" error. I also wanted to press s-return in dired mode to open file using sudo. So here is the modified above code which works for me.
+{{{
+(defun sudo-edit-current-file ()
+  (interactive)
+  (let ((my-file-name) ; fill this with the file to open
+        (position))    ; if the file is already open save position
+    (if (equal major-mode 'dired-mode) ; test if we are in dired-mode 
+        (progn
+          (setq my-file-name (dired-get-file-for-visit))
+          (find-alternate-file (prepare-tramp-sudo-string my-file-name)))
+      (setq my-file-name (buffer-file-name); hopefully anything else is an already opened file
+            position (point))
+      (find-alternate-file (prepare-tramp-sudo-string my-file-name))
+      (goto-char position))))
+
+
+(defun prepare-tramp-sudo-string (tempfile)
+  (if (file-remote-p tempfile)
+      (let ((vec (tramp-dissect-file-name tempfile)))
+
+        (tramp-make-tramp-file-name
+         "sudo"
+         (tramp-file-name-user nil)
+         (tramp-file-name-host vec)
+         (tramp-file-name-localname vec)
+         (format "ssh:%s@%s|"
+                 (tramp-file-name-user vec)
+                 (tramp-file-name-host vec))))
+    (concat "/sudo:root@localhost:" tempfile)))
+
+(define-key dired-mode-map [s-return] 'sudo-edit-current-file)
+
+}}}
+
+--- Stefan Eichberger
+
+
+=== Plink by keyfile without Pageant ===
+[new]
+
+After upgrading to  tramp 2.2.13-pre(emacs GNU Emacs 25.0.50.1 (x86_64-w64-mingw32) of 2015-11-10) , it's not able to redefine the 'plink' tramp-methods with again. Or a default version will prepend to the header. But fortunately, it's able to define one with a new method name. 
+
+With following configuration, it's able to define our own keyfile. 
+
+Note that, it's required to define the 'HOME' environment variable.
+
+**~/.emacs**
+{{{
+;; tramp initialization
+(require 'tramp)
+;; Define a new tramp method name to avoid the conflict of
+;; default version of 'plink'
+(add-to-list 'tramp-methods
+    (list "at-pl"
+       '(tramp-login-program "plink")
+        (cons 'tramp-login-args
+            (list (list 
+                  '("-l" "%u")
+                  '("-P" "%p")
+                  '("-ssh")
+                  '("-t")
+                  '("-a")
+                  '("-x")
+                  (if (equal system-type 'windows-nt)
+                      (progn
+                        (setq keyfilename (expand-file-name (concat (getenv "HOME") "/.ssh/ssh-rsa.putty.ppk")))
+                        (if (file-exists-p keyfilename)
+                            (list "-i" (concat "\"" keyfilename "\"")))))
+                  '("%h")
+                  '("\"")
+                  '("env 'TERM=dumb' 'PROMPT_COMMAND=' 'PS1=#$ '")
+                  '("/bin/sh")
+                  '("\"")
+                  )))
+        '(tramp-remote-shell "/bin/sh")
+        '(tramp-remote-shell-login ("-l"))
+        '(tramp-remote-shell-args ("-c"))
+        '(tramp-default-port 22))
+    t)
+
+;; tramp backup path (if not set, save in local backup directory)
+(setq tramp-backup-directory-alist nil)
+(setq tramp-auto-save-directory nil)
+}}}
+
+**Usage**
+
+    C-x C-f /at-pl:<user_name>@<remote_server_ip>:/home/ubuntu/.bashrc
+
+--- Alpha TAN
+
+=== Tramp and Docker ===
+
+See TrampAndDocker
+
+
+=== Tramp and nixos ===
+
+The recommended way of connecting to a nixos machine with tramp is to add /run/current-system/sw/bin to `tramp-remote-path', this reportedly works with newer versions of tramp, but didn't work for me with tramp version "2.2.13.25.2"
+
+Instead I had to create some symlinks in /bin on nixos to get it working:
+{{{
+sudo ln -s /run/current-system/sw/bin/ls /bin/ls
+sudo ln -s /run/current-system/sw/bin/uname /bin/uname
+sudo ln -s /run/current-system/sw/bin/base64 /bin/base64
+sudo ln -s /run/wrappers/bin/sudo /bin/sudo
+}}}
+
+This can be done automatically on each invocation of nixos-rebuild by adding the following snippet to your /etc/nixos/configuration.nix file:
+{{{
+# Create symlinks to allow older versions of emacs tramp to connect to this computer
+system.activationScripts.tramp = ''
+  for bin in ls uname base64; do
+    if [ ! -e /bin/$bin ]; then
+       ln -s /run/current-system/sw/bin/$bin /bin/$bin
+    fi
+  done
+  if [ ! -e /bin/sudo ]; then
+     ln -s /run/wrappers/bin/sudo /bin/sudo
+  fi
+  '';
+}}}
+
+
+
+---JoeBloggs
+
+----
+CategoryExternalUtilities
+CategoryFiles
+CategoryRemoteEmacs

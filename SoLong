@@ -1,0 +1,72 @@
+This is a workaround for the issue of large 'minified'[sup]1[/sup] files of programming code (i.e., code that has been compacted into the smallest file size possible, which often entails removing newlines should they not be strictly necessary) bringing Emacs to its knees on account of the relevant modes not being (remotely) optimised for that use-case.
+
+When the lines in a buffer are /so long/ that performance could suffer to an unacceptable degree, we say "so long"[sup]2[/sup] to the buffer's major mode, and invoke something much more basic in its place (including disabling minor modes which are considered to affect performance noticeably).
+
+See the commentary in ##so-long.el## for more details.
+
+[sup]1[/sup] for example, https://code.jquery.com/jquery-git.min.js \\
+[sup]2[/sup] farewell, auf wiedersehen, etc...
+
+==Download==
+
+Download the library from Lisp:so-long.el
+
+==Install==
+
+Place the library somewhere in your Emacs load-path (or use ##M-x package-install-file## for the downloaded file), and add the following to your init file:
+
+ (when (require 'so-long nil :noerror)
+   (so-long-enable))
+
+==Configure==
+
+See the commentary in the code for details of controlling the situations in which ##so-long-mode## will be triggered, and the actions that it takes.
+
+##M-x customize-group RET so-long RET## to configure the library.
+
+===Minor modes===
+
+The following minor modes are disabled by default (even when the buffer-local mode is enabled by a globalized minor mode).
+
+* font-lock-mode
+* highlight-changes-mode
+* hi-lock-mode
+* hl-line-mode
+* linum-mode
+* nlinum-mode
+* prettify-symbols-mode
+* visual-line-mode
+* whitespace-mode
+
+It is a good idea to customize ##so-long-minor-modes## to add any additional buffer-local minor modes that you use which you know to have performance implications. Some known examples are as follows. Please contribute to this list, regardless of whether the mode is part of Emacs, or from a third party library or package.
+
+* diff-hl-mode
+* diff-hl-amend-mode
+* diff-hl-flydiff-mode
+* dtrt-indent-mode
+* hl-sexp-mode
+* idle-highlight-mode
+* rainbow-delimiters-mode
+
+===Hooks===
+
+While the standard mode hook `so-long-mode-hook' (which runs between `change-major-mode-after-body-hook' and `after-change-major-mode-hook') is available, `so-long-hook' is generally the best place to put custom code, because it runs after globalized minor modes have acted (immediately after the minor modes above have been disabled, to be specific).
+
+ (add-hook 'so-long-hook 'my-so-long-hook)
+ (defun my-so-long-hook ()
+   "Used in `so-long-hook'."
+   ;; Disable the old `idle-highlight' (pre-`idle-highlight-mode')
+   (when (bound-and-true-p idle-highlight-timer)
+     (cancel-timer idle-highlight-timer)
+     (setq idle-highlight-timer nil)))
+
+==Troubleshooting==
+
+Any elisp library has the potential to cause performance problems, and while ##so-long## addresses some important common cases, it's entirely possible that your own config contains problem cases that are unknown to this library.
+
+If a file is still taking a very long time to load with ##so-long## enabled, you should test the following command:
+
+ emacs -Q -l /path/to/so-long.el -f so-long-enable <file>
+
+If the file loads quickly when that command is used, you'll know that there is something in your personal configuration which is causing problems.  If this turns out to be a buffer-local minor mode, or a user option, you can hopefully alleviate the issue by customizing 
+`so-long-minor-modes' or `so-long-variable-overrides' accordingly.

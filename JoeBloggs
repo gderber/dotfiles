@@ -1,0 +1,72 @@
+==Elisp libraries==
+Here are some libraries I wrote:
+
+* '''Lisp:emms-mark-ext.el''' -- Extra commands for emms-mark and tag-edit modes.
+* '''Lisp:sms.el''' -- Compose text (SMS) messages.
+* '''Lisp:bbdb-sms.el''' -- Integration of [[BBDB]] with [[sms.el]].
+* '''Lisp:bbdb-ext.el''' -- Extra commands for searching BBDB.
+* '''Lisp:erc-babel.el''' -- Automatic translation of IRC messages between different (spoken) languages.
+* '''Lisp:bs-ext.el''' -- Extensions to Buffer Selection mode.
+* '''Lisp:simple-call-tree+.el''' -- Programming aid for navigating call trees.
+* '''Lisp:org-dotemacs.el''' -- Store your emacs config as an org file, and choose which bits to load.
+* '''Lisp:colour-region.el''' -- Toggle regions of the buffer with different text snippets (see ColourRegion).
+* '''Lisp:look-dired.el''' -- Extra functions for LookMode.
+* '''Lisp:dired-dups.el''' -- Find duplicate files with dired.
+* '''Lisp:eviews.el''' -- Major-mode for editing eviews program files.
+* '''Lisp:spss.el''' -- Major-mode for editing SPSS program files (needs work).
+* '''Lisp:apt-utils-ido.el''' -- Ido functions for Lisp:apt-utils.el
+* '''Lisp:kmacro-decision.el''' -- Conditional branching in keyboard macros.
+* '''Lisp:one-key.el''' -- Easy keyboard menus for displaying keybindings and other things [[OneKey]] (rewrite of [[AndyStewart]]s original library).
+* '''Lisp:one-key-dir.el''' -- Fast directory navigation and file browser using [[OneKey]].
+* '''Lisp:one-key-yas.el''' -- [[OneKey]] menu for [[Yasnippet]].
+* '''Lisp:one-key-bmkp.el''' -- [[OneKey]] menu for [[BookmarkPlus]].
+* '''Lisp:jb-misc-macros.el''' -- Miscellaneous macros used in some of my libs.
+* '''Lisp:jb-misc-functions.el''' -- Miscellaneous functions for keymaps & other things.
+* '''Lisp:ido-gnus.el''' -- access gnus groups and servers using [[InteractivelyDoThings]]
+* '''Lisp:gnus-summary-ext.el''' -- Extra limit and process mark commands for the gnus summary buffer.
+* '''Lisp:gnus-security-ext.el''' -- Extra gnus functions for virus scanning, etc.
+* '''Lisp:smptmail-multi.el''' -- Use different SMTP accounts for different emails.
+* '''Lisp:helm-helm-commands.el''' -- List all helm commands with [https://github.com/emacs-helm/helm Helm]
+* '''Lisp:ido-jb-misc-extras.el''' -- Miscellaneous extra ido related commands.
+* '''Lisp:dired-jb-misc-extras.el''' -- Miscellaneous extra ido related commands.
+* '''Lisp:sort-group-lines.el''' -- Group lines in region matching regexps.
+* '''Lisp:symbol-tools.el''' -- Helper functions for handling symbols.
+* '''Lisp:webjump-ido.el''' -- Webjump using ido for website selection
+* '''Lisp:keyword-arg-macros.el''' -- Some macros for extracting keyword args
+* '''Lisp:extract-text.el''' -- Functions for extracting/scraping text from buffers
+* '''Lisp:ido-choose-function.el''' -- Use ido to select functions and (partially) apply arguments
+* '''Lisp:erc-list-cache.el''' -- Cache IRC channel lists so they load faster
+
+===Libraries I maintain===
+Here are some libraries written by others but maintained by me:
+
+* '''Lisp:org-readme.el''' -- Integrates Readme.org and Commentary/Change-logs.
+* '''Lisp:syslog-mode.el''' -- Major-mode for viewing log files.
+* '''Lisp:show-marks.el''' -- Navigate and visualize the mark-ring.
+* '''Lisp:lazy-search.el''' -- Search for thing at point ([[LazySearch]]).
+* '''Lisp:lazy-search-extension.el''' -- Extra search items for [[LazySearch]].
+* [https://github.com/emacs-helm/helm-recoll helm-recoll] -- [https://github.com/emacs-helm/helm Helm] plugin for the [http://www.lesbonscomptes.com/recoll/ recoll] desktop search engine.
+* [https://github.com/vapniks/helm-delicious helm-delicious] -- [https://github.com/emacs-helm/helm Helm] plugin for [http://delicious.com delicious] bookmarks
+
+===Github===
+Most of these can also be found on my github account: https://github.com/vapniks?tab=repositories
+which should contain the most up to date versions.
+
+==TODO==
+Here is a list of things that I would like to see at some point, but haven't got around to doing yet (and might never do so).
+If anyone decides to implement one of these, or finds an already existing implementation please let me know (leave a message on this page).
+
+* Ability to colorize/format cells in org-tables - this would make it possible to see which cells are generated from formulas for example. The colorized cells should still work in formulas. Even better would be if the coloring could be made persistent (perhaps using enriched mode, or maybe as part of the cell formula). 
+* Ability to split org-table formulas over several lines (they can get very messy).
+* Even better would be persistent colo
+* A general framework for marking and selecting items in a buffer a la DiredMode. I had to write my own code for this for Lisp:simple-call-tree+.el, and have come across a few other libraries that do this kind of thing (e.g. [https://github.com/rejeep/prodigy.el prodigy]). I'm guessing it would be useful in for other libraries yet to be written. If we could be consistent with keybindings as well that would be great.
+* A function to make it easy to format text in different colours/faces, e.g. (format+ "%y, %y, %y" '("red" :foreground "red") '("blue" :background "blue") '("function" 'font-lock-function-name-face))
+* Some way of getting emacs to handle hooks more robustly. It's really annoying when your config file won't load fully because some function that you put on one of the built-in hooks is no longer valid, and you then have to do a load of debugging to track it down. Would be much nicer if emacs just skipped over the dodgy function, reported the error, and then continued.
+* More c-level string matching functions, e.g. for finding longest common substring. This would be useful for building more powerful code analysis tools for example.
+
+== Mail Box ==
+
+
+
+----
+CategoryHomepage

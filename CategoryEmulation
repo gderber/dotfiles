@@ -1,0 +1,33 @@
+Click on the heading to search for all pages related to emulating other software and systems in Emacs.
+
+* AnsiTerm -- Use any terminal-based program from within Emacs.
+* BriefMode -- An once popular editor "Brief" which was famous for easy-to-learn.
+* CuaMode -- Use C-x, C-c and C-v to CopyAndPaste and more.
+* EmacsEd -- ed mode for Emacs
+* Imitating window and session management of GnuScreen
+** ElScreen
+** EmacsScreen
+* Norton Commander and Midnight Commander clones written for Emacs:
+** MidnightCommanderMode
+** NortonCommanderMode
+** [[Sunrise Commander]] -- also based on dired, but with many more features than mc.el and heavily influenced by the Orthodox File Manager standard.
+* PcSelectionMode -- Manage your regions like Motif, MAC or MS-Windows.
+* WholeLineOrRegion -- Operate on a line if nothing is selected.
+* Imitating Vi and Vim.
+** [[vim-current-buffer]] - a simple asynchronous call to vim / gvim to open current buffer
+** [[Evil]] -- an extensible Vi layer, the successor of Vimpulse and VimMode (see below)
+** ViperMode -- A comprehensive mode that comes with Emacs.
+** [[Emaci]] -- A powerful reader in Emacs like vi.
+** [[Vimpulse]] -- Extends Viper with Vim features.
+** [[vim-modeline]] -- Vim modeline (similar to Emacs' file local variables) interpretation
+** ViKeys -- One command at a time.
+*** ChangeWord
+*** OpenNextLine
+*** RecenterLikeVi
+*** RepeatingCommandsLikeVi
+*** SearchAtPoint
+*** ZapUpToChar
+*** [https://github.com/thierryvolpiatto/zop-to-char ZopToChar] - A visual zap-to-char command for emacs
+** VimMode -- A mode emulating many Vi and Vim features.
+* Notes for those with VisualStudio habits:
+** EmacsForDevStudioUsers
