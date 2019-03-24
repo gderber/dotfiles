@@ -1,0 +1,1201 @@
+This page is about package '''[::Dired+]''' (library <tt>[[dired+.el]]</tt>), which extends functionalities provided by standard GNU Emacs libraries ##dired.el##, ##dired-aux.el##, and ##dired-x.el##. The standard functions are all available, plus many more.
+
+== Dired+ Features ==
+
+For help about '''Dired+''' you can use `h' (or `C-h m') in DiredMode, or `M-x diredp-dired-plus-help' anywhere.
+
+
+Here are some of the things '''Dired+''' does:
+
+* Changes some key bindings and enhances some menus.
+* Adds many new commands. Enhances some existing commands.
+* Shows you, in the [[mode-line]] how many files and dirs are marked (with '''`*'''') and flagged for deletion (with '''`D'''').  It also shows you how many files and dirs there are in the current listing (a subdir listing or the main listing). (Option `##diredp-count-.-and-..-flag##' controls whether to count lines `##.##' and `##..##'.) For example, if:
+
+** the cursor is on the 4th marked (`*') file in the buffer, 
+** there are 18 files total that are marked, 
+** there are 6 files flagged (`D') for deletion, 
+** the cursor is on the 35th file of its listing, and
+** that listing shows 107 files, then the mode-line shows `4/18* 6D 35/107'.
+
+* Lets you act not only on the marked files and subdirs in the current Dired buffer but also on the marked files and subdirs within any Dired buffers for the marked subdirs, ''recursively''.  (Separate commands are available for this.)
+
+* Lets you use commands that normally operate on the marked files to operate instead on '''all''' files in a Dired buffer, by using `C-u C-u'.  Especially useful in Dired buffers with files from multiple directories.  Use `C-u C-u M-g' to `grep' all files, `C-u C-u C' to copy all files, and so on. Use `C-u C-u C-u' to operate on all directories as well as all files.
+
+* Lets you open Dired for an arbitrary set of files and (non-root) directories, anywhere.  Just use a non-positive prefix arg (e.g. `C--') with `dired': you are prompted for the Dired buffer name and for each file or dir to include. You can use glob patterns with wildcards to include all of the matching files and dirs at once.
+
+* Lets you use `i' on any directory listed, to include its own listing in the same buffer. The directory need not be in the same directory tree as the main Dired directory (Emacs enhancement request #18421).  `i' on an inserted subdir takes you back to the subdir line in the parent listing (it bounces between the two subdir locations).
+
+* Makes navigational commands wrap around (by default -- customize option '''`diredp-wrap-around-flag'''' if you do not want this feature).  For example, if you use `C-M-n' to go to the next inserted subdirectory and there is none, it wraps around to the first one.
+
+* Provides commands `diredp-add-to-dired-buffer' and `diredp-add-to-dired-buffer-other-window', bound globally to
+'''`C-x D A'''' and '''`C-x 4 D A'''', which let you add arbitrary files to an existing Dired buffer.
+
+* Provides commands `diredp-dired-union' and `diredp-dired-union-other-window', bound globally to '''`C-x D U'''' and '''`C-x 4 D U'''', which let you take the ''union'' of multiple Dired listings, or convert an ordinary Dired
+listing to an explicit list of absolute file names.  That is, the new Dired buffer contains all of the files and subdirs listed in the Dired buffers you choose.   With a
+non-positive prefix arg, you can add extra files, just as for
+`diredp-add-to-dired-buffer'.  The chosen Dired listings are included in the order you choose
+them, and each entry is listed only once in the new Dired buffer.  The
+union Dired listing respects the markings, subdirectory insertions, and
+hidden subdirectories of the chosen Dired listings.
+
+[:diredp-fileset]
+* Lets you open Dired on (only) the files in an Emacs [[fileset]] (commands `diredp-fileset' and `diredp-fileset-other-window', bound globally to '''`C-x D S'''' and '''`C-x 4 D S'''').
+
+* Lets you open a Dired buffer that shows recently used directories (commands `diredp-dired-recent-dirs' and `diredp-dired-recent-dirs-other-window', bound globally to '''`C-x D R'''' and '''`C-x 4 D R'''').
+
+* Lets you reuse Dired buffers (`C-M-R', aka `C-M-S-r' toggles this behavior, so you don't accumulate lots of them that you don't want to keep around. If the current Dired buffer is already showing in another window, or if the target for a find-file operation is a directory that is already in a Dired buffer, then there is no reuse (the current Dired buffer is not killed when you visit the target).
+
+* Lets you use a single invocation of command `dired' to open Dired on any number of directories or sets of files (which you choose on the fly), if you use '''[[Icicles]]'''.
+
+* Lets you create bookmarks to all of the marked files and directories, ''without visiting'' them.  This means you can bookmark files that you cannot even visit in Emacs, such as sound files and image files.  If you use '''[[Bookmark+]]''', then you can also:
+** Bookmark a ''project'': Bookmark the marked files and dirs and create a bookmark-file bookmark for them. "Jumping" to the bookmark-file bookmark opens the `##*Bookmark List*##' for those marked-file bookmarks (only).
+** Customize file associations, to create bookmarks with appropriate handlers for additional types of files. 
+
+[:Tags]
+* If you use '''[[Bookmark+]]''', then you can add ''[[BookmarkPlus#TaggingFiles|tags]]'' to the marked files or remove tags from them.  You can ''mark'' or ''unmark'' the files that have given sets of tags in various ways (files with at least one tag matching a [[regexp]], files with all of their tags matching a list of tags you specify, and so on).  These are persistent tags in the "[[http://en.wikipedia.org/wiki/Delicious_(website)|delicious]]" sense.  In effect, an [[BookmarkPlus#AutofileBookmarks|autofile bookmark]] is used for each file you tag.
+
+[:BookmarkHighlighting]
+* If you use libraries '''[[Bookmark+]]''' and '''[[HighlightLibrary|Highlight]]''' then [[BookmarkPlus#AutofileBookmarks|autofile bookmarks]] are highlighted in Dired.  That is, files that have associated bookmarks of the same name are highlighted.  And those that have tags are highlighted using a different face.  This highlighting is optional -- you can toggle it on/off using command '''`diredp-highlight-autofiles-mode''''.  Here is a screenshot:
+
+:: [[image:DrewsEmacsDiredAutofiles]]
+
+* If you use library <tt>[[help-fns+.el]]</tt> then you can use `C-h RET' (or right-click and choose menu item '''Describe''') to describe the file or directory under the cursor. The information (displayed in `*Help*') includes the file type; permissions; size in bytes times of last access, modification, and status change; number of links; UID; GID inode; and device number.
+If the file is an [[BookmarkPlus#AutofileBookmarks|autofile]] then the information includes its [[BookmarkPlus#TaggingFiles|tags]].
+
+
+[:RegionToActOnFiles]
+* Provides new mouse utility (extensions) -- you can select a region, then operate on its files. Alternative ways to select (mark) multiple files:
+** drag a region, then choose '''Mark''' in the popup menu
+** click, then Shift-click, as in Windows Explorer
+** Control-click, as in Windows Explorer (alternately marks and unmarks the file)
+
+* Adds a context-sensitive popup menu on `mouse-3'. The menu differs, depending on whether or not a region is active in Dired.
+
+[:ImageTooltip]
+* Shows an image preview in a tooltip when you mouseover an image-file name in Dired.  User [[option]] '''`diredp-image-preview-in-tooltip'''' controls whether this happens and how (full-size image, thumbnail preview of what size).
+
+: Thumbnail 100 pixels: [[image:DrewEmacsDiredMouseoverThumbnail100]]
+
+: Thumbnail 300 pixels: [[image:DrewEmacsDiredMouseoverThumbnail]]
+
+: Full image: [[image:DrewEmacsDiredMouseoverFull]]
+
+* Provides ''fancy'' highlighting (customizable through user variables).
+** You can see immediately if a file has the wrong permissions (e.g. writable or executable when it shouldn't be).
+** Less important files (defined by variable <code>dired-omit-extensions</code> or <code>completion-ignored-extensions</code>) are in a subdued [[face]]; other files stand out more. To hide less important files altogether, use `M-o' (it's a toggle) -- see DiredOmitMode.
+
+* Provides options controlling the behavior of hiding/showing details (`##(##'): '''`diredp-hide-details-propagate-flag'''' and '''`diredp-hide-details-initially-flag''''.  This is for Emacs 24.4+ --- for earlier versions use DiredDetails.
+
+* '''Dired+''' recognizes [[Sunrise Commander]], so you can use them together.
+
+
+[:RegionMenu]
+Here is a screenshot of '''Dired+''', showing highlighting and the `mouse-3' menu when a region is active.
+
+[[image:DrewsEmacsDired]]
+
+Things to notice in this screenshot:
+
+* Different faces are used for:
+
+** file extension (e.g. '''<code>in</code>''', '''<code>htm</code>''', '''<code>psgml</code>''', '''<code>cache</code>''', '''<code>log</code>''', '''<code>status</code>''', '''<code>map</code>''', '''<code>el</code>''', '''<code>elc</code>''', '''<code>info</code>''', '''<code>texi</code>''', '''<code>ps</code>''')
+** file name
+** directory name (e.g. '''<code>.</code>''', '''<code>..</code>''', '''<code>TESTS NOV 13</code>''')
+** file size
+** time and date
+** file permissions: a different face for each kind of permission ('''<code>rwx-</code>''')
+
+* File and directory names can contain spaces -- the entire name is highlighted. (e.g. '''<code>New PSGML Doc.htm</code>''', '''<code>TESTS NOV 13</code>''')
+
+* The entire line of a less important file is lowlighted (e.g. '''<code>iso88591.map</code>''').
+
+* When a file is marked, the entire line is highlighted (e.g. '''<code>Makefile</code>''').
+
+* Files that are marked and files that are flagged for deletion have the mark/flag highlighted differently (e.g. '''<code>Makefile</code>''' versus '''<code>psgml-api.elc</code>'''). 
+
+
+[:RegionMenuWithMouse3Library]
+If you also use library <tt>[[mouse3.el]]</tt> then you can choose to use its popup menu, which is specially adapted for Dired, whenever there is an active region, rather than the simpler menu shown above.  Here is a screenshot. 
+
+[[image:DrewsEmacsDiredRegionMouse3]]
+
+You can try ##mouse3.el## if you want to see what is in each of the submenus.  I'll just mention that the first one ('''Dired by name''' in the screenshot) duplicates the complete Dired menu-bar, so you don't really need to show the menu-bar at all. The others provide various operations on the selected (region) files.
+
+Coming back to just '''Dired+''' (with or without <tt>[[mouse3.el]]</tt>), here is a screenshot showing that the entire line is highlighted on mouse-over, regardless of where on the line the mouse is. Click `mouse-2' anywhere on the line to open its file or directory.
+
+[[image:DrewsEmacsDiredLine]]
+
+[new:DrewAdams:2007-01-28 17:30 UTC]
+I found this full-line mouse-over highlighting so useful as a visual alignment aid in tabular buffers such as Dired that I implemented it generally, for use in any buffer (but only on demand). So, even if you do not use '''Dired+''', you can still obtain the advantage of this highlighting, at the cost of holding down the Shift key. (This highlighting is only a visual aid; it does not affect what happens if you click `mouse-2' on the highlighted line.) Just bind `mouse-scan-lines' (or, better, `##mouse-scan-lines-or-M-:##'), in library <tt>[[mouse+.el]]</tt>, to `S-down-mouse-2'.  See MousePlus. -- DrewAdams
+[new]
+
+And here is a screenshot showing the `mouse-3' popup menu available when no region is active -- the menu items apply to the file pointed to:
+
+[[image:DrewsEmacsDiredThisFile]]
+
+(Some of the menu items shown here are available onlyif you also use '''[[Bookmark+]]'''.)
+
+
+
+
+
+
+
+
+
+
+[:w32-browser]
+[:IfYouUseEmacsOnWindows]
+== If You Use Emacs on MS Windows ==
+
+* If you also use libraries <tt>[[files+.el]]</tt> and <tt>[[ls-lisp+.el]]</tt>, then you can use wildcards in the file names of a [[cons]] argument to `dired'.  This lets you open Dired on an explicit list of arbitrary files using wildcard patterns for any of the file names.  (Emacs 23+ only)
+
+* '''Dired+''' loads library <tt>[[w32-browser.el]]</tt> if Emacs is running on Microsoft Windows, using it to extend Dired in a few ways.  (In addition to being bound to the keys indicated here, these operations are added to the '''Dired+''' menus, including the `mouse-3' context menu.)
+
+** ('''`M-RET'''') You can use Windows ''file associations'' to act on a file or folder. For example, if you have the application Adobe Acrobat associated with *.pdf files, then clicking `mouse-2' on a ##*.pdf## file in Dired will open the file in Adobe Acrobat.
+
+** ('''`C-RET'''') You can open '''Windows Explorer''' on a file or folder. If a file, its containing folder is opened and the file is selected (in Windows Explorer).
+
+** ('''`##^##'''') When at the root of a Windows drive (e.g. `##C:/##') and you use `##^##' (`dired-up-directory'), you get a list of drives to choose from.  (This feature is based on the contribution at WThirtyTwoBrowseNetDrives.)
+
+** If you use '''[[Bookmark+]]''' you can also open ''bookmarks'' using Windows file associations.
+
+
+
+
+=== See Also ==
+
+See these wiki pages for related features.
+
+* [[Icicles - Dired Enhancements]] for these Dired enhancements:
+** [[#SearchAndReplace|Search-and-replace]] on the marked files.
+** [[#SaveFilesAsCandidates|Save marked file names]] as [[completion]] candidates for later reuse.
+** [[#OpenDiredOnSavedFiles|Open Dired on saved file names]], that is, names that you previously saved as an Emacs [[fileset]] or as an Icicles completion candidates set.
+
+* DiredSortMenu -- Sort Dired listings in various ways using menus
+* DiredDetails -- Hide/show details in a Dired listing, so all you see (and all that IncrementalSearch sees) are the file names
+
+[:secondHeaderLine]
+* <tt>[[ls-lisp+.el]]</tt> and <tt>[[files+.el]]</tt>: They add the number of files to DiredMode's second header line, like this:
+:  '''##files 691##''' ##space used 49439 available 56233408##
+
+* <tt>[[wuxch-dired.el]]</tt>, <tt>[[wuxch-dired-copy-paste.el]]</tt> -- libraries by WuXiaochun that build on Dired Plus
+
+
+
+
+
+
+
+[:MenuScreenshots]
+== Menu Screenshots ==
+
+Here are screenshots of the various '''Dired+''' menus. Using the menus is a good way to learn some of the features (and their key bindings).
+
+
+[:Mouse3PopupMenus]
+=== `mouse-3' Popup Menus ===
+
+`mouse-3' pops up a menu, which can take two forms, depending on whether the [[region]] is active.  If so, the menu is called '''Region''' and its items act on the files and directories in the region.  If not, the menu is called '''This File''' and its items act on the file or directory you pointed to when you clicked `mouse-3'.
+
+
+[:DiredPlusPopupThisFileMenu]
+; '''This File''': [[image:DiredPlusPopupThisFileMenu]]
+
+
+The '''This File''' menu has submenu '''Bookmark''', which is the same submenu as for menu-bar menu '''[[#SingleBookmarkMenu|Single]]''' (aka '''Immediate'''). 
+
+
+[:DiredPlusPopupRegionMenu]
+; '''Region''': [[image:DiredPlusPopupRegionMenu]]
+
+The '''Region''' menu you get depends on whether and how you use library <tt>[[mouse3.el]]</tt> -- see '''[[Mouse3]]'''.  The '''Region''' menu shown here has lots of submenus.
+
+The first submenu shown here, '''Dired/name''' corresponds exactly to the major-mode, and it has submenus corresponding to all of the menu-bar menus provided by '''Dired+'''.  The other submenus shown here (from library '''[[Mouse3]]''') are as follows.
+
+
+[:DiredPlusPopupRegionSelectedFilesMenu]
+;; '''Selected Files''': [[image:DiredPlusPopupRegionSelectedFilesMenu]]
+
+
+[:DiredPlusPopupRegionRemoveRectMenu]
+;; '''Remove/Replace Rectangle''' (available only in [[WDired]] mode, i.e., when Dired is writable): [[image:DiredPlusPopupRegionRemoveRectMenu]] 
+
+
+[:DiredPlusPopupRegionCopyMenu]
+;; '''Copy''': [[image:DiredPlusPopupRegionCopyMenu]]
+
+[:DiredPlusPopupRegionRegisterMenu]
+;; '''Register''': [[image:DiredPlusPopupRegionRegisterMenu]]
+
+[:DiredPlusPopupRegionRectangleMenu]
+;; '''Rectangle''' (items except '''Copy to Register''' available only in [[WDired]] mode): [[image:DiredPlusPopupRegionRectangleMenu]]
+
+[:DiredPlusPopupRegionChangeTextMenu]
+;; '''Change Text''' (available only in [[WDired]] mode): [[image:DiredPlusPopupRegionChangeTextMenu]]
+
+[:DiredPlusPopupRegionCheckCorrectMenu]
+;; '''Check, Correct, Convert''' (items except the first three available only in [[WDired]] mode): [[image:DiredPlusPopupRegionCheckCorrectMenu]]
+
+[:DiredPlusPopupRegionHighlightMenu]
+;; '''Highlight''': [[image:DiredPlusPopupRegionHighlightMenu]]
+
+[:DiredPlusPopupRegionPrintMenu]
+;; '''Print''': [[image:DiredPlusPopupRegionPrintMenu]]
+
+[:DiredPlusPopupRegionMiscMenu]
+;; '''Misc''': [[image:DiredPlusPopupRegionMiscMenu]]
+
+
+
+
+
+
+
+
+
+
+[:DirMenu]
+[:SubdirMenu]
+=== Dir (aka Subdir) Menu-Bar Menu ===
+
+
+; '''Dir''': [[image:DiredPlusDirMenu]]
+
+If you use '''[[Icicles]]''' then this has an '''Icicles''' submenu:
+
+;; '''Icicles''': [[image:DiredPlusDirIciclesMenu]]
+
+
+If you use <tt>[[find-dired+.el]]</tt> then it has a '''Run `find' Command''' submenu:
+
+;; '''Run `find' Command''': [[image:DiredPlusFindCommandMenu]]
+
+
+Menu '''Dir''' has a '''Navigate''' submenu:
+
+;; '''Navigate''': [[image:DiredPlusNavigateMenu]]
+
+
+Menu '''Dir''' has a '''Bookmark''' submenu:
+
+;; '''Bookmark''': [[image:DiredPlusBookmarkMenu]]
+
+
+Menu '''Dir''' has a '''Hide/Show''' submenu:
+
+;; '''Hide/Show''': [[image:DiredPlusHideShowMenu]]
+
+
+
+If you use DiredSortMenu then menu '''Dir''' has a '''Sort By''' submenu, which has its own submenus.
+
+;; '''Sort By''': [[image:DiredPlusDirSortByMenu]]
+
+Submenu '''Reversed Sort By''' of menu '''Sort By''' has the same items as the latter's first pane:
+
+;; '''Reversed Sort By''': [[image:DiredPlusDirSortByReversedMenu]]
+
+Submenu '''Configuration''' of menu '''Sort By''':
+
+;; '''Configuration''': [[image:DiredPlusDirSortByConfigMenu]]
+
+
+
+
+
+
+
+
+
+
+
+[:MarkMenu]
+[:MarksMenu]
+=== Marks (aka Mark) Menu-Bar Menu ===
+
+
+; '''Mark''': [[image:DiredPlusMarkMenu]]
+
+[:MarksHereAndBelow]
+Menu '''Marks''' has a '''Here and Below''' submenu:
+
+;; '''Here and Below''': [[image:DiredPlusMarksHereAndBelow]]
+
+[:MarksMark]
+Menu '''Marks''' has a '''Mark''' submenu:
+
+;; '''Mark''': [[image:DiredPlusMarksMark]]
+
+[:MarksUnmark]
+Menu '''Marks''' has an '''Unmark''' submenu:
+
+;; '''Unmark''': [[image:DiredPlusMarksUnmark]]
+
+[:MarksFlag]
+Menu '''Marks''' has a '''Flag''' submenu:
+
+;; '''Flag''': [[image:DiredPlusMarksFlag]]
+
+[:MarksOmit]
+Menu '''Marks''' has an '''Omit''' submenu:
+
+;; '''Omit''': [[image:DiredPlusMarksOmit]]
+
+[:TaggedMenu]
+Menu '''Marks''' has a '''Tagged''' submenu:
+
+;; '''Tagged''': [[image:DiredPlusMarkTaggedMenu]]
+
+
+
+
+
+
+[:RegexpMenu]
+=== Regexp Menu-Bar Menu ===
+
+; '''Regexp''': [[image:DiredPlusRegexpMenu]]
+
+[:MarksHereAndBelow]
+Menu '''Regexp''' has a '''Here and Below''' submenu:
+
+;; '''Here and Below''': [[image:DiredPlusRegexpHereAndBelow]]
+
+
+
+
+
+
+
+[:OperateMenu]
+[:MultipleMenu]
+=== Multiple (aka Operate) Menu-Bar Menu ===
+
+; '''Multiple''': [[image:DiredPlusMultipleMenu]]
+
+If you use '''[[Icicles]]''' then this has an '''Icicles''' submenu:
+
+;; '''Icicles''': [[image:DiredPlusMultipleIciclesMenu]]
+
+
+
+
+Menu '''Multiple''' has a '''Marked Here and Below''' submenu:
+
+;; '''Marked Here and Below''': [[image:DiredPlusMultipleHereAndBelow]]
+
+Submenu '''Marked Here and Below''' of menu '''Multiple''' has a '''Bookmark''' submenu:
+
+;; '''Bookmark''': [[image:DiredPlusMultipleHereAndBelowBookmark]]
+
+Submenu '''Marked Here and Below''' of menu '''Multiple''' has a '''Search''' submenu:
+
+;; '''Search''': [[image:DiredPlusMultipleHereAndBelowSearch]]
+
+Submenu '''Marked Here and Below''' of menu '''Multiple''' has a '''Encryption''' submenu:
+
+;; '''Encryption''': [[image:DiredPlusMultipleHereAndBelowEncryption]]
+
+Submenu '''Marked Here and Below''' of menu '''Multiple''' has a '''Images''' submenu:
+
+;; '''Images''': [[image:DiredPlusMultipleHereAndBelowImages]]
+
+
+
+
+Menu '''Multiple''' has a '''Bookmark''' submenu:
+
+;; '''Bookmark''': [[image:DiredPlusMultipleBookmark]]
+
+Menu '''Multiple''' has a '''Search''' submenu:
+
+;; '''Search''': [[image:DiredPlusMultipleSearch]]
+
+Menu '''Multiple''' has a '''Encryption''' submenu:
+
+;; '''Encryption''': [[image:DiredPlusMultipleEncryption]]
+
+Menu '''Multiple''' has a '''Images''' submenu:
+
+;; '''Images''': [[image:DiredPlusMultipleImages]]
+
+Menu '''Multiple''' has a '''Move / Copy / Link''' submenu:
+
+;; '''Move / Copy / Link''': [[image:DiredPlusMultipleMoveCopyLink]]
+
+Menu '''Multiple''' has a '''Rename''' submenu:
+
+;; '''Rename''': [[image:DiredPlusMultipleRename]]
+
+Menu '''Multiple''' has a '''Delete''' submenu:
+
+;; '''Delete''': [[image:DiredPlusMultipleDelete]]
+
+Menu '''Multiple''' has a '''Omit''' submenu:
+
+;; '''Omit''': [[image:DiredPlusMultipleOmit]]
+
+
+
+
+
+
+
+
+
+
+
+[:ImmediateMenu]
+[:SingleMenu]
+=== Single (aka Immediate) Menu-Bar Menu ===
+
+; '''Single''': [[image:DiredPlusSingleMenu]]
+
+This has submenus '''Bookmark''', '''Encryption''', '''Image''', '''Move / Copy / Link''', '''Rename''', and '''Open'''.
+
+[:SingleBookmarkMenu]
+;; '''Bookmark''': [[image:DiredPlusSingleBookmarkMenu]]
+
+;; '''Encryption''': [[image:DiredPlusSingleEncryptionMenu]]
+
+;; '''Image''': [[image:DiredPlusSingleImageMenu]]
+
+;; '''Move / Copy / Link''': [[image:DiredPlusSingleMoveCopyLinkMenu]]
+
+;; '''Rename''': [[image:DiredPlusSingleRenameMenu]]
+
+;; '''Open''': [[image:DiredPlusSingleOpenMenu]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+----
+
+[:Issues]
+== Issues (Bug Reports) ==
+
+
+[new:Kiwon:2010-03-18 07:31 UTC]
+I found a bug of this useful extension. I'm using the latest dired+, Last-updated: Sun Jan 31 14:06:37 2010 (-0800). The font-lock for date and time invades the area for size of file. My settings for the test are very simple. -- KiwonUm
+
+    
+    > emacs -Q or emacs -Q -nw
+    M-x version : GNU Emacs 24.0.50.1 (i686-pc-linux-gnu, GTK+ Version 2.16.6) ...
+    (add-to-list 'load-path "~/.emacs.d")
+    (require 'dired+)
+
+
+[new:DrewAdams:2010-03-18 14:42 UTC]
+I don't see that. Please provide more info about your settings, or at least a screenshot. Thx -- DrewAdams
+
+[new]
+Here is the screenshot:
+
+[[image:diredpBugSH]]
+
+-- KiwonUm
+
+[new:DrewAdams:2010-03-19 01:57 UTC]
+
+Are you using the latest version of '''Dired+'''? If not, please download it and try it: <tt>[[dired+.el]]</tt>. I ask because (1) I don't see your file size highlighted at all, and (2) your face for the date+time is not the default face (in the latest version), yet you say that you used ##emacs -Q## (so the default faces should be shown). And the only default face for a filename that has a red foreground is for a file flagged `D'. I see no way that your date+time could be red.
+
+Also, your Emacs version is something I don't recognize. It is a development version that is different from the current pretest. It's possible they have changed something recently in the Dired code. Can you test using a different Emacs version -- perhaps download Emacs 23.1 and try with that? 
+
+The fontification of the date+time and for the file name are done using the same regexp, the value of `dired-move-to-filename-regexp'. What is your value of that variable? Dunno if I can help much, I'm afraid. That's a very hairy regexp. I would start by trying to figure out why your file size is not getting fontified. -- DrewAdams
+
+[new]
+
+Sure. I'm using the latest dired+.el, last-updated: Sun Jan 31 14:06:37 2010 (-0800). And the screenshot was taken from xterm (emacs -Q -nw), so the color might be red. In GUI emacs (emacs -Q), the color is the same with the default color what you expect, but the problem persists.
+
+My emacs version is the latest bzr updated, it's exactly development version of emacs. Let me try it with the other version of emacs soon.
+
+The 'dired-move-to-filename-regexp' value is so hairy that I cannot copy&paste here. Instead, let me put a screenshot. ;)
+
+[[image:diredpBugVar]]
+
+-- Kiwon Um
+
+[new:DrewAdams:2010-03-19 03:54 UTC]
+OK, understood. I suspect it is because of some change they've made to the development version. I can't really do much about this until I have such a version. And even then it's not easy to decipher that regexp and make the right changes -- but at least I'll be able to experiment. For now, the most important help will be for you to confirm that it works OK for you with a release version (e.g. 23.1). That will at least tell me where the problem is, in general. And if it's not OK for you in 23.1, then we can try to investigate further. Sorry for your trouble. 
+
+
+BTW, I already see that that regexp has changed considerably. This is the value I have from the Emacs pretest 23.1.92:
+
+[[image:DiredFilenameRegexp23-1-92]]
+
+What is the value of variable `dired-actual-switches' in the Dired buffer? It's weird that your listing shows a period, `##.##', after the file permissions. Perhaps that is something new and it throws off some of the regexps.
+
+However, I just downloaded the latest development ##dired.el##, and it is identical to the version in 23-1-92, which is the pretest I use. Of course, that regexp is defined in file ##files.el##. I'll take a look there also. 
+
+It could also be a difference of platforms. I use Windows, which uses ##ls-lisp.el## -- the `ls' listing software is different. But I don't recall seeing that `##.##' before, even on UNIX/Linux. Any idea what it represents? 
+
+Another thing you can try is to use `C-u C-x d' and specify various different switches, to see what happens. Let me know about your switches (see above).
+
+Just for fun, another thing you can try is to evaluate this, to change back to the regexp used in 23.1.92, and see if that "fixes" the problem. If so, that will confirm that the problem is to adapt the code to the new regexp you have:
+
+   (setq directory-listing-before-filename-regexp
+         (let* ((l "\\([A-Za-z]\\|[^\0-\177]\\)")
+	        (l-or-quote "\\([A-Za-z']\\|[^\0-\177]\\)")
+                (month (concat l-or-quote l-or-quote "+\\.?"))
+                (s " ")
+                (yyyy "[0-9][0-9][0-9][0-9]")
+                (dd "[ 0-3][0-9]")
+                (HH:MM "[ 0-2][0-9][:.][0-5][0-9]")
+                (seconds "[0-6][0-9]\\([.,][0-9]+\\)?")
+                (zone "[-+][0-2][0-9][0-5][0-9]")
+                (iso-mm-dd "[01][0-9]-[0-3][0-9]")
+                (iso-time (concat HH:MM "\\(:" seconds "\\( ?" zone "\\)?\\)?"))
+                (iso (concat "\\(\\(" yyyy "-\\)?" iso-mm-dd "[ T]" iso-time
+		      "\\|" yyyy "-" iso-mm-dd "\\)"))
+                (western (concat "\\(" month s "+" dd "\\|" dd "\\.?" s month "\\)"
+			  s "+"
+			  "\\(" HH:MM "\\|" yyyy "\\)"))
+                (western-comma (concat month s "+" dd "," s "+" yyyy))
+                (mm "[ 0-1]?[0-9]")
+                (east-asian
+                  (concat "\\(" mm l "?" s dd l "?" s "+"
+		  "\\|" dd s mm s "+" "\\)"
+		  "\\(" HH:MM "\\|" yyyy l "?" "\\)")))
+            (purecopy (concat ".*[0-9][BkKMGTPEZY]?" s
+	      "\\(" western "\\|" western-comma "\\|" east-asian "\\|" iso "\\)"
+	      s "+"))))
+
+I've now compared the new regexp value with the old. Essentially, the new regexp just has an extra level of grouping (parens). I don't have a real understanding yet, but try this, just for the heck of it:
+
+In <tt>[[dired+.el]]</tt>, find the `defvar' for `diredp-font-lock-keywords-1'. Copy the defining sexp, which starts with ##(list '("^  \.+:\\)$"...##, and paste it into buffer ##*scratch*##. Put ##(setq 
+diredp-font-lock-keywords-1 ## in front of it and add a ##)## after it. Change this: 
+
+  (list dired-move-to-filename-regexp '(1 diredp-date-time t t)...
+
+to this:
+
+  (list dired-move-to-filename-regexp '(2 diredp-date-time t t)...
+
+Then put the cursor after the overall sexp and hit `C-x C-e' to evaluate it. Who knows? Maybe that's all that's needed. ;-)
+
+It's likely, however, that the extra level of parens in the new regexp will require adjusting several of the other elements of `diredp-font-lock-keywords-1' the same way. If that first test makes a positive difference, then you can try incrementing each of the other font-lock regexp indexes by one as well, to see the effect. -- DrewAdams
+
+[new]
+
+Oh my god! You wrote a lot during I were testing your code. :) The `dired-actual-switches' value is "-al". And I have no idea about the period. My system is Linux Fedora 11. Then if it is really problematic, it shouldn't work well in emacs 23.1 either, but it works fine there. As you advised above, after evaluating the following codes, the invasion get disapeered.
+
+    (add-to-list 'load-path "~/.emacs.d")
+    (require 'dired+)
+    
+    (setq directory-listing-before-filename-regexp
+          (let* ((l "\\([A-Za-z]\\|[^\0-\177]\\)")
+                 (l-or-quote "\\([A-Za-z']\\|[^\0-\177]\\)")
+                 (month (concat l-or-quote l-or-quote "+\\.?"))
+                 (s " ")
+                 (yyyy "[0-9][0-9][0-9][0-9]")
+                 (dd "[ 0-3][0-9]")
+                 (HH:MM "[ 0-2][0-9][:.][0-5][0-9]")
+                 (seconds "[0-6][0-9]\\([.,][0-9]+\\)?")
+                 (zone "[-+][0-2][0-9][0-5][0-9]")
+                 (iso-mm-dd "[01][0-9]-[0-3][0-9]")
+                 (iso-time (concat HH:MM "\\(:" seconds "\\( ?" zone "\\)?\\)?"))
+                 (iso (concat "\\(\\(" yyyy "-\\)?" iso-mm-dd "[ T]" iso-time
+                              "\\|" yyyy "-" iso-mm-dd "\\)"))
+                 (western (concat "\\(" month s "+" dd "\\|" dd "\\.?" s month "\\)"
+                                  s "+"
+                                  "\\(" HH:MM "\\|" yyyy "\\)"))
+                 (western-comma (concat month s "+" dd "," s "+" yyyy))
+                 (mm "[ 0-1]?[0-9]")
+                 (east-asian
+                  (concat "\\(" mm l "?" s dd l "?" s "+"
+                          "\\|" dd s mm s "+" "\\)"
+                          "\\(" HH:MM "\\|" yyyy l "?" "\\)")))
+            (purecopy (concat ".*[0-9][BkKMGTPEZY]?" s
+                              "\\(" western "\\|" western-comma "\\|" east-asian "\\|" iso "\\)"
+                              s "+"))))
+    
+    (setq diredp-font-lock-keywords-1
+          (list
+           '("^  \\(.+:\\)$" 1 diredp-dir-heading) ; Directory headers
+           '("^  wildcard.*$" 0 'default)       ; Override others, e.g. `l' for `diredp-other-priv'.
+           '("^  (No match).*$" 0 'default)     ; Override others, e.g. `t' for `diredp-other-priv'.
+           '("[^ .]\\.\\([^. /]+\\)$" 1 diredp-file-suffix) ; Suffix
+           '("\\([^ ]+\\) -> [^ ]+$" 1 diredp-symlink) ; Symbolic links
+           ;; 1) Date/time and 2) filename w/o suffix:
+           (list dired-move-to-filename-regexp  '(1 diredp-date-time t t) ; Date/time
+                 (list "\\(.+\\)$" nil nil (list 0 diredp-file-name 'keep t))) ; Filename
+           ;; Files to ignore
+           (list (concat "^  \\(.*\\("
+                         (concat (mapconcat 'regexp-quote
+                                            (or (and (boundp 'dired-omit-extensions)
+                                                     dired-omit-extensions)
+                                                completion-ignored-extensions)
+                                            "[*]?\\|")
+                                 "[*]?")        ; Allow for executable flag (*).
+                         "\\|\\.\\(g?z\\|Z\\)[*]?\\)\\)$") ; Compressed.
+                 1 diredp-ignored-file-name t)
+           '("[^ .]\\.\\([bg]?[zZ]2?\\)[*]?$" 1 diredp-compressed-file-suffix t) ; Compressed (*.z)
+           '("\\([*]\\)$" 1 diredp-executable-tag t) ; Executable (*)
+           '(" \\([0-9]+\\(\\.[0-9]+\\)?[kKMGTPEZY]?\\)" 1 diredp-inode+size) ; File inode number & size
+           ;; Directory names
+           (list "^..\\([0-9]* \\)*d"
+                 (list dired-move-to-filename-regexp nil nil)
+                 (list "\\(.+\\)" nil nil '(0 diredp-dir-priv t t)))
+           '("^..\\([0-9]* \\)*.........\\(x\\)" 2 diredp-exec-priv) ;o x
+           '("^..\\([0-9]* \\)*.........\\([lsStT]\\)" 2 diredp-other-priv) ; o misc
+           '("^..\\([0-9]* \\)*........\\(w\\)" 2 diredp-write-priv) ; o w
+           '("^..\\([0-9]* \\)*.......\\(r\\)" 2 diredp-read-priv)   ; o r
+           '("^..\\([0-9]* \\)*......\\(x\\)" 2 diredp-exec-priv)    ; g x
+           '("^..\\([0-9]* \\)*....[^0-9].\\([lsStT]\\)" 2 diredp-other-priv) ; g misc
+           '("^..\\([0-9]* \\)*.....\\(w\\)" 2 diredp-write-priv) ; g w
+           '("^..\\([0-9]* \\)*....\\(r\\)" 2 diredp-read-priv)   ; g r
+           '("^..\\([0-9]* \\)*...\\(x\\)" 2 diredp-exec-priv)    ; u x
+           '("^..\\([0-9]* \\)*...\\([lsStT]\\)" 2 diredp-other-priv) ; u misc
+           '("^..\\([0-9]* \\)*..\\(w\\)" 2 diredp-write-priv) ; u w
+           '("^..\\([0-9]* \\)*.\\(r\\)" 2 diredp-read-priv)   ; u r
+           '("^..\\([0-9]* \\)*.\\([-rwxlsStT]+\\)" 2 diredp-no-priv keep) ;-
+           '("^..\\([0-9]* \\)*\\([bcsmpS]\\)[-rwxlsStT]" 2 diredp-rare-priv) ; (rare)
+           '("^..\\([0-9]* \\)*\\(l\\)[-rwxlsStT]" 2 diredp-link-priv) ; l
+           (list (concat "^\\([^\n " (char-to-string dired-del-marker) "].*$\\)")
+                 1 diredp-flag-mark-line t) ; Flag/mark lines
+           (list (concat "^\\([" (char-to-string dired-del-marker) "]\\)") ; Deletion flags (D)
+                 '(1 diredp-deletion t)
+                 '(".+" (dired-move-to-filename) nil (0 diredp-deletion-file-name t)))
+           (list (concat "^\\([^\n " (char-to-string dired-del-marker) "]\\)") ; Flags, marks (except D)
+                 1 diredp-flag-mark t)
+           ))
+
+Without any change, these codes are just two setq calls from yours.
+
+[[image:diredpNewRegexp]]
+
+-- Kiwon Um
+
+[new:DrewAdams:2010-03-19 06:43 UTC]
+
+OK, so you've confirmed that the new regexp is the problem. The code you just wrote is simply the 23.1 regexp and the current '''Dired+''' font-lock keywords (so no need to eval that second sexp).
+
+But we need to make '''Dired+''' work with the ''new'' regexp, which I wrote above. To do that, we'll need to modify the '''Dired+''' font-lock keywords.
+
+Can you try using the new regexp (IOW, don't eval any code to redefine the regexp) while modifying the font-lock keywords as I suggested? We might get lucky.
+
+The new regexp basically just adds another level of grouping, so at least some (maybe all) of the indexes in the font-lock keywords will need to be incremented by one. No need to increment the 0 indexes, probably, but some of the others. Start with the one for `diredp-date-time', as I suggested: change it from 1 to 2. That might be all that's needed. -- DrewAdams
+
+[new]
+Alright. I just modified:
+
+<code>(list dired-move-to-filename-regexp  '(1 diredp-date-time t t) ; Date/time</code>
+
+to
+
+<code>(list dired-move-to-filename-regexp  '(2 diredp-date-time t t) ; Date/time</code>.
+
+It really works well without any change of the directory-listing-before-filename-regexp value. Thx. :) Are you going to check-in this to the ##dired+.el##? Or, after the official release for the emacs24? -- Kiwon Um
+
+[new:DrewAdams:2010-03-19 11:16 UTC]
+Thanks for testing. Dunno. If you're pretty sure it works OK and doesn't have any negative effects, then I might as well update it now.
+
+The problem will be how to test for the Emacs version. Your dev version has major-version 24, but then next Emacs release will be 23.2, not 24. It's not clear to me what the right test in the code would be. -- DrewAdams
+
+[new:DrewAdams:2010-03-19 20:24 UTC]
+
+OK, I just uploaded a new version, which should work with the next release (Emacs 23.2). Please test it with your development version, after changing this:
+
+  (if (and (fboundp 'version<=) (version<= emacs-version "23.2"))
+      (list 2 'diredp-date-time t t)
+    (list 1 'diredp-date-time t t)) ; Date/time
+
+to this:
+
+  (if t
+      (list 2 'diredp-date-time t t)
+    (list 1 'diredp-date-time t t)) ; Date/time
+
+Thx -- DrewAdams
+
+[new]
+Fine. It works well. Thx. :) -- KiwonUm
+
+[new:DrewAdams:2010-03-20 06:40 UTC]
+Oops. I had the version test backward. Using `t' for you should have worked, but downloading what I had uploaded should not have worked. I just fixed it. Please download the latest and try it (without changing anything). Sorry about that. -- DrewAdams
+
+[new]
+No problem. I was little weird about that. ;) The new version works for me without any change. Thx. :)
+
+[new:DrewAdams:2010-03-20 14:46 UTC]
+Actually, I made another change to it. The new version should still work for you. -- DrewAdams
+
+[new]
+It works fine as well. Thx. :)
+
+
+
+
+
+
+----
+
+[new]
+Hello. I have found a bug: when subdirectory is inserted in dired buffer (using command `dired-maybe-insert-subdir'), marking the last file before included subdir also marks first file in that subdir. It's face stays normal, but when performing actions on marked items, it affects that file. Behavior is normal when using dired without the dired+.
+Here is [http://xmages.net/storage/10/1/0/a/3/upload/049671bd.png screenshot] illustrating the bug: one file is marked and one more file is affected by the action, performing on marked items. -- [[Anonymous]]
+
+[new:DrewAdams:2010-08-07 17:33 UTC]
+Thanks very much for this bug report. Should be fixed now. Let me know if you see other problems, particularly in this area.  The problem was related to the enhancement of handling multiple `C-u's. -- DrewAdams
+
+[new]
+Works fine now, thanks for fast fixing. -- [[Anonymous]]
+
+
+
+
+
+----
+
+[new]
+Is there any way to disable the dired+ color customizations and just fall back to the colorscheme installed instead? Or do I have to override each individual setting? I use the zenburn colorscheme and the colors specified in dired+ look unreadable with it. Thanks. -- Christoph
+
+[new:DrewAdams:2010-08-27 23:24 UTC]
+Yes, you can customize each '''Dired+''' face separately -- they are separate faces.  They are '''Dired+''' faces, and like most faces throughout Emacs, they have nothing to do with ColorTheme. 
+
+Is ColorTheme what you meant by "the colorscheme installed" and "zenburn colorscheme"? If not, what did you mean? Did you mean the colors you see for Dired in vanilla Emacs, where there are no such faces?
+
+Vanilla Emacs (Dired) does not have such faces, and ColorTheme does not have faces in general. So the answer is yes, in any case: these are separate faces, so if you want to change them all then you need to customize them all (once). -- DrewAdams 
+
+[new]
+Yes, I have colortheme installed with the zenburn colorscheme. I installed dired+ but I don't like the new colors in the dired buffer. They don't work with Zenburn. So I was wondering if I could keep the general functionality of dired+ but simply disable the "fancy highlighting" or if have to customize each face separately. I think you answered my question though. Thanks! -- Christoph
+
+[new:DrewAdams:2010-08-28 03:11 UTC]
+Please download the latest version.  I just updated it to fix a problem that has probably been there since Day 1.  I thought I had provided properly for users to customize `font-lock-maximum-decoration' to skip the second level of Dired fontification, but I had not.  That should now be corrrected.
+
+You can customize [[option]] `font-lock-maximum-decoration' to set the level of fontification you want.  And you can do this for particular modes if you like.  To turn off max highlighting only for Dired mode, do `M-x customize-option font-lock-maximum-decoration' and insert an entry for `dired-mode' that specifies `default' highlighting for it.  (You can set another, catch-all entry for `all' that controls all other modes.) 
+
+Thanks for bringing this to my attention. Most users want more Dired highlighting, not less, so I never realized this didn't work properly.
+Thx -- DrewAdams
+
+[new]
+Perfect! This was exactly what I was looking for. Thanks Drew! -- Christoph
+
+
+
+
+
+----
+
+[new]
+Something is broken in 2010/09/29 version of dired+.el. When I call `dired-up-directory' function — instead of visiting parent dir, emacs starts eating all CPU and freezes, until gets killed or interrupted by `C-g'. No errors are displayed in the minibuffer or `*Messages*' buffer. 2010/09/27 works fine. -- [[Anonymous]]
+
+[new:DrewAdams:2010-10-01 18:15 UTC]
+Thanks.  Please try the latest.  Let me know if you encounter a problem.  -- DrewAdams
+
+[new]
+Latest version works good, thanks. -- [[Anonymous]]
+
+
+
+
+
+
+----
+
+[new]
+I noticed one annoying regression in recent version of dired+: when function `dired-do-flagged-delete' called it takes few seconds for it to show deletion prompt (or show message than no files selected for deletion). Used to work without noticeable delay few weeks ago. -- [[Anonymous]]
+
+[new:DrewAdams:2011-01-12 19:12 UTC]
+Yes, I added a call ##(sit-for 2)## after this message, so you will see the message:
+
+  NOTE: Deletion of files flagged `D' (not those marked `*')
+
+That waits 2 seconds, but if you type a key then the timeout is interrupted (no wait).  I'm not sure what the right thing to do is.  If I remove the `sit-for' then you will never see the message.  Maybe the message is not so important.  What do you think? -- DrewAdams 
+
+[new]
+I think that message is not really important, users who read dired manual alredy know that, ones who didn't — probably won't use that command :) Also i consider prompt delay confusing, even if keys work immediately (but you have to wait anyway to see the ##*Deletions*## buffer with list of files to delete). -- [[Anonymous]]
+
+[new:DrewAdams:2011-01-13 07:28 UTC]
+OK, I removed the `sit-for'.  Thanks for the feedback. -- DrewAdams
+
+
+
+
+
+
+----
+
+[new]
+Here is a fresh bug: you added a "p" to dired-toggle-find-file-reuse-dir. From the changelog: "toggle-dired-find-file-reuse-dir: Swapped which one is the alias."  -- [[PasJa]]
+
+   (defalias 'toggle-dired-find-file-reuse-dir 'diredp-toggle-find-file-reuse-dir)  ; <--- Here is the bug!
+   ;;;###autoload
+   (defun dired-toggle-find-file-reuse-dir (force-p) ; Not bound
+     "Toggle whether Dired `find-file' commands reuse directories.
+   A prefix arg specifies directly whether or not to reuse.
+    If its numeric value is non-negative then reuse; else do not reuse.
+
+   To set the behavior as a preference (default behavior), put this in
+   your ~/.emacs, where VALUE is 1 to reuse or -1 to not reuse:
+
+    (dired-toggle-find-file-reuse-dir VALUE)"
+
+
+[new:DrewAdams:2011-07-01 13:53 UTC]
+Thanks.  Should be OK now. -- DrewAdams
+
+
+
+
+
+----
+
+[new]
+
+When using `diredp-do-grep' interactively on marked files, the filenames are not quoted in the grep command line.
+This means that if there are spaces in any of the file names they will not be read correctly. -- [[JoeBloggs]]
+
+[new:DrewAdams:2011-09-03 21:34 UTC]
+Should be OK now.  Thx -- DrewAdams
+
+----
+
+
+[new]
+Hello, I'm using emacs from bzr, and some recent changes in trunk broke dired+ fancy highlighting. Rest of functionality seems to work fine.  -- [[Anonymous]]
+
+
+[new:DrewAdams:2011-11-01 14:25 UTC]
+Yes, they broke font-locking in the latest Emacs 24 pretest.  See Emacs bugs #9919 and #6662.
+http://debbugs.gnu.org/cgi/bugreport.cgi?bug=9919 and http://debbugs.gnu.org/cgi/bugreport.cgi?bug=6662
+
+Anyway, I fixed this in the latest <tt>[[dired+.el]]</tt> on 2011-10-31, so it should be OK now.  Unfortunately, because of their change font-locking is now done twice: once with the default highlighting, once with the correct ('''Dired+''') highlighting.  You don't see this as a user, but it does theoretically slow things down a bit.  If they fix the bug then I'll be able to remove the call to refresh font-locking.  Be aware too that this will also affect other libraries that set font-lock highlighting. -- DrewAdams
+
+
+
+
+
+----
+
+[new]
+Hi,  I also had issues using dired+ with zenburn. Instead of shutting off the extra highlighting I set up some (very rough) face customizations that I edited:
+
+<pre>
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(diredp-date-time ((((type tty)) :foreground "yellow") (t :foreground "#F0DFAF")))
+ '(diredp-dir-heading ((((type tty)) :background "yellow" :foreground "blue") (t :background "#41363C" :foreground "#ECBCBC")))
+ '(diredp-dir-priv ((t (:background "#3F3F3F" :foreground "thistle"))))
+ '(diredp-display-msg ((((type tty)) :foreground "blue") (t :foreground "#93B3A3")))
+ '(diredp-file-name ((t (:foreground "#8CD0D3"))))
+ '(diredp-file-suffix ((t (:foreground "#7F9F7F"))))
+ '(diredp-flag-mark-line ((t (:background "#9FAFAF"))))
+ '(diredp-ignored-file-name ((t (:foreground "#80D4AA"))))
+ '(diredp-number ((t (:foreground "#8F8F8F"))))
+ '(diredp-symlink ((t (:foreground "#F0DFAF"))))
+ '(slime-repl-inputed-output-face ((t :background "#41363C" :foreground "#ECBCBC"))))
+
+</pre>
+
+-- [[Anonymous]]
+
+[new:DrewAdams:2012-01-06 17:20 UTC]
+You do not say anything about what the issues are that you ran into, or how your customization takes care of them.  So I have no idea what the problem is, so I cannot try to fix it. Please elaborate.  Thx -- DrewAdams
+
+
+----
+
+[new]
+Recent chages in bzr seem to have broken font-locking in dired+. It does work after `font-lock-mode' called manually for every buffer, but not by itself. -- [[Anonymous]]
+
+[new:DrewAdams:2013-02-18 00:27 UTC]
+Can't do much with that report, I'm afraid.  You don't say what Emacs build date you are using, for one thing.  And a recipe from ##emacs -Q## would help.
+
+Starting with ##emacs -Q## with an Emacs 24 trunk build from 2013-02-15 on MS Windows, then loading '''Dired+''' and visiting a directory, I see no problem with the highlighting.  More info, please. -- DrewAdams
+
+[new]
+These steps do reproduce bug for me, except I use 2013-02-17 build of GNU Emacs 24.3.50.1 on Linux. -- [[Anonymous]]
+
+[new:DrewAdams:2013-02-18 07:04 UTC]
+OK, I'll have to take a look when I get a newer build. But my guess is that the change was in the font-lock code somewhere, and not in the dired code.  See above on this page, for changes in the recent past that also broke font-locking for Dired+.  If you have time to investigate a bit, that would be great. -- DrewAdams
+
+[new]
+This is certainly a font-lock change, since I noticed strange behavior of it in some other situations. Unfortunately, I'm not familiar enough with emacs inner workings to know even where to start investigating this thing. -- [[Anonymous]]
+
+[new:DrewAdams:2013-02-18 15:09 UTC]
+I will take a look when I can.  Thx for the report. -- DrewAdams
+
+
+[new:DrewAdams:2013-02-18 19:33 UTC]
+So far, this appears to be an Emacs regression. I filed bug #13751 and it was promptly merged to bug #13730.
+http://debbugs.gnu.org/cgi/bugreport.cgi?bug=13751
+See also:
+http://lists.gnu.org/archive/html/emacs-devel/2013-02/msg00411.html
+
+-- DrewAdams
+
+[new]
+Regression appears to be fixed now (26.02.2013) -- [[Anonymous]]
+
+[new:DrewAdams:2013-02-26 06:20 UTC]
+Yes, I just noticed the same thing.  Unfortunately, there are at least two other font-lock bugs that were introduced at the same time, and they are still not fixed.  But this problem, affecting Dired+, can be closed.  -- DrewAdams
+
+
+
+----
+
+[new:sabof:2013-04-30 05:46 UTC]
+Might it be possible to rewrite the redefinitions to something similar to this:
+{{{
+(defvar diredp-auto-initialise t)
+
+(defun diredp-do-delete (...) ...)
+
+(when diredp-auto-initialise
+  (defalias 'dired-do-delete diredp-do-delete))
+}}}
+
+This way it would be easier to use some re-definitions, but not others, and backward-compatibility would be maintained.  -- [[sabof]]
+
+[new:DrewAdams:2013-04-30 05:23 UTC]
+
+Not sure I follow you.  How would that make it easier for you to choose which redefinitions you get?  Please elaborate.  Thx -- DrewAdams
+
+[new:sabof:2013-04-30 07:57 UTC]
+One would load it like this:
+
+{{{
+(defvar diredp-auto-initialise nil)
+(require 'dired+)
+;;; Then I will manually specify what I want redefined.
+(defalias 'dired-find-file 'diredp-find-file)
+(defalias 'dired-get-filename 'diredp-get-filename)
+(defalias 'dired-goto-file 'diredp-goto-file)
+(defalias 'dired-insert-directory 'diredp-insert-directory)
+(defalias 'dired-insert-set-properties 'diredp-insert-set-properties)
+(defalias 'dired-mark-files-regexp 'diredp-mark-files-regexp)
+(defalias 'dired-mark-pop-up 'diredp-mark-pop-up)
+(defalias 'dired-pop-to-buffer 'diredp-pop-to-buffer)
+(defalias 'dired-revert 'diredp-revert)
+(defalias 'dired-switches-escape-p 'diredp-switches-escape-p)
+(defalias 'dired-up-directory 'diredp-up-directory)
+}}}
+
+Otherwise I have to load dired+ like this (which is fine, as far as I'm concerned, but a less obvious solution than the above one):
+
+{{{
+(cl-defmacro es-preserve-functions ((&rest funcs) &rest body)
+  (let (( list-sym (gensym))
+        ( list (mapcar (lambda (func)
+                         `(,func . ,(symbol-function func)))
+                       funcs)))
+    `(let (( ,list-sym (quote ,list))
+           ( result (progn ,@body)))
+       (mapcar
+        (lambda (func)
+          (fset (car func) (cdr func)))
+        ,list-sym))))
+
+(es-preserve-functions
+       (dired-do-delete
+        dired-do-flagged-delete
+        dired-find-buffer-nocreate)
+       (require 'dired+))
+}}} -- [[sabof]]
+
+
+[new:DrewAdams:2013-04-30 13:13 UTC]
+Your macro is the only part that I understand. ;-) (Without it) how will you "manually specify what [you] want redefined"?
+
+I don't really understand the use case either.  If someone really needs to pick apart the '''Dired+''' code they can always do that to get some other behavior.  But I don't see anyone else doing that.  Just why do you want the original definitions of a few functions?
+
+Trying to understand the why & how of what you're asking.  Thx -- DrewAdams
+
+[new:sabof:2013-04-30 15:34 UTC]
+I've edited the comment above to make it more clear.
+
+They probably conflicted with something - I no longer remember exactly what. And I think it's "normal" for someone to only want to use a part of the package. The advantage of this approach over simply editing the file, is that it's easier to upgrade. -- [[sabof]]
+
+
+[new:DrewAdams:2013-04-30 17:25 UTC]
+Thanks for the clarification.  I understand better now.  If I were to do something like that it would probably be in the opposite direction, however, as in your macro: let users opt out (not in) for individual function redefinitions.
+
+But I do not plan to do that, unless some good reasons change my mind.  '''Dired+''' redefines 2 (very important) Dired macros, 2 Dired menus, and '''''23''''' Dired functions.  And some such redefinitions work together; they are not independent.
+
+FWIW, I have never had a request similar to yours.  So far, I really do not see an important use case for it, sorry.  Anyone interested in such fine-grained tweaking is already at an EmacsLisp level that s?he can redefine functions as s?he likes.
+
+The real question wrt use cases is why --- what is the need?  If you were to communicate your real need/problem, as opposed to just a solution (implementation change), I would be more interested.
+
+
+IOW, what would you like to see changed wrt particular function redefinitions --- specifically?  Just what does not work as you expect/like?  I would prefer to start by confirming that something specific does not work and then try to fix it.
+
+I do appreciate your feedback and your suggestion, which is clear.  So far, I'm not convinced of the need, for '''Dired+'''; that's all.  And you have found a solution/workaround for your own use, even if you do not recall what the problems are that it works around.
+
+Consider `dired-do-deletions', for example.  AFAIK, the changes I make to it are trivial: (1) add a helpful message and (2) accommodate a signature change to `dired-internal-do-deletions' for Emacs 23+.
+
+Just why is that redefinition of `dired-do-deletions' problematic for you?  If I have a better understanding of this and other specific ''problems'' you see, that will help. -- DrewAdams
+
+[new:sabof:2013-04-30 21:51 UTC]
+I just think it's nice to be able to load a package as a library, and use only the functionality one needs.
+
+I don't care much about the implementation, as long as it's easy to do -- maybe you could include a similar macro to the one I've used, and add some relevant documentation.
+
+At the moment I don't have any (objective) improvements to particular functions in mind. -- [[sabof]]
+
+[new:DrewAdams:2013-05-01 00:09 UTC]
+While I agree with you in the abstract, there are zillions of pieces that one could offer as being optional.  In '''[[Icicles]]]''', for example, there are 200 [[user option]]s and the non-'''Icicles''' libraries it loads are all optional.  There are many ways to customize the default behavior.  
+
+But the same thing goes there: Unless someone points to a particular reason why some '''Dired+''' or '''Icicles'''  function redefinition should be optional I am disinclined to make it so.
+
+If can point to a problem you run into because of a particular redefinition, I'll be glad to take a closer look.  Thx -- DrewAdams
+
+
+----
+
+[new]
+
+Hello, I might be wrong but seems that dired+ requires icicles. I installed all dired+ files into ##/usr/share/emacs/site-lisp## then I run Emacs as
+<code>
+emacs -Q -L /usr/share/emacs/site-lisp -l dired+.el.gz
+</code>
+and executed ##M-x diredp-dired-files## but instead of Dired+ window I see in minibuffer message
+<code>
+Symbol's value as variable is void: icicle-file-sort
+</code>
+In Message buffer I see
+<code>
+Making completion list...
+let: Symbol's value as variable is void: icicle-file-sort
+</code>
+Am I right and to work properly Dired+ needs Icicles? Or I do something wrong? Emacs version
+<code>
+GNU Emacs 24.3.50.1 (x86_64-unknown-linux-gnu, GTK+ Version 3.8.2) of 2013-08-12 on smoon4
+</code>
+
+Thanks in advance, -- VladimirLomov
+
+[new:DrewAdams:2013-08-12 03:19 UTC]
+No, not at all.  Try it: `M-x load-file dired+.el'. Then `C-x 4 b *Messages*'.  You will see nothing about '''Icicles'''.
+
+However, thanks for pointing out that I forgot to protect that variable with `boundp'.  Should be OK now.
+
+'''Dired+''' does not in any way need '''Icicles''' or any other of my libraries.  It requires only the standard libraries ##dired.el## and ##dired-aux##.
+
+If you happen to have some other libraries in your `loadpath' then '''Dired+''' will load them (so-called ''soft'' ##require##s).  And in other cases if you happen to have some libraries already loaded then '''Dired+''' will make use of them, but it does not load them.
+
+Thx -- DrewAdams
+
+[new:VladimirLomov:2013-08-12 03:45 UTC]
+
+Thank you for clarification and the fix. -- VladimirLomov
+
+----
+[new:VladimirLomov:2013-08-12 04:13 UTC]
+
+I'm sorry to bother you again but something wrong again. I run Emacs in following ways:
+1. run Emacs without any user settings
+<code>
+emacs -Q
+</code>
+and run in it ##M-x dired##, use ##~/tmp##, I see
+[[image:http://img-fotki.yandex.ru/get/9353/2502524.0/0_9e7d3_420ee6b5_orig]]
+2. run Emacs without any user settings but use specific directory to search for library
+<code>
+emacs -Q -L /usr/share/emacs/site-lisp/
+</code>
+then run ##M-x load-library## -> ##dired+## and after that ##M-x diredp-dired-files## with the same directory, I see this now
+[[image:http://img-fotki.yandex.ru/get/9091/2502524.0/0_9e7d4_caf86b9_orig]]
+
+According to screenshots on the page I thought that Dired+ will give the same view as Dired. Am I right and Dired+ should give another view than Dired?
+
+P.S. I use ##dired+.el## updated on Aug 11. -- VladimirLomov
+
+[new:DrewAdams:2013-08-12 05:32 UTC]
+
+Customize option '''`diredp-hide-details-initially-flag'''' to `nil'.  Or just toggle the display, by hitting '''`##(##''''.  
+
+Hiding details is a new feature.  My guess is that most people will want to hide details most of the time, so I made the default value of the option `t', not `nil'.
+
+Let me know if I misunderstand and this is not what you meant (the fact that details are hidden). -- DrewAdams
+
+[new:VladimirLomov:2013-08-12 06:30 UTC]
+
+Thank you, this is exactly what I need :). Regarding preferences, I don't know, besides Emacs+Dired(+) I use MC (midnight commander) and use 'short listing' to view a directory but in Emacs I prefer long list. I wouldn't mind if this option would be mentioned here with pair of screenshots ;) -- VladimirLomov
+
+[new:DrewAdams:2013-08-12 14:16 UTC]
+Not sure I understand the last sentence, but if I do then it's done, by your screenshots above and this discussion, no? ;-)  I've also mentioned it above and added it to the file Commentary.  Thx -- DrewAdams
+
+
+----
+
+
+I use '''helm''' and the latest version of Emacs '''27.0.50''' and when I try to rename a file or dir, I get:
+
+{{{
+dired-do-create-files: Wrong number of arguments: (lambda (&optional localp arg filter distinguish-one-marked) 
+"Return names of the marked files and directories as a list of strings.
+\nThe list is in the same order as the buffer, that is, the car is the\n  
+first marked file.\nValues returned are normally absolute file names.\n
+Optional arg LOCALP as in `dired-get-filename'.\n
+Optional second argument ARG specifies files to use instead of marked.\n 
+Usually ARG comes from the command's prefix arg.\n 
+If ARG is an integer, use the next ARG files (previous -ARG, if < 0).\n
+If ARG is a cons with element 16, 64, or 256, corresponding to\n  
+`C-u C-u', `C-u C-u C-u', or `C-u C-u C-u C-u', then use all files\n  
+in the Dired buffer, where:\n    16 includes NO directories (including `.' and `..')\n    
+64 includes directories EXCEPT `.' and `..'\n   256 includes ALL directories (including `.' and `..')\n 
+If ARG is otherwise non-nil, use the current file.\nOptional third argument FILTER, if non-nil, is a function to select\n 
+some of the files: those for which (funcall FILTER FILENAME) is\n n
+on-nil.\nIf DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead\n 
+of (FILENAME) if only one file is marked (after any filtering by\n FILTER).\n\n
+Note that the Dired+ version of this function differs from the vanilla\nversion in these respects:\n\n* 
+There are more possibilities for argument ARG (prefix argument).\n* 
+Directories `.' and `..' can be included as marked.\n* 
+You can use arguments FILTER and DISTINGUISH-ONE-MARKED together." 
+(let ((all (delq nil (save-excursion (prog1 (let ((inhibit-read-only t) (newarg arg) multi-C-u case-fold-search found results) (if (and ... ...) (progn ...)) (if (and newarg ...) (if ... ... ...) (let ... ... ... ...))) (dired-move-to-filename))))) result) (if (and distinguish-one-marked (eq (car all) t)) (if (not filter) all (and (funcall filter (car (cdr all))) (list t (car (cdr all))))) (let ((--dolist-tail-- all) file) (while --dolist-tail-- (setq file (car --dolist-tail--)) (if (or (not filter) (funcall filter file)) (progn (setq result (cons file result)))) (setq --dolist-tail-- (cdr --dolist-tail--)))) (if (and distinguish-one-marked (= 1 (length result))) (cons t result) result)))), 5
+
+}}}
+
+-- [[caisah]]
+
+[new:DrewAdams:2018-03-25 18:24 UTC]
+Thanks for the report (but it's better to use `M-x diredp-send-bug-report' next time).
+
+Emacs 27 is in pretest.  I generally don't try to support it until it is released, since things are volatile.  (See bug #[[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=30938|30938]], wrt this change, for instance.)
+
+But I've updated `dired+.el' now, to accommodate this change.  Let me know, if you still see a problem here.
+
+-- DrewAdams
+
+
+
+
+
+----
+----
+CategoryDirectories
+CategoryFiles
+CategoryWThirtyTwo
+CategoryMouse
+CategoryMenus

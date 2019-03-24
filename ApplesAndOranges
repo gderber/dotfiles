@@ -1,0 +1,346 @@
+This page is about comparing apples and oranges, that is, combining binary predicates in a way that lets you
+compare things that might be only partially comparable.  The most
+obvious application is [[Sorting#SortFunction|sorting]].  In essence, this is about imposing a
+total order on an existing partial order.  There is nothing
+earth-shattering here, but it might be of interest to some.
+
+
+
+
+== `sort' and Its Predicate ==
+
+The built-in EmacsLisp function '''`<tt>[[Sorting#SortFunction|sort]]</tt>'''' takes a [[list]] and a binary predicate
+as args.  It compares the list elements pairwise using the predicate.  Whenever the predicate returns non-`nil', the first of the pair sorts before the second; otherwise, the second sorts before the first.
+
+You can of course combine simpler predicates using `and' (or `or'),
+applying each in order, until one returns non-`nil' (for `and', or `nil' for `or'):
+
+  (defun pred (a b) (and (pred1 a b) (pred2 a b)))
+
+But often the things we want to compare are only partly comparable,
+that is, comparable wrt only some of their attributes or qualities.
+We can compare apples and oranges based on what they have in common
+(sugar content, size, harvest date, etc.).  In doing so, we ignore
+qualities they do not have in common (number of segments, size of
+core).
+
+This means that a predicate that compares two pieces of fruit, each of which
+could be an apple or an orange, can act differently depending on which
+attributes the fruits have in common.  We can compare the core sizes
+of two apples or the number of segments of two oranges, but these particular
+attributes must be ignored when comparing an apple and an orange.
+
+[:pred1]
+For sorting, we can define a complex predicate to pass to `sort',
+which, for example, sorts first by size, then by core size
+(if both are apples), then by harvest date:
+
+  (defun pred1 (a b)
+    (or (> (size a) (size b))
+        (if (and (apple a) (apple b))
+            (> (core a) (core b))
+          (> (date a) (date b)))))
+
+You can see here that:
+
+1. We test the various qualities in order, to realize the priority we
+want.
+
+2. The definition is tailor-made.
+
+The latter point means that the various component comparisons are not
+obvious in the definition; that is, we don't see a clear and simple
+combination of them to produce the overall `pred'.  If we want to
+reorder the priorities, we must rewrite the function definition pretty
+much from scratch.
+
+
+
+
+
+
+
+== Yes, No, Dunno (Bottom) ==
+
+We would like to be able to clearly and simply combine simple
+predicates that might be appropriate only when certain qualities are
+present (because they test those qualities), easily recombining them
+in different orders and combinations to produce different composite
+predicates that we can use to sort things that might have only some
+things in common.
+
+One way to do this is to let each component predicate do only what it
+knows how to do, and to be agnostic otherwise.  IOW, let each of them
+return one of three possible truth values: ''true'', ''false'', and ''dunno'', the last one meaning "I can't tell; maybe someone else can
+decide". Another word for "dunno" here is "maybe" -- it's a ''bottom'' truth value.
+
+In Lisp, we can use, for example, `##(t)##' for true, `##(nil)##' for false, and
+`nil' for dunno.  Dunno as `nil' means we can keep trying predicates until
+one returns non-`nil', that is, until one can actually decide true or
+false.
+
+[:pred2]
+We can rewrite `pred1' like this, to separate the component predicates
+a bit better:
+
+  (defun pred2 (a b)
+    (or (and (both-have-size a b)  (> (size a) (size b)))
+        (and (both-are-apples a b) (> (core a) (core b)))
+        (and (both-have-dates a b) (> (date a) (date b)))))
+
+However, what happens if, say, the first component predicate here is
+true but the second is false?  We know that both fruits have the
+attribute `size' and that `a' is larger than `b'.  And we know that either
+both are not apples or the core of `a' is not larger than that of `b'.
+
+The latter information isn't very helpful, because it conflates false
+(`a's core is not larger than `b's) with dunno (`a' and `b' are not
+comparable wrt core size -- they don't both have that attribute).
+
+That means that this info isn't very helpful in terms of combining
+predicates.  The point is to be able to mix and match.  If we wanted
+to change the sorting priorities, we would have difficulty -- we would
+essentially need to rewrite the entire predicate.
+
+What we need is for each component predicate to clearly distinguish
+true and false from dunno.
+
+So we rewrite it to use three-valued component predicates:
+
+  (defun pred4 (a b)
+    (let ((decision  (or (size-cp a b) (core-cp a b) (date-cp a b))))
+      (if decision
+          (car decision)
+        (fallback a b))))
+
+I use the suffix `-cp' (for "component predicate") here to indicate a
+three-valued predicate.  Here, function `fallback' could be an ordinary, two-valued predicate, returning `nil' or non-`nil' to arbitrarily sort
+otherwise incomparables in some way, or it could raise an error or do something else.
+
+Each of the component predicates does only what it knows how to
+do, passing the buck to someone else when it isn't qualified to give a
+definitive answer.  Each compares in its specific way if both objects
+tested allow that.  If not, each privileges the presence of the
+attribute it tests: it sorts an object that has the attribute before
+one that does not.
+
+  (defun size-cp (a b)
+    (cond ((and (has-size a) (has-size b))
+           (if (> (size a) (size b)) '(t) '(nil)))
+          ((has-size a) '(t))
+          ((has-size b) '(nil))
+          (t  nil)))
+
+  (defun core-cp (a b)
+    (cond ((and (is-apple a) (is-apple b))
+           (if (> (core a) (core b)) '(t) '(nil)))
+          ((is-apple a) '(t))
+          ((is-apple b) '(nil))
+          (t  nil)))
+
+  (defun date-cp (a b)
+    (cond ((and (has-date a) (has-date b))
+           (if (> (date a) (date b)) '(t) '(nil)))
+          ((has-date a) '(t))
+          ((has-date b) '(nil))
+          (t  nil)))
+
+Now it is trivial to define composite
+comparers that use any priorities we want.  E.g.:
+
+  (defun pred5 (a b)
+    (or (core-cp a b) (size-cp a b) (date-cp a b)))
+
+  (defun pred6 (a b)
+    (or (core-cp a b) (date-cp a b) (size-cp a b)))
+
+What about `fallback'?  Typically, that would be some ordinary,
+two-valued (not three-valued) predicate.  One way of specifying a
+composite predicate would thus be as a pair: a list of component
+(three-valued) predicates and a fallback (two-valued) predicate.
+
+An example application of this approach is the sorting code of
+'''[[BookmarkPlus|Bookmark+]]''' (also '''[[BookmarkPlus#UseBookmarkPlusWithIcicles|Icicles]]''').  Bookmarks come in lots of flavors.  In general, they are
+comparable in some attributes and incomparable in others.  You can
+sort them using any number of component predicates (and you can easily
+define your own).
+
+A data structure like that just described is used to specify the
+composite predicate to use: a list of three-valued predicates and
+possibly a fallback two-valued predicate.  This is [[user option]]
+'''`<tt>[[#BmkpSortComparer|bmkp-sort-comparer]]</tt>''''.  Its default value is this list:
+
+  ((bmkp-info-cp bmkp-gnus-cp bmkp-w3m-cp bmkp-local-file-type-cp)
+   bmkp-alpha-p)
+
+The fallback two-valued predicate `bmkp-alpha-p' just
+compares bookmarks by their names, alphabetically.  The three-valued predicates collectively compare bookmarks, in order, in
+this way:
+
+1. If bookmarks `a' and `b' are both [[Info]] bookmarks, they are compared
+first by file name, then by node name, then by bookmark position in
+the node.  If `a' is an Info bookmark and `b' is not, then `a' sorts
+before `b'.  If `b' is an Info bookmark and `a' is not, then `a' sorts
+after `b'.
+
+2. If neither `a' nor `b' is an Info bookmark, then we try to compare
+them as [[Gnus]] bookmarks.  If they are both Gnus bookmarks, then they
+are compared by group name, then by article number, then by message
+ID.  If only one is a Gnus bookmark, then that one sorts before the
+other.
+
+3. If neither is a Gnus bookmark, then we try to compare them as W3M
+bookmarks.  If both are W3M bookmarks, then a W3M-specific comparison
+is made.  If only one is, then it sorts before the other.
+
+And so on: each of the component predicates is tried, in order.  If it
+can decide, it does so.  If not, it gives up and the next one is tried.
+If none of the component predicates can decide, then the bookmarks
+are simply compared by name.
+
+In essence, each component predicate is a hook function, and they are run using `run-hook-with-args-until-success'. If none succeeds (in deciding), then the fallback predicate is called to decide (it has no notion of maybe).
+
+
+
+
+
+
+
+== Reusing a Component Predicate as an Ordinary One ==
+
+We've made a case for defining three-valued predicates, to be
+combined at will for applications such as sorting.  But what if you
+need an ordinary, two-valued predicate that does pretty much the
+same thing?
+
+You don't have to define a two-valued predicate from scratch, if
+you already have a three-valued one that will do the job.  You can just convert it to a function that returns the determined truth value
+or a fallback truth value if indeterminate.
+
+The following function, for example, does that for a component predicate `PRED' that compares bookmarks.
+
+<pre>
+  (defun bmkp-make-plain-predicate (pred &optional final-pred)
+    "Return a plain predicate that corresponds to component-predicate PRED.
+PRED and FINAL-PRED correspond to their namesakes in
+`bmkp-sort-comparer' (which see).
+
+PRED should return `(t)', `(nil)', or nil.
+
+Optional arg FINAL-PRED is the final predicate to use if PRED cannot
+decide (returns nil).  If FINAL-PRED is nil, then `bmkp-alpha-p',
+the plain-predicate equivalent of `bmkp-alpha-cp' is used as the
+final predicate."
+    `(lambda (b1 b2)
+      (let ((res  (funcall ',pred b1 b2)))
+        (if res
+            (car res)
+          (funcall ',(or final-pred 'bmkp-alpha-p) b1 b2)))))
+</pre>
+
+
+
+
+
+
+== Doc String of Option `bmkp-sort-comparer' ==
+
+
+
+[:BmkpSortComparer]
+
+
+[new:DrewAdams:2019-03-12 00:44 UTC]
+
+<pre>
+Predicate or predicates for sorting (comparing) bookmarks.
+This defines the default sort for bookmarks in the bookmark list.
+
+Various sorting commands, such as `s v', change the value of this
+option dynamically (but they do not save the changed value).
+
+The value must be one of the following:
+
+* nil, meaning do not sort
+
+* a predicate that takes two bookmarks as args
+
+* a list of the form ((PRED...) FINAL-PRED), where each PRED and
+  FINAL-PRED are predicates that take two bookmarks as args
+
+If the value is a list of predicates, then each PRED is tried in turn
+until one returns a non-nil value.  In that case, the result is the
+car of that value.  If no non-nil value is returned by any PRED, then
+FINAL-PRED is used and its value is the result.
+
+Each PRED should return `(t)' for true, `(nil)' for false, or nil for
+undecided.  A nil value means that the next PRED decides (or
+FINAL-PRED, if there is no next PRED).
+
+Thus, a PRED is a special kind of predicate that indicates either a
+boolean value (as a singleton list) or "I cannot decide - let the
+next guy else decide".  (Essentially, each PRED is a hook function
+that is run using `run-hook-with-args-until-success'.)
+
+Examples:
+
+ nil           - No sorting.
+
+ string-lessp  - Single predicate that returns nil or non-nil.
+
+ ((p1 p2))     - Two predicates `p1' and `p2', which each return
+                 (t) for true, (nil) for false, or nil for undecided.
+
+ ((p1 p2) string-lessp)
+               - Same as previous, except if both `p1' and `p2' return
+                 nil, then the return value of `string-lessp' is used.
+
+Note that these two values are generally equivalent, in terms of their
+effect (*):
+
+ ((p1 p2))
+ ((p1) p2-plain) where p2-plain is (bmkp-make-plain-predicate p2)
+
+Likewise, these three values generally act equivalently (*):
+
+ ((p1))
+ (() p1-plain)
+ p1-plain        where p1-plain is (bmkp-make-plain-predicate p1)
+
+The PRED form lets you easily combine predicates: use `p1' unless it
+cannot decide, in which case try `p2', and so on.  The value ((p2 p1))
+tries the predicates in the opposite order: first `p2', then `p1' if
+`p2' returns nil.
+
+Using a single predicate or FINAL-PRED makes it easy to reuse an
+existing predicate that returns nil or non-nil.
+
+You can also convert a PRED-type predicate (which returns (t), (nil),
+or nil) into an ordinary predicate, by using function
+`bmkp-make-plain-predicate'.  That lets you reuse elsewhere, as
+ordinary predicates, any PRED-type predicates you define.
+
+For example, this defines a plain predicate to compare by URL:
+ (defalias 'bmkp-url-p (bmkp-make-plain-predicate 'bmkp-url-cp))
+
+Note: As a convention, predefined Bookmark+ PRED-type predicate names
+have the suffix `-cp' (for "component predicate") instead of `-p'.
+
+--
+* If you use `s C-r', then there is a difference in behavior between
+
+   (a) using a plain predicate as FINAL-PRED and
+   (b) using the analogous PRED-type predicate (and no FINAL-PRED).
+
+  In the latter case, `s C-r' affects when the predicate is tried and
+  its return value.  See `bmkp-reverse-multi-sort-order'.
+
+You can customize this variable.
+</pre>
+
+
+
+
+----
+CategoryCode
+

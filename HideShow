@@ -1,0 +1,422 @@
+%%HideShow%% is a minor mode similar to OutlineMode -- it hides and shows blocks of text. In particular, it hides balanced-expression code blocks and multi-line comment blocks.
+
+See HideIfDef mode for a way to fold <code>#ifdef</code> macro blocks in C code.
+See HideOrIgnoreComments mode for a way to only hide and show comments.
+
+== Common Use ==
+
+Invoke HideShow mode with M-x hs-minor-mode.
+
+For Emacs 21:
+
+* C-c @ C-M-s show all
+* C-c @ C-M-h hide all
+* C-c @ C-s show block
+* C-c @ C-h hide block
+* C-c @ C-c toggle hide/show
+
+For Emacs 20:
+
+* C-c S show all
+* C-c H hide all
+* C-c s show block
+* C-c h hide block
+
+
+== Example ==
+
+Given the following C++ code, 
+
+<pre>
+    ObjectInfo::~ObjectInfo() {
+      if(animations)
+        delete [] animations;
+      }
+</pre>
+
+HideShow will recognize the blocks as delimited by braces. So if you do hide all (C-c @ ESC C-h) the code will look as follows:
+
+<pre>
+    ObjectInfo::~ObjectInfo() {...}
+</pre>
+
+If you do show all (C-c @ ESC C-s), or put the cursor on the line and do show block (C-c @ C-s) or toggle block (C-c @ C-c), the code will then reappear. 
+
+
+== How it works ==
+
+Blocks are recognized by regular expressions which match the start and end strings. 
+
+The variable hs-special-modes-alist stores the settings for some major modes:
+
+<pre>
+(defvar hs-special-modes-alist
+  (mapcar 'purecopy
+  '((c-mode "{" "}" "/[*/]" nil nil)
+    (c++-mode "{" "}" "/[*/]" nil nil)
+    (bibtex-mode ("@\\S(*\\(\\s(\\)" 1))
+    (java-mode "{" "}" "/[*/]" nil nil)
+    (js-mode "{" "}" "/[*/]" nil))))
+</pre>
+
+
+== Versions and Language Support ==
+
+HideShow works with:
+
+* Lisp / Emacs Lisp / Scheme (ParenthesesRule)
+* Java / C / C++ (expressions delimited by curly braces)
+* Perl (except for files containing subroutines with prototypes)
+* C# (like the above but also includes #region/#endregion collapse, see [http://blogs.msdn.com/dotnetinterop/archive/2008/04/14/making-hideshow-el-work-with-csharp-mode-el-and-region-endregion.aspx notes on that])
+* PHP (use php-mode from http://php-mode.sf.net --GirishB)
+* Tcl
+* VHDL
+* Fortran
+* Python [https://code.launchpad.net/~freiksenet/python-mode/hide-show-support] (for python-mode that is NOT built in emacs)
+* Python with the built-in Python mode, at least with emacs 23
+
+HideShow is included with Emacs 20 and later.
+
+Making it work with other languages can be simple or complex, depending on the regularity of the language's syntax.  See commentary and/or email ttn for hints.
+
+== Universal code folding ==
+
+<code>set-selective-display</code> is a simple, universal function which hides code according to its indentation level. It can be used as a fall-back for <code>hs-toggle-hiding</code>.
+
+First, define a toggling function based on <code>set-selective-display</code>:
+
+    (defun toggle-selective-display (column)
+      (interactive "P")
+      (set-selective-display
+       (or column
+           (unless selective-display
+             (1+ (current-column))))))
+
+The above is based on jao's [http://emacs.wordpress.com/2007/01/16/quick-and-dirty-code-folding/ quick and dirty code folding] code. The hiding level can be passed as an prefix argument, or is based on the horizontal position of point. Calling the function again brings the code back.
+
+Now, define another function which calls <code>hs-toggle-hiding</code> if it's available, or else falls back on <code>toggle-selective-display</code>:
+
+    (defun toggle-hiding (column)
+      (interactive "P")
+      (if hs-minor-mode
+          (if (condition-case nil
+                  (hs-toggle-hiding)
+                (error t))
+              (hs-show-all))
+        (toggle-selective-display column)))
+
+This is more robust than the mere <code>hs-toggle-hiding</code> function. Specifically, it will return the buffer to its original state if something goes awry due to an uneven number of open and close brackets (e.g., extensive use of <code>#ifdef</code> macro declarations).
+
+Finally, set up key bindings and automatically activate <code>hs-minor-mode</code> for the desired major modes:
+
+    (load-library "hideshow")
+    (global-set-key (kbd "C-+") 'toggle-hiding)
+    (global-set-key (kbd "C-\\") 'toggle-selective-display)
+
+    (add-hook 'c-mode-common-hook   'hs-minor-mode)
+    (add-hook 'emacs-lisp-mode-hook 'hs-minor-mode)
+    (add-hook 'java-mode-hook       'hs-minor-mode)
+    (add-hook 'lisp-mode-hook       'hs-minor-mode)
+    (add-hook 'perl-mode-hook       'hs-minor-mode)
+    (add-hook 'sh-mode-hook         'hs-minor-mode)
+
+Now we have (rudimentary) code folding for /all/ modes, not just the ones listed above.
+
+== Hiding initial comment block ==
+
+It is possible to hide the initial comment block (a somewhat analog feature as the one provided by ElideHead) with <code>hs-hide-initial-comment-block</code>.
+
+== Displaying overlay content in echo area or tooltip ==
+
+Try the following to display the overlay content in a tooltip:
+
+    (defun display-code-line-counts (ov)
+      (when (eq 'code (overlay-get ov 'hs))
+        (overlay-put ov 'help-echo
+                     (buffer-substring (overlay-start ov)
+ 		                      (overlay-end ov)))))
+ 
+    (setq hs-set-up-overlay 'display-code-line-counts)
+
+== Other Options ==
+
+Here is a set of perhaps other useful options you can customize:
+
+    ;; Hide the comments too when you do a 'hs-hide-all'
+    (setq hs-hide-comments nil)
+    ;; Set whether isearch opens folded comments, code, or both
+    ;; where x is code, comments, t (both), or nil (neither)
+    (setq hs-isearch-open 'x)
+    ;; Add more here
+
+Maintainer version also has spiffy new variable: hs-set-up-overlay
+
+== Extensions ==
+The extension hideshow-org makes hideshow.el's functionality behave like org-mode's.  The code is located on [http://github.com/secelis/hideshow-org/tree/master github here]. The announcement and screencast of it is [http://gnufool.blogspot.com/2009/03/make-hideshow-behave-more-like-org-mode.html here].
+
+You can also use Lisp:fold-dwim-org.el to integrate other folding modes.
+
+
+[new]
+To get <tt>+</tt>/<tt>-</tt> markers on foldable regions, have a look at <tt>[[hideshowvis.el]]</tt>.
+
+[new]
+The answer to the question "How do I get it to expand upon a goto-line? (like it does in search mode)" is by adding some <tt>advice</tt>.
+
+<tt>advice</tt> is similar to a hook. It may be executed before or after an Emacs function. It can affect both the parameters and the return value of the function. See AdvisingFunctions.
+
+For expansion on `goto-line', adding the following code to your InitFile will do the trick:
+
+    (defadvice goto-line (after expand-after-goto-line
+                                activate compile)
+
+        "hideshow-expand affected block when using goto-line in a collapsed buffer"
+        (save-excursion
+           (hs-show-block)))
+
+Similar solutions can most likely be found for the `find-tag' and `revert-file' problem questions below (unless you want to preserve all expanded/compressed parts of the code in the latter case).
+
+=== Hiding all leaf nodes in a file ===
+When I work on larger source files, I often have a good idea of the spatial arrangement of classes and methods in the file but find no suitable facilities in Emacs that allow me to make use of that knowledge.  What I think is missing is a kind of bird's eye view of the file where only the first line of class, method, or function definition is shown.  Here is an example illustrating what I have in mind using Python:
+
+    class Meter(Canvas):
+        def __init__(self, **opts):
+        def update(self):
+
+    class Controller:
+        def __init__(self):
+
+    def util():
+
+This is the skeleton of the file but the bodies of the methods and functions are hidden.  HideShow has `hs-hide-level' which hides all code blocks at a specified nesting level but in the example above this would either hide the content of the methods or the content of the function and the complete content of the classes.  What is needed is a way to hide blocks that do not contain nested blocks, that is, the leaf nodes.  Here is code that provides the function `hs-hide-leafs' which does exactly that:
+
+    (defun hs-hide-leafs-recursive (minp maxp)
+      "Hide blocks below point that do not contain further blocks in
+    region (MINP MAXP)."
+      (when (hs-find-block-beginning)
+        (setq minp (1+ (point)))
+        (funcall hs-forward-sexp-func 1)
+        (setq maxp (1- (point))))
+      (unless hs-allow-nesting
+        (hs-discard-overlays minp maxp))
+      (goto-char minp)
+      (let ((leaf t))
+        (while (progn
+                 (forward-comment (buffer-size))
+                 (and (< (point) maxp)
+                      (re-search-forward hs-block-start-regexp maxp t)))
+          (setq pos (match-beginning hs-block-start-mdata-select))
+          (if (hs-hide-leafs-recursive minp maxp)
+              (save-excursion
+                (goto-char pos)
+                (hs-hide-block-at-point t)))
+          (setq leaf nil))
+        (goto-char maxp)
+        leaf))
+
+    (defun hs-hide-leafs ()
+      "Hide all blocks in the buffer that do not contain subordinate
+    blocks.  The hook `hs-hide-hook' is run; see `run-hooks'."
+      (interactive)
+      (hs-life-goes-on
+       (save-excursion
+         (message "Hiding blocks ...")
+         (save-excursion
+           (goto-char (point-min))
+           (hs-hide-leafs-recursive (point-min) (point-max)))
+         (message "Hiding blocks ... done"))
+       (run-hooks 'hs-hide-hook)))
+
+
+
+== Questions ==
+
+=== Suggestion for a (vastly) more powerful folding mode ===
+
+HideIfDef mode is powerful, but not always what I want. For simple toggling of <code>#ifdef</code> macro blocks, it would be nice to use HideShow's `hs-toggle-hiding' function. Unfortunately, the `hs-special-modes-alist' variable only supports a single regexp pair -- i.e., it looks up the <code>hs-special-modes-alist</code> variable for one "open" and one "close" regexp for the current language. (In C, <code>{</code> is "open" and <code>}</code> is "close".) There is no simple way to specify /multiple/ regexp pairs for a single language, e.g.,
+* Open: <code>{</code>, close: <code>}</code>
+* Open: <code>#ifdef</code>, close: <code>#else</code> or <code>#elif</code> or ... etc.
+
+[new]
+You can use the <code>FORWARD-SEXP-FUNC</code> entry in <code>hs-special-modes-alist</code> for this.
+[new]
+
+I don't know if such flexibility is difficult to implement, but it would be very easy to add support for other languages. Just think of LaTeX-mode with hierarchical folding of <code>\section</code> commands and <code>\begin ... \end</code> environments, for instance! Any takers?
+
+[new]
+Use AUCTeX.
+[new]
+AUCTex doesn't do text folding it only hides the macros. Maybe hs-special-modes-alist can be expanded so that when instead of a pair like '{', '}' the you only insert one pattern like '\chapter{.*}' it would look for the next similar match and fold the text between the two matches.
+
+[new]
+hideshow is very nice but I am sad that it does not have the equivalent of outline-mode's show-children (i.e. show one level down).  My desired work flow is to hide everything then show one level at a time as I walk down the tree structure of nested blocks looking for the one I want.
+
+My elisp is pretty rusty so I probably won't get around to trying to add this myself anytime soon.
+[new]
+
+=== Bugs ===
+I found a problem with the (correct) behavior of HideShow. In the 1st situation (see below, 1st column), if one hides the 1st block, what is shown is not entirely satisfactory (2nd column). Much better would be the last example, i.e., as though the "else" was in the next line from the '}' which closes the 1st block.
+
+    if (condition) {               |    if (condition) {...   |    if (condition) {...
+        dosomething ();            |        // 2nd block      |    else if (othercondition) {
+        // 1st block               |    }                     |        // 2nd block
+    } else if (othercondition) {   |                          |    }
+        // 2nd block               |                          |
+    }                              |                          |
+
+This problem shows up when the code is not one's own, mainly, and it's even worse when the file is not editable (say, e.g., under source control system).
+
+The question: is this behavior configurable somehow, or it would require changes in the elisp source code?
+
+I thought (and tried) changing the closing block regexp, to make it match "something just before the closing curly brace", but that's nonsense because the curly brace itself must be included anyway in the regexp, thus including anyway the line containing it, which is still the same situation. Any suggestion?
+
+I found a quick solution by excluding the last line of the block. This can be bad for small blocks, but for large blocks it's OK. The patch goes like this. 
+
+    --- hideshow-orig.el	2007-01-29 16:57:04.000000000 -0300
+    +++ hideshow.el	2007-01-29 16:58:12.000000000 -0300
+    @@ -512,6 +512,7 @@
+                    (q
+                     ;; `q' is the point at the end of the block
+                     (progn (hs-forward-sexp mdata 1)
+    +                       (forward-line -1)
+                            (end-of-line)
+                            (point))))
+               (if (and (< p (point)) (> (count-lines p q) 1))
+
+May be this could be customized with a local variable like <code>hs-block-includes-last-line</code>. MarioStorti
+
+[new]
+I Think can change to this.
+
+             (q
+              ;; `q' is the point at the end of the block
+              (progn (hs-forward-sexp mdata 1)
+                     (if (not (= (point) (line-end-position)))
+                       (forward-line -1))
+                     (end-of-line)
+                     (point)))
+             ov)
+
+[new]
+
+[new]
+Also, is there some fix for the revert-file problem (all the collapses just disappear upon reverting)?  [An old version of hideshow.el used to include support for saving the hideshow state in a separate file in various ways.  These functions were excised for aesthetic reasons and are now available in hideshow-state.el, which has been mouldering away for about half a decade.  Perhaps summer or autumn 2005 will see an updated release. --ttn]
+[new]
+Also, how to get to expand upon a find-tag?
+Try replacing the two occurences of line in the above code by char; because find-tag uses goto-char. 
+[new]
+Is anyone working to add Python support?  I've been unable to find any evidence, and although I'm a lisp novice, I may attempt it.
+[new]
+: See here: http://sourceforge.net/projects/python-mode/
+(Maybe by now this mode is popular enough to remove this question from here?)
+This implements hide-show support for python-mode.
+[https://code.launchpad.net/~freiksenet/python-mode/hide-show-support]
+[new]
+Is there a possibility to add some small "+" sign next to the sourcecode to toggle show/hide? E.g. like the one in the KDE editor component.
+[new]
+: S-mouse-2 toggles show/hide without need for a "+". (At least it does in CVS Emacs.)  You could map hs-toggle-hiding to a more convenient key too.  Perhaps M-+ would suit your itch for a "+".
+[new]
+: Have a look at Lisp:hideshowvis.el
+here is a patch to avoid hideshowvis to override the current-local-map:
+
+    @@ -128,6 +130,11 @@
+         hideshowvis-mode-map)
+       "Keymap for hideshowvis mode")
+     
+    +(setq minor-mode-map-alist
+    +      (cons (cons 'hideshowvis-minor-mode hideshowvis-mode-map)
+    +            minor-mode-map-alist))
+    +
+    +
+     (define-minor-mode hideshowvis-minor-mode ()
+       "Will indicate regions foldable with hideshow in the fringe"
+       :init-value nil
+    @@ -140,7 +147,7 @@
+                 (hideshowvis-highlight-hs-regions-in-fringe (point-min) (point-max) 0)
+                 (add-to-list 'after-change-functions
+                              'hideshowvis-highlight-hs-regions-in-fringe)
+    -            (use-local-map hideshowvis-mode-map))
+    +            )
+             (remove-overlays (point-min) (point-max) 'hideshowvis-hs t)
+             (setq after-change-functions
+                   (remove 'hideshowvis-highlight-hs-regions-in-fringe
+
+[new]
+Is anyone working on ruby support?
+[new]
+
+
+
+: There is something: http://www.hyperionreactor.net/node/43 ..  Dead link?
+
+
+
+
+:this will do usable ruby hide show support...
+<pre> 
+(add-to-list 'hs-special-modes-alist
+	     '(ruby-mode
+	       "\\(def\\|do\\|{\\)" "\\(end\\|end\\|}\\)" "#"
+	       (lambda (arg) (ruby-end-of-block)) nil))
+</pre>
+
+[new]
+Hide all comments (get rid of that overcommenting crap):
+<pre>
+(defun hs-hide-all-comments ()
+  "Hide all top level blocks, if they are comments, displaying only first line.
+Move point to the beginning of the line, and run the normal hook
+`hs-hide-hook'.  See documentation for `run-hooks'."
+  (interactive)
+  (hs-life-goes-on
+   (save-excursion
+     (unless hs-allow-nesting
+       (hs-discard-overlays (point-min) (point-max)))
+     (goto-char (point-min))
+     (let ((spew (make-progress-reporter "Hiding all comment blocks..."
+                                         (point-min) (point-max)))
+           (re (concat "\\(" hs-c-start-regexp "\\)")))
+       (while (re-search-forward re (point-max) t)
+         (if (match-beginning 1)
+           ;; found a comment, probably
+           (let ((c-reg (hs-inside-comment-p)))
+             (when (and c-reg (car c-reg))
+               (if (> (count-lines (car c-reg) (nth 1 c-reg)) 1)
+                   (hs-hide-block-at-point t c-reg)
+                 (goto-char (nth 1 c-reg))))))
+         (progress-reporter-update spew (point)))
+       (progress-reporter-done spew)))
+   (beginning-of-line)
+   (run-hooks 'hs-hide-hook)))
+
+</pre>
+Why isn't that a standard part of hide-show?
+
+[new]
+Until tuareg support is added to tuareg.el as promised in
+http://caml.inria.fr/pub/ml-archives/caml-list/2004/01/d6b65abbef1eeb2c8af24ae8342d6bb9.en.html
+this will do usable tuareg hideshow support:
+<pre>
+(add-hook 'tuareg-load-hook
+          (lambda ()
+            (when (require 'hideshow nil t)
+              (unless (assq 'tuareg-mode hs-special-modes-alist)
+                (add-to-list 'hs-special-modes-alist
+                             `(tuareg-mode
+                               ,(concat "^" tuareg-definitions-regexp)
+                               ,tuareg-semicolon-match-stop-regexp
+                               nil ;; nil means to use `comment-start'
+                               (lambda (_arg)
+                                 (tuareg-next-phrase t nil)
+                                 (tuareg-skip-back-blank-and-comments))
+                               nil))))))
+(add-hook 'tuareg-mode-hook
+          (lambda ()
+            (when (featurep 'hideshow)
+              (hs-minor-mode 1))))
+</pre>
+
+
+----
+CategoryHideStuff
+CategoryComments

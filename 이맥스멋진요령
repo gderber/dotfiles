@@ -1,0 +1,62 @@
+'''''이 페이지는 사용자들 이 쓴글과 Elisp 들을 분리해야 합니다.'''''
+----
+지금까지 수년간 이맥스를 사용해왔지만 극한의 가능성은 언제나 도달할 수 없었습니다.
+: 모든 이맥스 사용자가 이렇게 생각할 것입니다. -Lathl
+
+저는 이맥스를 엄청나게 생산적으로 사용하는 사람들을 본적이있었습니다.
+그들은 몇시간을 걸릴 일을 몇분 만에 해내기 위해서 키보드를 빠르게 움직이는 것 같았습니다.
+그래서 저는 그들이 이맥스의 효과적인 사용법에 대해서 알고있을 것이라 생각했고, 물었보았습니다만
+그러한 사용법을 알려주면서 짜증을 내더군요.(시간이 많이 뺏겼으니 그럴만합니다.)
+이게 이 페이지를 개설한 이유입니다.
+
+멋진 방법들이고, 어떤 것은 [[이맥스채널]]에서 언급된 것일 것입니다.
+
+= 효과적인 이맥스 =
+http://steve.yegge.googlepages.com/effective-emacs
+
+= 도움 = 
+* Apropos - [[AprposMode]]를 보십시요. 만약 어느 커맨드가 무엇인지 어디에 있는지 알아낼려고 애쓴다면 <tt>C-h a</tt>를 사용하세요.
+[[XEmacs]]에선 Help->Commands, Variables, Keys->Apropos...가 정규식에 적합한 명령, 함수, 변수, 매크로의 전체 리스트를 알려줄 것입니다.
+커맨드가 적용된 키나 함수의 정의를 알기 위해선 <tt>RET</tt>을 누르거나 항목의 어느 아이템을 가운데 마우스 버튼을 누르세요.
+
+:: [[Icicles]]도 보세요. 단지 그 명령을 위해 'M-x'을 누르고 정규식으로 이름을 입력한 후 `C-next'와 `C-prior'를 통해 적합한 명령들을 순환할 수 있습니다. 순환 중에 각각의 명령의 설명이 보일겁니다. -- DrewAdams
+[new]
+* man과 info 페이지를 위한 완성은 다음 주소를 보세요. http://homepage1.nifty.com/bmonkey/emacs/elisp/iman.el
+[new]
+:: 내 생각엔 woman이 더 좋은 것 같아 -- [[익명]] 
+[new]
+:: 하지만 woman은 몇몇 man 페이지를 보여주는데 실패하고 경고를 내지. -- [[익명]]
+[new]
+* Help on anything, with one click: `help-on-click/key' in Lisp:help+.el: Gives help on a key/menu sequence or object clicked with the mouse. See HelpPlus for more information on this and other features.
+[new]
+:: Bind "l" to help-go-back in help-mode, to make it behave a tiny bit more like info mode.
+(add-hook 'help-mode-hook (lambda () (define-key help-mode-map "l" 'help-go-back)))
+= Dired =
+Nifty tricks for Dired are on their own page: '''DiredPower'''.
+= NaN: Not A Number =
+''Not-A-Number is a number!'' How can you test for <nowiki>NaN</nowiki>? See NotANumber.
+= Remap Control and Caps Lock =
+MovingTheCtrlKey -- For some, redefining the CapsKey is one of the most important customizations for computer use in general and especially for Emacs.
+[:Editing]
+= Editing =
+== 검색 및 대체 ==
+* When doing isearch, `C-w' adds the word following point to the search buffer. Very useful. `C-y' adds the rest of the current line to the search buffer. Sometimes useful.
+* Use `isearch' as a navigation mechanism. Consider modifying Isearch's behavior by using IsearchOtherEnd.
+* Regexps can be limited to a region by using BasicNarrowing or selecting an active region with TransientMarkMode.
+* Set the variable `enable-recursive-minibuffers' non-nil, then you can bring up a complex search and replace that you've just done (either because it didn't work and you want to try again, or because you want to another similar one) in the MiniBuffer using the history mechanism, and use search and replace to edit the original search and replace. For example, if you've just replaced "aabbcc" with "zzbbyy" and now want to replace "aaddcc" with "zzddyy", you can bring up the original search, and use replace-string to change the "bb" strings to "dd" in both pattern and replacement.
+----
+''Use recursive-edit''
+When replacing some text with M-% or M-C-% you may replace and edit the matches with C-w or just edit with C-r and leave recursive edit with M-C-c. This is useful when you need to replace some text, but in certain places it should differ.
+: Excellent!
+== 키보드 매크로 ==
+Use KeyboardMacros! Various KeyboardMacrosTricks are here.
+----
+A useful adjunct to keyboard macros is the ability to use multiple buffers or windows in a macro. When doing a complex keyboard macro I sometimes lose track of where the point and mark is, or maybe I need to keep track of more locations. 
+Splitting the [[Frame]] and using one [[Window]] as 'input' and the other as 'output' can often make things a lot simpler. You get a sed-like way of editing the data.
+-- TrulsArnegaard
+== 복사, 붙여넣기 및 선택 ==
+* Use the ''secondary'' selection: SecondarySelection. With it, you can mark some text without moving point. So if you want to copy a word from elsewhere in the text to point, double-click `M-mouse-1' on the word, then `M-mouse-2' to insert. Very easy. With library '''<tt>[[second-sel.el]]</tt>''', you can do more: swap primary and secondary, use a ring of secondary selections,…
+
+----
+
+CategoryHelp GnusNiftyTricks CategoryEditing CategoryDotEmacs

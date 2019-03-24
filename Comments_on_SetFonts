@@ -1,0 +1,62 @@
+I don't care about all this fancy stuff.  Somebody decided to default the font to variable pitch and I want fixed width.  Courier, please.  This page is too impenetrable to figure out how to default to courier.  How do I do that?
+
+-- Anonymous 2013-06-04 16:27 UTC
+
+
+----
+
+Dear Anonymous: [http://www.emacswiki.org/emacs-en/SetFonts#toc2 Globally Change the Default Font]
+
+in your case, add this to your .emacs (or whatever) file: <code>(set-face-attribute 'default nil :font "Courier")</code>
+
+To view available fonts on your system, look at <code>(font-family-list)</code>
+
+-- MichaelPaulukonis 2013-06-04 17:58 UTC
+
+
+----
+
+Regarding  the part:
+[quote]
+To change the default font for new (non special-display) frames, put either of these in your init file:
+
+    (add-to-list 'default-frame-alist '(font . FONT ))
+    (set-face-attribute 'default t :font FONT ))
+[/quote]
+I understand how when we are in the middle of an emacs session it'd help to have an option to change the
+font only of the future-new frames.
+But i dont understand the difference of using the 't', or 'nil' option in an .init file when starting a new emacs session . Doesnt it hold than in that case all frames are newones making 't' superfluous in .init file?
+
+-- [http://librebytes.gr chomwitt] 2014-08-14 14:21 UTC
+
+
+----
+
+@ [[chomwitt]]: Yes. In your [[init file]] it should make no noticeable difference whether you use `nil' or `t' for parameter ##FRAME##.
+
+-- DrewAdams 2014-08-14 14:28 UTC
+
+
+----
+
+Using (set-face-attribute 'default t :font FONT ) in .emacs file is problematic because I can find no explanation of what syntax to substitute for FONT...  
+
+For example, "M-x describe-font return return" reports "-misc-fixed-medium-r-normal--13-120-75-75-c-80-iso8859-1" as the font name currently used (or so I suppose what gets reported is what is currently used), but putting (set-face-attribute 'default t :font -misc-fixed-medium-r-normal--13-120-75-75-c-80-iso8859-1) in .emacs results in the error message "Symbol's value as variable is void: -misc-fixed-medium-r-normal--13-120-75-75-c-80-iso8859-1" which is a message I'ld rather not be confronted with although I shouldn't be totally bothered because emacs does start with the font I want (but I conjecture emacs starting with my desired font had nothing to do with what I put in .emacs).  
+
+Moreover, if I put (set-face-attribute 'default t :font "-misc-fixed-medium-r-normal--13-120-75-75-c-80-iso8859-1")  in .emacs that results in no error but the desired font is not used.
+
+Please include a variety of examples that show completely and exactly how to get from the font name reported by "M-x describe-font return return" to the appropriate syntax to substitute for FONT when putting (set-face-attribute 'default t :font FONT ) in .emacs file so as to make emacs start without errors and with the current font... or if that request is of such a fundamentally confused nature as to be inappropriate to achieving my goal (of using the current font by way of .emacs while avoiding error messages) -- because, for example, perhaps "M-x describe-font return return" does not report the font in current use -- then an explanation of why and how it is confused, and an explanation of how one should appropriately proceed would be much appreciated.
+
+Thank you.
+
+P.S. I echo the sentiment that "This page is too impenetrable..."
+
+-- Anonymous 2019-02-23 19:48 UTC
+
+
+----
+
+Ignoring what (seemed) to be said concerning  (set-face-attribute ‘default t :font FONT ), I tried random things until serendipitously discovering that adding (set-frame-font "-misc-fixed-medium-r-normal--13-120-75-75-c-80-iso8859-1") as the last line in .emacs seems to work (though I haven't a clue as to what I'm doing).
+
+-- Anonymous 2019-02-23 21:16 UTC
+
