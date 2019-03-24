@@ -1,0 +1,50 @@
+Interfacing to weather services on the net:
+
+* MetarReport
+* RainOrShine
+* EmacsMeteo
+* Lisp:xml-weather.el 
+* [http://julien.danjou.info/projects/emacs-packages#google-weather google-weather and org-google-weather]  Google shut down their weather API in 2012, how difficult to swap out another weather source?
+* [http://jasonfruit.com/page/weather_el weather.el (uses data from worldweatheronline.com)]
+* [https://github.com/ruediger/weather-metno-el weather-metno-el] (uses free (CC BY 3.0) data from [http://www.met.no met.no])
+* [https://github.com/aaron-em/weatherline-mode.el/tree/1.0 weatherline-mode.el] Highly customizable display of current weather in your mode line, using CC-BY-SA 2.0 data from openweathermap.org
+* [https://github.com/hillwithsmallfields/JCGS-emacs/blob/master/information-management/metoffice.el metoffice.el] Fetch and parse data from the UK Government's Meteorological Office, returning alists
+* [https://github.com/bcbcarl/emacs-wttrin emacs-wttrin] An interface to [http://wttr.in/ http://wttr.in]
+* [https://github.com/thomp/noaa noaa] View the NOAA forecast for a given location
+
+There is also a WThreeM w3m-search-engine-alist on WThreeMSearch for weather.com.
+
+Try this:
+
+ (diary-weather "http://wxp.eas.purdue.edu/foredat.cgi/KSTS")
+
+with [http://sacha.free.net.ph/notebook/emacs/cal-desk-calendar.el cal-desk-calendar.el] (desk calendar style extensions to Calendar/Diary by DaleGulledge)
+
+The [http://www.netcolony.com/technology/janardan/scripts/weather.html weather.el] link from the WikifiedEmacsLispList is no longer available, does anybody know more?
+
+* [http://www.archive.org/web/web.php The Wayback Machine] has [http://web.archive.org/web/20011205115920/http://www.netcolony.com/technology/janardan/scripts/weather.html a version of weather.el] at:
+
+** http://web.archive.org/web/20011205115920/http://www.netcolony.com/technology/janardan/scripts/weather.html
+
+==xml-weather.el==
+The first time I try to use xml-weather-today-at or xml-weather-forecast-at, I can enter in the city just fine.  Using the TAB autocomplete on Location will generate a "defvar ignored because url-request-data is let-bound" warning, even though autocompletion will work and will list all the cities of the name I entered.  No weather information is retrieved on either the first or any additional queries due to "url-retrieve-internal: Symbol's value as variable is void: url-request-data".  The ticker will run but not display anything other than the initial "Contacting host: xoap.weather.com:80".  Any ideas what is causing the url problems?  They happen whether nor not emacs-w3m is loaded.
+
+[new]
+Use it like that:
+
+M-x xml-weather-today-at RET
+
+City: name of your city (NO COMPLETION HERE)
+
+Choose a place: Hit TAB here and select the name the more appropriate.
+
+May be try with another city, sometime even if the city is referenced, it is not available yet, you have to try later.
+
+I use xml-weather every day with no failure since months.
+
+If it still not working for you, contact me on the mail address you will find in source file header with a recipe explaining clearly the step you followed and the configuration you used (did you subscribe to xml-weather?).
+
+-- ThierryVolpiatto
+
+----
+CategoryInterface

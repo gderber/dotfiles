@@ -1,0 +1,36 @@
+This library provides a couple methods for quickly finding any file
+in a given project. It depends on GNU find.
+
+A project is found by searching up the directory tree until a file
+is found that matches `ffip-project-file'. (".git/.svn/.hg" by default.)
+By default, it looks only for files whose names match
+`ffip-patterns',
+
+If you have so many files that it becomes unwieldy, you can set
+`ffip-find-options' to a string which will be passed to the `find'
+invocation in order to exclude irrelevant subdirectories. For
+instance, in a Ruby on Rails project, you may be interested in all
+.rb files that don't exist in the "vendor" directory. In that case
+you could set `ffip-find-options' to "-not -regex \".*vendor.*\"".
+
+All these variables may be overridden on a per-directory basis in
+your .dir-locals.el.  See [[Manual:Directory Variables]] for
+details.
+
+Available [https://github.com/technomancy/find-file-in-project on GitHub]
+
+== Alternatives ==
+
+* [https://github.com/yunxing/git-find-file.el- find file in git repo]
+* [https://github.com/d11wtq/fiplr Fiplr]
+* [http://github.com/justinweiss/fuzzy-find-in-project fuzzy-find-in-project]
+* [[Gpicker]]
+* <tt>[[ifind-mode.el]]</tt>
+* [[Projectile]]
+* [http://github.com/re5et/simp simp] --  Includes also project-specific `rgrepp'ing, which takes project ignored directories into account.
+
+
+----
+
+CategoryProgrammerUtils
+CategoryProject

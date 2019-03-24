@@ -1,0 +1,133 @@
+The built-in help browser [[Info]] is used to read documentation about
+Emacs and the GNU tools. For convenience, it might be useful to
+install in the Info's directory some other manuals and documentation.
+
+Common convention to all external manuals would be to be keep a
+separate directory, for example "~/.local/share/info". In it a special file, named /dir/,
+lists the documentation installed in it. To add to it invoke "install-info".
+
+To make this directory available to Emacs add this snippet to your "init.el":
+
+{{{
+(add-to-list 'Info-default-directory-list "~/.local/share/info")
+}}}
+
+Sadly, all these info files have plenty of warnings when you generate them...
+
+SteveYegge on Info files:
+https://sites.google.com/site/steveyegge2/my-dot-emacs-file
+
+=== Git ===
+
+The git documentation and the git manual pages can be installed as info files.
+
+Requirements: ##asciidoc## and ##docbook2x##.
+
+{{{
+wget https://github.com/git/git/archive/master.tar.gz
+tar xf master.tar.gz
+cd git-master/Documentation
+make git.info gitman.info
+mv git.info gitman.info ~/.local/share/info
+cd ~/.local/share/info
+install-info git.info dir
+install-info gitman.info dir
+}}}
+
+(These instructions assume that you want the latest, bleeding edge. Replace "master" with an appropriate [https://github.com/git/git/releases tag] like "v2.20.1".)
+
+On a Mac, via brew:
+
+{{{
+brew install asciidoc
+brew install docbook2x
+cd /usr/local/bin
+ln -s ../Cellar/docbook2x/0.8.8/bin/docbook2texi docbook2x-texi
+}}}
+
+=== Python ===
+
+The Python documentation can be installed as info files.
+
+Requirements: ##python3-sphinx##.
+
+To install:
+
+{{{
+wget https://github.com/python/cpython/archive/master.tar.gz
+tar xf master.tar.gz
+cd cpython-master/Doc
+sphinx-build -b texinfo -d build/doctrees . build/texinfo
+cd build/texinfo && make
+mv python.info ~/.local/share/info
+cd ~/.local/share/info
+install-info python.info dir
+}}}
+
+(These instructions assume that you want the latest, bleeding edge. Replace "master" with an appropriate [https://github.com/python/cpython/releases tag] like "v3.7.2".)
+
+=== Perl ===
+
+{{{
+wget https://perl5.git.perl.org/perl.git/snapshot/HEAD.tar.gz
+tar xf HEAD.tar.gz
+cd perl-HEAD-*/pod
+for pod in perl*.pod; do
+  base=$(basename $pod .pod)
+  pod2texi "$pod" > "$base.texi" \
+  && makeinfo "$base.texi"
+done
+touch perl-menu.info
+for info in *.info; do
+  base=$(basename $info .info)
+  install-info --entry="* $base: ($info). " --section=Perl $info perl-menu.info
+done
+mv *.info* ~/.local/share/info
+cd ~/.local/share/info
+install-info --entry="* Perl: (perl-menu.info). " --section=Perl perl-menu.info dir
+}}}
+
+(I'm not quite sure how to view the ##perlfunc## manual. If you know how to fix it, please change the instructions above.)
+
+=== stdlibc++ ===
+
+To install documentation in .info format of GNU's standard C++ library (for stuff like std::string, std::vector, etc.) follow:
+
+  $ wget http://www.netgull.com/gcc/infrastructure/libg%2B%2B-2.8.1.3.tar.gz
+  $ tar -xvf libg++-2.8.1.3.tar.gz libg++-2.8.1.3/libg++/texinfo/lgpl.texinfo
+  $ tar -xvf libg++-2.8.1.3.tar.gz libg++-2.8.1.3/libg++/libg++.texi
+  $ cd libg++-2.8.1.3/libg++/
+  $ cp texinfo/lgpl.texinfo .
+  $ makeinfo libg++.texi
+    (a bunch of warnings!)
+  $ cp libg++.info ~/.local/share/info
+  $ cd ~/.local/share/info
+  $ install-info libg++.info dir
+
+The URL in wget is one of the mirrors selected for geographic proximity. Select yours from http://gcc.gnu.org/mirrors.html
+
+GNU's standard C++ library page: http://gcc.gnu.org/libstdc++
+
+=== Book "Structure and Interpretation of Computer Programs" ===
+
+Most convenient way to install is via MELPA. For reference, the package page is: https://melpa.org/#/sicp
+
+Alternatively, for manual installation:
+
+  $ cd ~/.local/share/info
+  $ wget https://github.com/webframp/sicp-info/raw/master/sicp.info
+  $ install-info sicp.info dir
+
+=== Common Lisp Spec ===
+
+  $ mkdir /tmp/cl-info
+  $ cd /tmp/cl-info
+  $ wget ftp://ftp.gnu.org/pub/gnu/gcl/gcl.info.tgz
+  $ mv info/* ~/.local/share/info
+  $ install-info --section="Software development" --entry="* HyperSpec: (gcl). Common Lisp HyperSpec." ~/.local/share/info/gcl.info ~/.local/share/info/dir
+
+=== LaTeX2e Reference Manual ===
+
+  $ cd ~/.local/share/info
+  $ wget http://mirrors.ctan.org/info/latex2e-help-texinfo/latex2e.info
+  $ install-info latex2e.info dir

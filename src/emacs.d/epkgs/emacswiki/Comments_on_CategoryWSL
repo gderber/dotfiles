@@ -1,0 +1,34 @@
+How much sense does this page really make?  Most Windows people don't even understand the Windows version of Emacs, why should they bother to install a whole system which is completely alien to them, even though it offers a lot of real advantages over Windows, as a subsystem of Windows?  From a tiny set of available distros which had to be made „WSL-compatible” and are among the worst (most crippled) GNU/Linuxes out there?
+
+In addition, using Emacs in the Windows „Subsystem for Linux” only exposes the whole Linux VM directly to all of the Windows bugs and intrudability… nobody should actually do this but use either:
+
+– a real VM like VirtualBox or QEMU
+
+– a parallel Linux installation in another partition or on another harddisk
+
+– a Windows-native Emacs
+
+– Emacs in a Linux installation on a Raspberry, Wandbord, Cubie etc.
+
+-- mangledmind 2018-05-03 02:33 UTC
+
+
+----
+
+People can do it and some people will try to do it. Why should we prevent them from helping each other?
+
+-- Alex Schroeder 2018-05-03 14:28 UTC
+
+
+----
+
+The benefit of using WSL and Emacs is that you can edit all files in Windows from the Linux-version of Emacs. All files in Windows is mounted under /mnt/c/. The reason to run Emacs in WSL instead of Windows is that it is much faster in WSL than in native Windows. You can also start Windows programs from Emacs within WSL for example a browser like Edge or Firefox. For example following a link in WSL Emacs opens it in the Windows browser. WSL is lighter than a virtual machine and a virtual machine has a separate filesystem from Windows which makes it harder to share files between Emacs and a Windows editor like VSCode.
+
+I started with the native Windows Emacs version but I only run Emacs in WSL now. This is because Emacs in Windows turned really slow with my setup. And besides all the tools you need for a true Emacs experience are much easier to install for Linux. It is a lot of work to make this function for the Windows setup.
+
+One possible problem with Emacs in WSL is that Windows uses CRLF while Linux uses LF for line-endings. Windows 10 supports LF but sometimes there are problems. I link my Org-mode files from /mnt/c/User/username/Dropbox to ~/Dropbox and edit them in Emacs in WSL. I use dired to move files in Windows and TRAMP is easier to setup in WSL than in Windows. This works very well.
+
+One big caveat is that if you edit the WSL files from Windows, you corrupts the entire WSL filesystem and have to reinstall it.
+
+-- Stig Dahl 2018-12-11 19:47 UTC
+

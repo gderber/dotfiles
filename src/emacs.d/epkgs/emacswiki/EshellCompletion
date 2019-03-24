@@ -1,0 +1,203 @@
+== Customization ==
+
+Eshell offers you completion of filenames.  If several filenames are
+possible, the most recently modified file will be used first.
+
+This is determined by `eshell-cmpl-compare-entry-function' and
+defaults to `file-newer-than-file-p'.  The idea is that once you start
+working with a certain file, you will want it to appear first in your
+completion list.
+
+Here's some untested code to reverse this order, and to take
+`completion-ignored-extensions' into account.
+
+ (setq eshell-cmpl-compare-entry-function
+       (function
+	(lambda (left right)
+	  (let ((exts completion-ignored-extensions) found)
+	    (while exts
+	      (if (string-match (concat "\\" (car exts) "$") right)
+		  (setq found t exts nil))
+	      (setq exts (cdr exts)))
+	    (if found
+		nil
+	      (file-newer-than-file-p left right))))))
+
+Contributors: KaiGrossjohann, JohnWiegley
+
+== Remote Files ==
+
+If I want to change directory to /scratch, then pressing TAB after typing "cd /sc" leads to TrampMode trying to open a connection. This is because the tramp-completion-file-name-handler entry in file-name-handler-alist leads to:
+
+ (file-name-all-completions "sc" "/") =>
+  ("scpx:" "scp2_old:" "scp1_old:" "scp2:" "scp1:" "scp:" "scratch/")
+
+and pcomplete tries to run file-directory-p on all these entries.
+
+One way to avoid this is to use the following:
+
+ (defadvice pcomplete (around avoid-remote-connections activate)
+   (let ((file-name-handler-alist (copy-alist file-name-handler-alist)))
+     (setq file-name-handler-alist
+           (delete (rassoc 'tramp-completion-file-name-handler
+                           file-name-handler-alist) file-name-handler-alist))
+     ad-do-it))
+
+Note that completion of "cd /su::/" still works because this is
+handled by tramp-file-name-handler.
+
+Perhaps there are better ways of doing this? -- Matt Hodges
+== Subcommand completions ==
+In default subcommands are not completed, so I make the completion functions for the commands
+(systemctl, sudo, man) which have subcommands. Completion functions have  the corresponding commands' names.
+
+<pre>
+;;;; sudo completion
+(defun pcomplete/sudo ()
+  "Completion rules for the `sudo' command."
+  (let ((pcomplete-ignore-case t))
+    (pcomplete-here (funcall pcomplete-command-completion-function))
+    (while (pcomplete-here (pcomplete-entries)))))
+
+;;;; systemctl completion
+(defcustom pcomplete-systemctl-commands
+  '("disable" "enable" "status" "start" "restart" "stop" "reenable"
+    "list-units" "list-unit-files")
+  "p-completion candidates for `systemctl' main commands"
+  :type '(repeat (string :tag "systemctl command"))
+  :group 'pcomplete)
+
+(defvar pcomplete-systemd-units
+  (split-string
+   (shell-command-to-string
+    "(systemctl list-units --all --full --no-legend;systemctl list-unit-files --full --no-legend)|while read -r a b; do echo \" $a\";done;"))
+  "p-completion candidates for all `systemd' units")
+
+(defvar pcomplete-systemd-user-units
+  (split-string
+   (shell-command-to-string
+    "(systemctl list-units --user --all --full --no-legend;systemctl list-unit-files --user --full --no-legend)|while read -r a b;do echo \" $a\";done;"))
+  "p-completion candidates for all `systemd' user units")
+
+(defun pcomplete/systemctl ()
+  "Completion rules for the `systemctl' command."
+  (pcomplete-here (append pcomplete-systemctl-commands '("--user")))
+  (cond ((pcomplete-test "--user")
+         (pcomplete-here pcomplete-systemctl-commands)
+         (pcomplete-here pcomplete-systemd-user-units))
+        (t (pcomplete-here pcomplete-systemd-units))))
+
+;;;; man completion
+(defvar pcomplete-man-user-commands
+  (split-string
+   (shell-command-to-string
+    "apropos -s 1 .|while read -r a b; do echo \" $a\";done;"))
+  "p-completion candidates for `man' command")
+
+(defun pcomplete/man ()
+  "Completion rules for the `man' command."
+  (pcomplete-here pcomplete-man-user-commands))
+</pre>
+
+Completed subcommands on <code>systemctl</code> are set
+<code>disable</code>, <code>enable</code>, <code>status</code>, <code>start</code>,
+<code>restart</code>, <code>stop</code>, but if needed, you can add other subcommands.
+
+-- KatsuyukiKiso
+
+== Miscellaneous ==
+
+If I set my own prompt, like this:
+
+ (setq eshell-prompt-function
+       (lambda ()
+         (concat "[" (user-login-name) "@" (system-name) " " (eshell/pwd) "]"
+                 (if (= (user-uid) 0) "# " "$ "))))
+
+completion stops working. When I press tab, I get the message "Text is read-only". Can anyone explain this? -- [[bkhl]]
+
+: This happens because you haven't modified eshell-prompt-regexp accordingly (see the documentation for eshell-prompt-function). This should work:
+
+ (setq eshell-prompt-regexp "^[^#$\n]*[#$] ")
+
+: See EshellFunctions for more examples. -- MattHodges
+
+----
+
+Ok, thanks. I like pcomplete-list better than the completion cycling. I tried this:
+
+ (add-hook 'eshell-mode-hook
+           '(lambda () (define-key eshell-mode-map "\t" 'pcomplete-list)))
+
+but it doesn't work. How should this be done properly? -- [[bkhl]]
+
+: I use:
+
+ (setq eshell-cmpl-cycle-completions nil)
+
+: to avoid completion cycling. -- MattHodges
+
+== AutoComplete ==
+
+I use the amazing AutoComplete package for completion. Eshell provides
+completion through the ProgrammableCompletion package. I did not found
+a suitable auto-complete source for pcomplete, so I use the following
+code:
+
+<pre>
+(defun ac-pcomplete ()
+  ;; eshell uses `insert-and-inherit' to insert a \t if no completion
+  ;; can be found, but this must not happen as auto-complete source
+  (flet ((insert-and-inherit (&rest args)))
+    ;; this code is stolen from `pcomplete' in pcomplete.el
+    (let* (tramp-mode ;; do not automatically complete remote stuff
+           (pcomplete-stub)
+           (pcomplete-show-list t) ;; inhibit patterns like * being deleted
+           pcomplete-seen pcomplete-norm-func
+           pcomplete-args pcomplete-last pcomplete-index
+           (pcomplete-autolist pcomplete-autolist)
+           (pcomplete-suffix-list pcomplete-suffix-list)
+           (candidates (pcomplete-completions))
+           (beg (pcomplete-begin))
+           ;; note, buffer text and completion argument may be
+           ;; different because the buffer text may bet transformed
+           ;; before being completed (e.g. variables like $HOME may be
+           ;; expanded)
+           (buftext (buffer-substring beg (point)))
+           (arg (nth pcomplete-index pcomplete-args)))
+      ;; we auto-complete only if the stub is non-empty and matches
+      ;; the end of the buffer text
+      (when (and (not (zerop (length pcomplete-stub)))
+                 (or (string= pcomplete-stub ; Emacs 23
+                              (substring buftext
+                                         (max 0
+                                              (- (length buftext)
+                                                 (length pcomplete-stub)))))
+                     (string= pcomplete-stub ; Emacs 24
+                              (substring arg
+                                         (max 0
+                                              (- (length arg)
+                                                 (length pcomplete-stub)))))))
+        ;; Collect all possible completions for the stub. Note that
+        ;; `candidates` may be a function, that's why we use
+        ;; `all-completions`.
+        (let* ((cnds (all-completions pcomplete-stub candidates))
+               (bnds (completion-boundaries pcomplete-stub
+                                            candidates
+                                            nil
+                                            ""))
+               (skip (- (length pcomplete-stub) (car bnds))))
+          ;; We replace the stub at the beginning of each candidate by
+          ;; the real buffer content.
+          (mapcar #'(lambda (cand) (concat buftext (substring cand skip)))
+                  cnds))))))
+
+(defvar ac-source-pcomplete
+  '((candidates . ac-pcomplete)))
+
+(add-hook 'eshell-mode-hook #'(lambda () (setq ac-sources '(ac-source-pcomplete))))
+(add-to-list 'ac-modes 'eshell-mode)
+</pre>
+
+----
+CategoryEshell

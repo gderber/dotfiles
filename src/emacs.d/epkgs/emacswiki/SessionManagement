@@ -1,0 +1,65 @@
+"Session Management" is the act of saving some of what you are doing  and restoring it later. Often your current state is saved when you quit
+Emacs and restored when you start a new session.
+
+* [https://github.com/m0smith/annals Annals] -- Associate [[DeskTop]]s with tasks including Jira and Github.  Think Mylyn.
+* [[BookmarkPlus|Bookmark+]] -- [[DeskTop]]s as bookmarks: just hit a
+  key to create them or jump among them.
+* DeskTop -- Save and restore open [[buffer]]s, [[frame]]s, [[point]], [[mark]],
+  histories, other [[variable]]s.
+* [[http://desktopaid.sourceforge.net/ DesktopAid]] -- Save and
+  restore [[frame]]s.
+* DesktopMenu -- DeskTop extension that lets you manage multiple
+  desktops, possibly in a single directory.
+* MkDesktop -- For use with DesktopMenu. Automates the creation of
+  multiple, named desktops from generated lists of files.
+* EmacsSession, ##session.el## -- Save global variables,
+  [[register]]s, and buffer positions; does not reload visited files
+  like DeskTop does.
+* [http://github.com/miloss/find-desktop find-desktop.el] -- Quickly switch between multiple desktops.
+* FrameRestorePackage -- Save and restore frame configurations.
+* [[MinimalSessionSaver]] -- Saves and restores list of visited files
+* [http://scottfrazersblog.blogspot.com/2009/12/emacs-named-desktop-sessions.html my-desktop] -- Named desktop sessions.
+* [[nameses]] -- Named desktop sessions, based on my-desktop.
+* PolicySwitch -- Save and restore window configurations using policies.
+* SaveHist -- Save [[minibuffer]] histories and optionally other variables.
+* SavePlace -- Restore [[point]].
+* [http://git.savannah.gnu.org/cgit/emacs-tiny-tools.git/plain/lisp/tiny/tinydesk.el tinydesk.el] -- Save and restore list of saved files (or current Emacs session).
+  Part of TinyTools.
+* [[WThreeMSession]] -- Manage W3M sessions.
+* WcyDesktop -- Like DeskTop, but faster loading.
+* WindowsMode, ##revive.el## -- Save and restore [[window]]
+  configurations.
+* winsav.el, part of [NxhtmlMode nXhtml] -- Save and restore frames
+  and window configurations.
+* [WorkgroupsForWindows Workgroups] - A window-configuration
+  persistence package, providing storage/restoration, saving/loading,
+  animated window config morphing, and lots more.
+
+See also: http://emacs-session.sourceforge.net/related.html.
+
+=== Discussion ===
+
+[new]
+I tried *desktopaid* at April 2013 in 23.1.1. I downloaded the package from [http://sourceforge.net/projects/desktopaid/ source page]. The package has desktopaid.elc but it's compiled for older version of emacs so it wont work. Trying with desktopaid.el emacs opened with no error. So i changed a little the proposed .emacs lines and i added:
+<pre>
+;; desktopaid
+(setq load-path (cons "~/.emacs.d/" load-path))
+(autoload 'dta-hook-up "desktopaid.el" "Desktop Aid" t)
+(dta-hook-up)
+</pre>
+*In short: Across sessions -- Frames: OK,  Windows:No , Directories:No* 
+What you should pay attention to :
+Starting first time emacs with desktopaid enabled we will be asked 'Select configuration:' If we proceed with just an Enter, then in trying to close emacs will error that there is no .desktopaid dir.  So create the ~/.desktopaid dir first and give a name of the configuration file when asked at the start.
+Generally i wouldnt recommended for new emacs users since it seems not-maintained and tricky to set-up correctly. Unless ofcourse the functionality is needed.
+AlexandrosPrekates
+
+[new]
+
+I use EmacsSession, because it doesn't reload all the files and doesn't require a lot of customization like DeskTop does. -- AlexSchroeder
+
+[new]
+
+I'm wondering: what would it take to have Emacs checkpoint all of its state entirely to disk (dumping the process and its memory)?  Would the architecture allow for this on certain platforms?  I wonder in particular because of the way in which Emacs can build itself by dumping core.  I'm wondering about the potential for a high-fidelity suspend and resume.
+
+----
+CategoryPersistence
