@@ -7,9 +7,9 @@
 ;; Created: Wed Sep  5 15:25:52 2018 (-0400)
 ;; Version: 
 ;; Package-Requires: ()
-;; Last-Updated: Sun Mar 24 12:07:01 2019 (-0400)
+;; Last-Updated: Tue Mar 26 21:33:07 2019 (-0400)
 ;;           By: Geoff S Derber
-;;     Update #: 22
+;;     Update #: 70
 ;; URL: 
 ;; Doc URL: 
 ;; Keywords: 
@@ -67,49 +67,82 @@
 
 (eval-after-load 'org
   '(org-load-modules-maybe t))
-;; Prepare stuff for export backends
-(setq org-export-backends '(org latex icalendar html ascii))
-
-(setq org-agenda-files
-      (file-expand-wildcards "~/Documents/Org/*"))
 
 ;; Org Mode Variables
 (custom-set-variables
  '(org-default-notes-file "~/notes.org")
  '(org-agenda-ndays 14)
  '(org-deadline-warning-days 14)
+ ;; Prepare for export backends
+ '(org-export-backends '(org latex icalendar html ascii))
  '(org-agenda-show-all-dates t)
  '(org-agenda-skip-deadline-if-done t)
  '(org-agenda-skip-scheduled-if-done t)
  '(org-agenda-start-on-weekday nil)
  '(org-reverse-note-order t)
+ '(org-log-into-drawer t)
  '(org-fast-tag-selection-single-key (quote expert))
- '(org-agenda-custom-commands
-   (quote (("d" todo "DELEGATED" nil)
-           ("c" todo "DONE|DEFERRED|CANCELLED" nil)
-           ("w" todo "WAITING" nil)
-           ("W" agenda "" ((org-agenda-ndays 21)))
-           ("A" agenda ""
-            ((org-agenda-skip-function
-              (lambda nil
-                (org-agenda-skip-entry-if (quote notregexp) "\\=.*\\[#A\\]")))
-             (org-agenda-ndays 1)
-             (org-agenda-overriding-header "Today's Priority #A tasks: ")))
-           ("u" alltodo ""
-            ((org-agenda-skip-function
-              (lambda nil
-                (org-agenda-skip-entry-if (quote scheduled) (quote deadline)
-                                          (quote regexp) "\n]+>")))
-                  (org-agenda-overriding-header "Unscheduled TODO entries: ")))))))
+ '(org-use-fast-todo-selection t)
+ '(org-treat-S-cursor-todo-selection-as-state-change nil)
+  )
 
+(setq org-todo-state-tags-triggers
+      '(("CANCELLED" ("CANCELLED" . t))
+        ("WAITING" ("WAITING" . t))
+        ("HOLD" ("WAITING") ("HOLD" . t))
+        (done ("WAITING") ("HOLD"))
+        ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
+        ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
+        ("DONE" ("WAITING") ("CANCELLED") ("HOLD"))))
+
+(setq org-agenda-files (file-expand-wildcards "~/Documents/Org/*"))
+
+(setq org-todo-keywords
+      '(;; Sequent for TODOs
+        (sequence "TODO" "WAITING" "DELEGATED" "HOLD" "FEEDBACK" "VERIFY" "|" "DONE" "DELEGATED")
+        ;; Sequence for Bugs
+        (sequence "NEW" "CONFIRMED" "ASSIGNED" "IN PROGRESS" "|" "INVALID" "COMPLETE" "VERIFIED" "CLOSED")
+        ;; Sequence for POSSESSIONS
+        (sequence "PURCHASE(p@/!)" "PURCHASED(j@/!)" "TRANSIT(u@/!)" "GIFT(h@/!)" "SELL(k@/!)" "LOANED(n@/!)" "|" "UNWANTED(a@/!)" "OWN(o@/!)" "GIFTED(g@/!)"  "SOLD(c@/!)" "DISCARDED(q@/!)")
+        ;; Sequence for MULTIMEDIA
+        (sequence "CONSUME(r@/!)" "SUBSCRIBE(b@/!)" "CONSUMING(l@/!)" "SHARE(s@/!)" "|" "IGNORED(i@/!)" "REFERENCE(f@/!)")
+        ;; Sequence for EVENTS
+        (sequence "VISIT(v@/!)" "|" "DIDNOTGO(z@/!)" "MEETING(m@/!)" "VISITED(y@/!)")))
+
+;; Setting Colours (faces) for todo states to give clearer view of work 
+(setq org-todo-keyword-faces
+      '(("TODO" :foreground "red" :weight bold)
+        ("NEXT" :foreground "blue" :weight bold)
+        ("DONE" :foreground "forest green" :weight bold)
+        ("WAITING" :foreground "orange" :weight bold)
+        ("HOLD" :foreground "magenta" :weight bold)
+        ("CANCELLED" :foreground "forest green" :weight bold)
+        ("MEETING" :foreground "forest green" :weight bold)
+        ("PHONE" :foreground "forest green" :weight bold)))
+;;
+(setq org-agenda-custom-commands
+      '(("d" todo "DELEGATED" nil)
+        ("c" todo "DONE|DEFERRED|CANCELLED" nil)
+        ("w" todo "WAITING" nil)
+        ("W" agenda "" ((org-agenda-ndays 21)))
+        ("A" agenda ""
+         ((org-agenda-skip-function
+           (lambda nil
+             (org-agenda-skip-entry-if (quote notregexp) "\\=.*\\[#A\\]")))
+          (org-agenda-ndays 1)
+          (org-agenda-overriding-header "Today's Priority #A tasks: ")))
+        ("u" alltodo ""
+         ((org-agenda-skip-function
+           (lambda nil
+             (org-agenda-skip-entry-if (quote scheduled) (quote deadline)
+                                       (quote regexp) "\n]+>")))
+          (org-agenda-overriding-header "Unscheduled TODO entries: ")))))
 
 ;; Key bindings
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-cb" 'org-switchb)
-
-;; Custom Key Bindings
 (global-set-key (kbd "<f12>") 'org-agenda)
 (global-set-key (kbd "<f5>") 'bh/org-todo)
 (global-set-key (kbd "<S-f5>") 'bh/widen)
@@ -122,18 +155,13 @@
 (global-set-key (kbd "<f9> g") 'gnus)
 (global-set-key (kbd "<f9> h") 'bh/hide-other)
 (global-set-key (kbd "<f9> n") 'bh/toggle-next-task-display)
-
 (global-set-key (kbd "<f9> I") 'bh/punch-in)
 (global-set-key (kbd "<f9> O") 'bh/punch-out)
-
 (global-set-key (kbd "<f9> o") 'bh/make-org-scratch)
-
 (global-set-key (kbd "<f9> r") 'boxquote-region)
 (global-set-key (kbd "<f9> s") 'bh/switch-to-scratch)
-
 (global-set-key (kbd "<f9> t") 'bh/insert-inactive-timestamp)
 (global-set-key (kbd "<f9> T") 'bh/toggle-insert-inactive-timestamp)
-
 (global-set-key (kbd "<f9> v") 'visible-mode)
 (global-set-key (kbd "<f9> l") 'org-toggle-link-display)
 (global-set-key (kbd "<f9> SPC") 'bh/clock-in-last-task)
@@ -176,30 +204,14 @@
   (interactive)
   (switch-to-buffer "*scratch*"))
 
-(setq org-todo-keywords
-      (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)" "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
+(defun my/org-summary-todo (n-done n-not-done)
+  "Switch entry to DONE when all subentries are done, to TODO otherwise."
+  (let (org-log-done org-log-states)   ; turn off logging
+    (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
 
-(setq org-todo-keyword-faces
-      (quote (("TODO" :foreground "red" :weight bold)
-              ("NEXT" :foreground "blue" :weight bold)
-              ("DONE" :foreground "forest green" :weight bold)
-              ("WAITING" :foreground "orange" :weight bold)
-              ("HOLD" :foreground "magenta" :weight bold)
-              ("CANCELLED" :foreground "forest green" :weight bold)
-              ("MEETING" :foreground "forest green" :weight bold)
-              ("PHONE" :foreground "forest green" :weight bold))))
+;; Hooks
+(add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
 
-(setq org-use-fast-todo-selection t)
-(setq org-treat-S-cursor-todo-selection-as-state-change nil)
-
-(setq org-todo-state-tags-triggers
-      (quote (("CANCELLED" ("CANCELLED" . t))
-              ("WAITING" ("WAITING" . t))
-              ("HOLD" ("WAITING") ("HOLD" . t))
-              (done ("WAITING") ("HOLD"))
-              ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
-              ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
-              ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; org-mode.el ends here
