@@ -371,6 +371,7 @@ executes.
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
   (setq sentence-end-double-space t)
+  (require 'git-commit)
   (global-git-commit-mode t)
 
   )

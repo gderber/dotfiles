@@ -91,7 +91,7 @@
  )
 
 ;;;;; Global Settings ;;;;;
-
+(savehist-mode 1)
 ;; Miscellaneous settings
 ;; All settings clicked in the Options menu are saved here by Emacs.
 (custom-set-variables
@@ -117,11 +117,30 @@
  '(show-paren-mode t) ;; Show matched Parens
  '(text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify)))
  '(uniquify-buffer-name-style (quote forward) nil (uniquify))
+ ;; Backup Settings
+ '(backup-directory-alist '(("." . "~/.emacs.d/backups")))
+ '(delete-old-versions -1)
+ '(version-control t)
+ '(vc-make-backup-files t)
+ '(auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
+ ;; http://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html
+ '(savehist-file "~/.emacs.d/savehist")
+ '(history-length t)
+ '(history-delete-duplicates t)
+ '(savehist-save-minibuffer-history 1)
+ '(savehist-additional-variables
+   '(kill-ring
+     search-ring
+     regexp-search-ring))
  '(package-selected-packages
    (quote
     (which-key undo-tree hydra evil-unimpaired async aggressive-indent adaptive-wrap ace-window)))
  '(size-indication-mode t)
+  ;; End Sentences with 2 spaces
+ '(sentence-end-double-space t)
  )
+
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

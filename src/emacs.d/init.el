@@ -16,6 +16,7 @@
 ;;    - https://www.emacswiki.org/
 ;;    - http://stackoverflow.com/questions/298065/which-are-the-gnu-emacs-modes-extensions-you-cant-live-without
 ;;    - http://www.gnu.org/software/emacs/tour/
+;;    - http://pages.sachachua.com/.emacs.d/Sacha.html
 ;;
 ;;    Everyone's .emacs rips off someone else's...
 ;;
