@@ -54,7 +54,8 @@ values."
      ;; 5. Emacs
      ;; better-defaults
      ;; ibuffer
-     org
+     (org :variables
+          org-projectile-file "TODOs.org")
 
      ;; 6. Email
      gnus
@@ -372,8 +373,12 @@ before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
   (setq sentence-end-double-space t)
   (require 'git-commit)
-  (global-git-commit-mode t)
-
+  (with-eval-after-load 'magit
+    (global-git-commit-mode t))
+;;  (with-eval-after-load 'org-agenda
+;;    (require 'org-projectile)
+;;    (push (org-projectile:todo-files) org-agenda-files))
+  
   )
 
 (defun dotspacemacs/user-config ()

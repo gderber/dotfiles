@@ -88,7 +88,8 @@
 (setq debug-on-error t)
 
 ;; External Packages
-(load (expand-file-name "~/.emacs.d/epkgs/password-store/contrib/emacs/password-store"))
+(with-eval-after-load 'magit
+    (load (expand-file-name "~/.emacs.d/epkgs/password-store/contrib/emacs/password-store")))
 (load (expand-file-name "~/.emacs.d/epkgs/emacswiki/header2"))
 (load (expand-file-name "~/.emacs.d/epkgs/emacswiki/fill-column-indicator"))
 (load (expand-file-name "~/.emacs.d/epkgs/emacswiki/highlight-chars"))

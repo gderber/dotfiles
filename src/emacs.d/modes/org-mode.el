@@ -7,9 +7,9 @@
 ;; Created: Wed Sep  5 15:25:52 2018 (-0400)
 ;; Version: 
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar 26 21:33:07 2019 (-0400)
+;; Last-Updated: Mon Apr  1 21:26:33 2019 (-0400)
 ;;           By: Geoff S Derber
-;;     Update #: 70
+;;     Update #: 89
 ;; URL: 
 ;; Doc URL: 
 ;; Keywords: 
@@ -70,22 +70,42 @@
 
 ;; Org Mode Variables
 (custom-set-variables
- '(org-default-notes-file "~/notes.org")
+ ;; Files and Directories
+ '(org-directory "~/Documents/Org/")
+ '(org-default-notes-file "~/Documents/Org/notes.org")
+ '(org-archive-location "~/Documents/Org/archive.org")
+ ;; Agenda Settings
  '(org-agenda-ndays 14)
- '(org-deadline-warning-days 14)
- ;; Prepare for export backends
- '(org-export-backends '(org latex icalendar html ascii))
  '(org-agenda-show-all-dates t)
+ '(org-agenda-start-on-weekday nil)
+ '(org-agenda-include-diary t)
  '(org-agenda-skip-deadline-if-done t)
  '(org-agenda-skip-scheduled-if-done t)
- '(org-agenda-start-on-weekday nil)
+ '(org-agenda-skip-timestamp-if-done t)
  '(org-reverse-note-order t)
- '(org-log-into-drawer t)
+ ;; Logging / Habit Tracking
+ '(org-log-into-drawer "LOGBOOK")
+ '(org-log-done-with-time t)
+ '(org-log-states-order-reversed t)
+ '(org-log-redeadline t)
+ '(org-log-reschedule '(time))
+ '(org-log-redeadline '(time))
  '(org-fast-tag-selection-single-key (quote expert))
  '(org-use-fast-todo-selection t)
  '(org-treat-S-cursor-todo-selection-as-state-change nil)
+ ;; Todo Settings
+ '(org-enforce-todo-dependencies t)
+ '(org-enforce-todo-checkbox-dependencies t)
+ '(org-deadline-warning-days 14)
+ ;; Prepare for export backends
+ '(org-export-backends '(org latex icalendar html ascii))
+
   )
 
+;; Files and Directories
+(setq org-agenda-files (file-expand-wildcards "~/Documents/Org/*"))
+
+;; Todo Options
 (setq org-todo-state-tags-triggers
       '(("CANCELLED" ("CANCELLED" . t))
         ("WAITING" ("WAITING" . t))
@@ -95,13 +115,11 @@
         ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
         ("DONE" ("WAITING") ("CANCELLED") ("HOLD"))))
 
-(setq org-agenda-files (file-expand-wildcards "~/Documents/Org/*"))
-
 (setq org-todo-keywords
       '(;; Sequent for TODOs
-        (sequence "TODO" "WAITING" "DELEGATED" "HOLD" "FEEDBACK" "VERIFY" "|" "DONE" "DELEGATED")
+        (sequence "TODO(t@/!)" "WAITING(w@/!)" "DELEGATED(d@/!)" "HOLD(h@/!)" "FEEDBACK(f@/!)" "VERIFY(v@/!)" "|" "DONE()" "DELEGATED")
         ;; Sequence for Bugs
-        (sequence "NEW" "CONFIRMED" "ASSIGNED" "IN PROGRESS" "|" "INVALID" "COMPLETE" "VERIFIED" "CLOSED")
+        (sequence "NEW(n!)" "CONFIRMED" "ASSIGNED" "IN PROGRESS" "|" "INVALID" "COMPLETE" "VERIFIED" "CLOSED")
         ;; Sequence for POSSESSIONS
         (sequence "PURCHASE(p@/!)" "PURCHASED(j@/!)" "TRANSIT(u@/!)" "GIFT(h@/!)" "SELL(k@/!)" "LOANED(n@/!)" "|" "UNWANTED(a@/!)" "OWN(o@/!)" "GIFTED(g@/!)"  "SOLD(c@/!)" "DISCARDED(q@/!)")
         ;; Sequence for MULTIMEDIA
@@ -124,6 +142,7 @@
       '(("d" todo "DELEGATED" nil)
         ("c" todo "DONE|DEFERRED|CANCELLED" nil)
         ("w" todo "WAITING" nil)
+        ("f" agenda "" ((org-agenda-fortnight-view)))
         ("W" agenda "" ((org-agenda-ndays 21)))
         ("A" agenda ""
          ((org-agenda-skip-function
@@ -174,9 +193,11 @@
 (global-set-key (kbd "C-s-<f12>") 'bh/save-then-publish)
 (global-set-key (kbd "C-c c") 'org-capture)
 
-
+;; ========================================================================== ;;
+;;
 ;; Org Mode functions
-
+;;
+;; ========================================================================== ;;
 (defun bh/hide-other ()
   (interactive)
   (save-excursion
@@ -212,6 +233,10 @@
 ;; Hooks
 (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
 
+;; Spacemacs settings
+;;(with-eval-after-load 'org-agenda
+;;  (require 'org-projectile)
+;;  (push (org-projectile:todo-files) org-agenda-files))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; org-mode.el ends here
