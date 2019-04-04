@@ -42,13 +42,14 @@
 session.*
 *.elc
 auto-save-list/
+savehist
 tramp
 .\#*
 .*~
 *_flymake.*  # flymake-mode
 src/emacs.d/places
 src/emacs.d/elpa/**
-
+session.*
 
 *.rel        # reftex files
 /auto/       # AUCTeX auto folder
