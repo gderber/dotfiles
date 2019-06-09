@@ -379,7 +379,6 @@ smartalternatives:
 #    mp3: ...
 #    flac: ...
   alternatives:
-
     - name: by-year
       query: ^year::%
       directories:
