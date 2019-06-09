@@ -7,9 +7,9 @@
 ## Created: Sun Jan  6 12:25:15 2019 (-0500)
 ## Version: 0.0.4
 ## Package-Requires: ()
-## Last-Updated: Sun Jun  9 07:08:18 2019 (-0400)
+## Last-Updated: Sun Jun  9 14:39:57 2019 (-0400)
 ##           By: Geoff S Derber
-##     Update #: 20
+##     Update #: 21
 ## URL: https://github.com/gderber/dotfiles
 ## Doc URL: https://github.com/gderber/dotfiles
 ## Keywords: dotfiles
@@ -183,6 +183,7 @@ install-systemd:
 	@for file in $(SYSTEMD_FILES); \
 	do \
 		ln -rvsf $(PWD)/src/config/systemd/$$file $(PREFIX)/.config/systemd/user/$$file; \
+		systemctl enable --user $$file
 	done
 
 install-x:
