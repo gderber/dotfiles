@@ -9,9 +9,9 @@
 # Created: Sun Jan  6 12:22:35 2019 (-0500)
 # Version: 
 # Package-Requires: ()
-# Last-Updated: Tue Jan  8 19:07:05 2019 (-0500)
+# Last-Updated: Sun Jun  9 14:50:12 2019 (-0400)
 #           By: Geoff S Derber
-#     Update #: 1
+#     Update #: 2
 # URL: 
 # Doc URL: 
 # Keywords: 
@@ -81,7 +81,7 @@ so ~/.bash/bashrc # main configuration
 export ENV_NAME=$(uname -s|tr 'A-Z' 'a-z')
 so ~/.bash/${ENV_NAME}_profile # configuration per OS linux/OSX/WIN
 so ~/.bash/common              # common stuff or overriding
-#so ~/.bash/export              # Exports
+so ~/.bash/export              # Exports
 so ~/.bash/shopt               # Shopts
 
 ### Interactive ### {{{
