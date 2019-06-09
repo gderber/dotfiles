@@ -7,9 +7,9 @@
 ## Created: Sun Jan  6 12:25:15 2019 (-0500)
 ## Version: 0.0.4
 ## Package-Requires: ()
-## Last-Updated: Sun Jan 20 13:46:01 2019 (-0500)
+## Last-Updated: Sun Jun  9 07:08:18 2019 (-0400)
 ##           By: Geoff S Derber
-##     Update #: 10
+##     Update #: 20
 ## URL: https://github.com/gderber/dotfiles
 ## Doc URL: https://github.com/gderber/dotfiles
 ## Keywords: dotfiles
@@ -47,7 +47,7 @@
 
 
 NAME=dotfiles
-VERSION=0.0.4
+VERSION=0.0.5
 DESCRIPTION="My dotfiles"
 
 BASH_FILES=bash bashrc bash_profile bash_logout
@@ -60,6 +60,7 @@ MISC_FILES=kshrc netrc profile screenrc toprc wgetrc
 PYTHON_FILES=pylintrc pythonrc
 SSH_FILES=config config.d
 X_FILES=Xdefaults xscreensaver
+SYSTEMD_FILES=emacs.system
 
 F1_EXISTS=$(shell [ -d $(PREFIX)/.emacs.d/spacemacs ] && echo 1 || echo 0 )
 
@@ -116,6 +117,7 @@ install: \
 	install-misc \
 	install-python \
 	install-ssh \
+	install-systemd \
 	install-x
 
 install-bash:
@@ -174,6 +176,13 @@ install-ssh:
 	@for file in $(SSH_FILES); \
 	do \
 		ln -rvsf $(PWD)/src/ssh/$$file $(PREFIX)/.ssh/$$file; \
+	done
+
+install-systemd:
+	mkdir -pv ${PREFIX}/.config/systemd/user
+	@for file in $(SYSTEMD_FILES); \
+	do \
+		ln -rvsf $(PWD)/src/config/systemd/$$file $(PREFIX)/.config/systemd/user/$$file; \
 	done
 
 install-x:
