@@ -1,3 +1,0 @@
-[http://www.nongnu.org/ratpoison/ Ratpoison] is a window manager for X11 which acts like [https://secure.wikimedia.org/wikipedia/en/wiki/Gnu_screen GNU Screen]. [[StumpWM]] is the rewrite of ratpoison written in [https://secure.wikimedia.org/wikipedia/en/wiki/Common_lisp common lisp] (runs on several free implementations among them clisp, sbcl and ecl) and all developers switched to it.
-
-You may also be interested in XWindowEmacsManager.

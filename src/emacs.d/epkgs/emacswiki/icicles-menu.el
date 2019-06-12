@@ -1,1 +1,0 @@
-#REDIRECT [[lacarte.el]]

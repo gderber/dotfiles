@@ -1,9 +1,0 @@
-http://amarok.kde.org/templates/amarokv2/images/amarok_icon.png
-
-Amarok is a music player for Unix-like systems (such as GNU/Linux). More info: http://amarok.kde.org/.
-
-Here is a really simple interface to control it from Dired in Emacs: Lisp:amarok.el.
-
-----
-MusicPlayers
-CategoryExternalUtilities

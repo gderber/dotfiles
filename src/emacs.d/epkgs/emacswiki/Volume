@@ -1,5 +1,0 @@
-Volume is the name of a program that lets you tweak your sound card volume from within GNU Emacs.
-
-; '''Code''': http://github.com/dbrock/volume-el
-
-The media player [[Bongo]] is designed to work well with Volume.

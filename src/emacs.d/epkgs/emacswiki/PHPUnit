@@ -1,5 +1,0 @@
-PHPUnit is [[xUnit]]-like UnitTesting framework in [[PHP]].
-
-== Package ==
-
-* [https://github.com/nlamirault/phpunit.el nlamirault/phpunit.el: Emacs mode to phpunit and test command line tool]

@@ -1,3 +1,0 @@
-GnusStripeBuffer is mode that stripe gnus summary buffer with stripe color, and this extension is base on [[StripeBuffer]].
-
-You can get it from [[gnus-stripe-buffer.el]].
