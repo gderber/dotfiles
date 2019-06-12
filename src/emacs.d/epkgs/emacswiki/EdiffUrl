@@ -1,6 +1,0 @@
-The file [http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head%3A/util/ediff-url.el ediff-url.el] contains the command ediff-url that compares the content of the current buffer with a web url (which probably is a download file link).
-
-This is distributed as part of [NxhtmlMode nXhtml] where you find the latest version (the link above points to the latest version in the repository at Launchpad).
-
-----
-EdiffMode

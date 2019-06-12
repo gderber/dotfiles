@@ -1,9 +1,0 @@
-This is code by JonathanYavner which detects whether some lisp expression is unsafe to use or not.  This is useful when users can receive arbitrary elisp code in documents such as a SpreadSheet, for example.
-
-The code is part of Emacs.
-
-* GIT:emacs-lisp/unsafep.el
-
-----
-CategoryCode
-

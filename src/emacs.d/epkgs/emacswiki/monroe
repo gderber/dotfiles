@@ -1,3 +1,0 @@
-*Monroe* is a new Emacs client for nREPL, Clojure networked REPL protocol. It is designed to be lighweight, easy to use and to be close as possible to inferior modes.
-
-It is available from https://github.com/sanel/monroe/

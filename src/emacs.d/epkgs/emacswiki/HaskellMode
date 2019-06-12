@@ -1,9 +1,0 @@
-Haskell-mode is the package of Haskell functionality for Emacs.
-
-* [http://haskell.github.io/haskell-mode/ Home page] 
-* [https://github.com/haskell/haskell-mode Github repository]
-
-Related modes:
-
-* DaRcs
-* FlymakeHaskell

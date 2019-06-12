@@ -1,5 +1,0 @@
-ILISP was a package designed to integrate various Lisp implementations
-(mostly Common Lisp systems and various Scheme dialects) within Emacs (or
-XEmacs). 
-
-ILISP [http://sourceforge.net/projects/ilisp development] has stopped in 2004. You should use SlimeMode instead.

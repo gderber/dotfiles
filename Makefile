@@ -13,7 +13,9 @@
 ## URL: https://github.com/gderber/dotfiles
 ## Doc URL: https://github.com/gderber/dotfiles
 ## Keywords: dotfiles
-## Compatibility: 
+## Compatibility:
+##
+##   - References: https://github.com/xsnpdngv/keep
 ## 
 ######################################################################
 ## 
@@ -47,7 +49,7 @@
 
 
 NAME=dotfiles
-VERSION=0.0.5
+VERSION=0.0.6
 DESCRIPTION="My dotfiles"
 
 BASH_FILES=bash bashrc bash_profile bash_logout
@@ -74,9 +76,72 @@ SIG=$(PKG_DIR)/$(PKG_NAME).asc
 PREFIX=~
 DOC_DIR=$(PREFIX)/share/doc/$(PKG_NAME)
 
+# FIXME: Hackish, maybe something from getent
 USER=$(shell echo ${HOME}| sed 's|.*/||')
 
+# Applications
+PGP = gpg
+ASC = $(wildcard *.asc)
+SEC = $(filter-out $(ASC) $(PROJECT),$(wildcard *))
+PROJECT = Makefile README.md sdel
+#UID = "Tamas Dezso"
 
+# TODO: Rewrite for auto creation
+# help
+help:
+	@echo -e "Usage:\n\
+    make file.asc  Encrypt: file -> file.asc\n\
+    make file      Decrypt: file.asc -> file\n\
+    make clean     Encrypt plain files if needed, then remove originals\n\
+    make plain     Decrypt *.asc\n\
+    make keys      Generate key pair\n\
+    make export    Export keys to public_key.asc, private_key.asc\n\
+    make import    Import keys from public_key.asc and private_key.asc"
+
+
+# ======================================================================
+#
+# GPG Key Setup
+#
+# ======================================================================
+# keygen
+keys:
+	$(PGP) --full-generate-key
+
+# export public and private keys
+export:
+	$(PGP) --export --armor -o public_key.asc $(UID)
+	umask 077; $(PGP) --export-secret-key --armor -o private_key.asc $(UID)
+
+# import public and private keys
+import: public_key.asc private_key.asc
+	$(PGP) --import public_key.asc
+	$(PGP) --import private_key.asc
+
+# encrypt: file -> file.asc
+%.asc:: %
+	@$(PGP) --encrypt --default-recipient-self --armor -o $@ $<
+	@./sdel $<
+
+# decrypt: file.asc -> file
+%:: %.asc
+	@umask 077; $(PGP) --decrypt -o $@ $<
+	@touch -r $? $@ # to be no newer than the encrypted one
+
+# decrypt *.asc
+plain: $(basename $(ASC))
+
+# if file is present as .asc too, and is no newer than that, then
+# it is simply removed, otherwise it is encrypted before
+clean:
+	$(MAKE) $(SEC:=.asc)
+@./sdel -f $(SEC)ASC = $(wildcard *.asc)
+
+# ======================================================================
+#
+# Packaging
+#
+# ======================================================================
 pkg:
 	mkdir -p $(PKG_DIR)
 
@@ -124,6 +189,12 @@ install-bash:
 	@for file in $(BASH_FILES); \
 	do \
 		ln -nrvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
+	done
+
+uninstall-bash:
+	@for file in $(BASH_FILES); \
+	do \
+		rm $(PREFIX)/.$$file; \
 	done
 
 # Todo: a setup check if beets installed
@@ -199,7 +270,7 @@ install-backup:
 	backup \
 	install
 
-.PHONY: build sign clean test tag release install uninstall all
+.PHONY: build sign clean test tag release install uninstall all help keys export import plain clean Makefile
 
 
 ######################################################################

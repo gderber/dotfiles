@@ -1,1 +1,0 @@
-#REDIRECT [[sql-upcase.el]]

@@ -1,7 +1,0 @@
-This package adds a group buffer to [[rcirc]]. Load it before starting rcirc.
-
-Lisp:rcirc-groups.el
-
-Use `C-c g' to go to the groups buffer.
-There, use `g' to update the buffer and see where you have been mentioned.
-Use `RET' to jump to the location.
