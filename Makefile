@@ -54,7 +54,7 @@ DESCRIPTION="My dotfiles"
 
 BASH_FILES=bash bashrc bash_profile bash_logout
 BEETS_FILES=config.yaml genres.txt
-EMACS_FILES=emacs.d spacemacs
+EMACS_FILES=drbr
 GIT_FILES=.gitignore .gitattributes .gitconfig
 GNUPG_FILES=gpg-agent.conf gpg.conf
 INPUT_FILES=editrc inputrc
@@ -208,9 +208,9 @@ install-beets:
 	done
 
 install-emacs:
-	@$(foreach f, $(EMACS_FILES), [ -f $(HOME)/$f ] || ln -n -r -v -s -f $(PWD)/src/$f $(PREFIX)/.$f ; )
+	@$(foreach f, $(EMACS_FILES), [ -f $(HOME)/.emacs.d/private/$f ] || ln -n -r -v -s -f $(PWD)/src/$f $(PREFIX)/.emacs.d/private/$f ; )
 #	ifeq ( $(F1_EXISTS) , 1 )
-#		git clone https://github.com/syl20bnr/spacemacs.git $(HOME)/emacs.d/spacemacs
+#		git clone https://github.com/syl20bnr/spacemacs.git $(HOME)/.emacs.d
 #       else
 #		( cd $(PREFIX)/.emacs.d/spacemacs; git pull origin master );
 #	endif
