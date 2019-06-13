@@ -62,7 +62,9 @@ MISC_FILES=kshrc netrc profile screenrc toprc wgetrc
 PYTHON_FILES=pylintrc pythonrc
 SSH_FILES=config config.d
 X_FILES=Xdefaults xscreensaver
-SYSTEMD_FILES=emacs.system
+SYSTEMD_FILES=emacs
+BIN_FILES=screenemacs
+SHARE_FILES=emacsclient.desktop
 
 F1_EXISTS=$(shell [ -d $(PREFIX)/.emacs.d/spacemacs ] && echo 1 || echo 0 )
 
@@ -133,9 +135,9 @@ plain: $(basename $(ASC))
 
 # if file is present as .asc too, and is no newer than that, then
 # it is simply removed, otherwise it is encrypted before
-clean:
-	$(MAKE) $(SEC:=.asc)
-@./sdel -f $(SEC)ASC = $(wildcard *.asc)
+#clean:
+#	$(MAKE) $(SEC:=.asc)
+#@./sdel -f $(SEC)ASC = $(wildcard *.asc)
 
 # ======================================================================
 #
@@ -176,11 +178,13 @@ uninstall:
 install: \
 	install-bash \
 	install-beets \
+	install-bin \
 	install-emacs \
 	install-gnupg \
 	install-git \
 	install-misc \
 	install-python \
+	install-share \
 	install-ssh \
 	install-systemd \
 	install-x
@@ -205,6 +209,12 @@ install-beets:
 	@for file in $(BEETS_FILES); \
 	do \
 		ln -nrvsf $(PWD)/src/config/beets/$$file $(PREFIX)/.config/beets/$$file; \
+	done
+
+install-bin:
+	@for file in $(BIN_FILES); \
+	do \
+		ln -nrvsf $(PWD)/src/local/bin/$$file $(PREFIX)/.local/bin/$$file; \
 	done
 
 install-emacs:
@@ -241,6 +251,13 @@ install-misc:
 		ln -rvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
 	done
 
+install-share:
+	@for file in $(SHARE_FILES); \
+	do \
+		ln -nrvsf $(PWD)/src/local/share/applications/$$file $(PREFIX)/.local/share/applications/$$file; \
+	done
+
+
 install-ssh:
 	mkdir -pv $(PREFIX)/.ssh
 	chmod 700 $(PREFIX)/.ssh
@@ -253,8 +270,8 @@ install-systemd:
 	mkdir -pv ${PREFIX}/.config/systemd/user
 	@for file in $(SYSTEMD_FILES); \
 	do \
-		ln -rvsf $(PWD)/src/config/systemd/$$file $(PREFIX)/.config/systemd/user/$$file; \
-		systemctl enable --user $$file
+		ln -rvsf $(PWD)/src/config/systemd/user/$$file.service $(PREFIX)/.config/systemd/user/$$file.service; \
+		systemctl enable --user $$file; \
 	done
 
 install-x:
