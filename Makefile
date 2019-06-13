@@ -218,7 +218,7 @@ install-bin:
 	done
 
 install-emacs:
-	@$(foreach f, $(EMACS_FILES), [ -f $(HOME)/.emacs.d/private/$f ] || ln -n -r -v -s -f $(PWD)/src/$f $(PREFIX)/.emacs.d/private/$f ; )
+	@$(foreach f, $(EMACS_FILES), [ -f $(HOME)/.emacs.d/private/$f ] || ln -n -r -v -s -f $(PWD)/src/spacemacs.d/private/$f $(PREFIX)/.emacs.d/private/$f ; )
 #	ifeq ( $(F1_EXISTS) , 1 )
 #		git clone https://github.com/syl20bnr/spacemacs.git $(HOME)/.emacs.d
 #       else
