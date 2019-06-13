@@ -252,6 +252,7 @@ install-misc:
 	done
 
 install-share:
+	mkdir -pv $(PREFIX)/.local/share/applications
 	@for file in $(SHARE_FILES); \
 	do \
 		ln -nrvsf $(PWD)/src/local/share/applications/$$file $(PREFIX)/.local/share/applications/$$file; \
