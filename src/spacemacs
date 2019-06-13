@@ -35,7 +35,7 @@ values."
      ;; erc
      ;; jabber
      ;; rcirc
-     ;; slack
+     slack
 
      ;; 2. Checkers
      spell-checking
@@ -52,9 +52,11 @@ values."
      ;; spacemacs-bootstrap
 
      ;; 5. Emacs
-     ;; better-defaults
-     ;; ibuffer
+     ;;better-defaults
+     ibuffer
      (org :variables
+          ;;org-enable-org-journal-support t
+          org-enable-github-support t
           org-projectile-file "TODOs.org")
 
      ;; 6. Email
@@ -63,6 +65,7 @@ values."
      ;; 7. Frameworks
 
      ;; 8. Fun
+     emoji
      games
      xkcd
 
@@ -71,19 +74,17 @@ values."
 
      ;; 10. Programming  and markup languages
      c-c++
+     csv
      emacs-lisp
-     markdown
      graphviz
      html
      lua
      markdown
      php
      python
-     (shell :variables
-             shell-default-height 30
-             shell-default-position 'bottom
-             shell-default-shell 'ansi-term)
+     shell-scripts
      sql
+     windows-scripts
      yaml
 
      ;; 11. Misc
@@ -100,8 +101,9 @@ values."
 
      ;; 15. Spacemacs distribution layers
 
-
      ;; 16. Tags
+     ;;cscope
+     gtags
 
      ;; 17. Themes
      colors
@@ -110,6 +112,7 @@ values."
 
      ;; 18. Tools
      ansible
+     command-log
      docker
      finance
      ;;(geolocation :variables
@@ -117,9 +120,30 @@ values."
      nginx
      pandoc
      puppet
+     (shell :variables
+            shell-default-height 30
+            shell-default-position 'bottom
+            shell-default-shell 'ansi-term)
+     ;;speed-reading
      systemd
      search-engine
+
+     ;; 19. Vim
+     ;;evil-cleverparens
+
+     ;; 20. Web Services
+     ;;elfeed
+     ;;evernote
+     search-engine
+     ;;spotify
+     ;;twititer
+     ;;wakatime
+
      )
+
+
+
+
 
    ;; List of additional packages that will be installed without being
    
@@ -298,7 +322,7 @@ values."
    ;; If non nil the frame is maximized when Emacs starts up.
    ;; Takes effect only if `dotspacemacs-fullscreen-at-startup' is nil.
    ;; (default nil) (Emacs 24.4+ only)
-   dotspacemacs-maximized-at-startup nil
+   dotspacemacs-maximized-at-startup t
    ;; A value from the range (0..100), in increasing opacity, which describes
    ;; the transparency level of a frame when it's active or selected.
    ;; Transparency can be toggled through `toggle-transparency'. (default 90)
@@ -330,10 +354,10 @@ values."
    ;;                       text-mode
    ;;   :size-limit-kb 1000)
    ;; (default nil)
-   dotspacemacs-line-numbers nil
+   dotspacemacs-line-numbers t
    ;; Code folding method. Possible values are `evil' and `origami'.
    ;; (default 'evil)
-   dotspacemacs-folding-method 'evil
+   dotspacemacs-folding-method 'origami
    ;; If non-nil smartparens-strict-mode will be enabled in programming modes.
    ;; (default nil)
    dotspacemacs-smartparens-strict-mode nil
@@ -372,12 +396,12 @@ executes.
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
   (setq sentence-end-double-space t)
-  (require 'git-commit)
+  ;;(require 'git-commit)
   (with-eval-after-load 'magit
     (global-git-commit-mode t))
-;;  (with-eval-after-load 'org-agenda
-;;    (require 'org-projectile)
-;;    (push (org-projectile:todo-files) org-agenda-files))
+  ;;(with-eval-after-load 'org-agenda
+  ;;  (require 'org-projectile)
+  ;;  (push (org-projectile:todo-files) org-agenda-files))
   
   )
 
@@ -388,6 +412,12 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+
+  ;; Enable Spaceline Org Clock
+  (setq spaceline-org-clock-p t)
+  (setq
+   org-journal-dir "~/Documents/Org/journal/"
+        org-journal-file-format "%Y-%m-%d")
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -409,10 +439,12 @@ you should place your code here."
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
  '(line-number-mode t)
+ '(org-agenda-files
+   (quote
+    ("~/Documents/Org/calendar.org" "~/Documents/Org/work.org")))
  '(package-selected-packages
    (quote
-    (ztree mmm-mode markdown-toc markdown-mode gh-md which-key undo-tree hydra evil-unimpaired async aggressive-indent adaptive-wrap ace-window)))
- '(save-place t nil (saveplace))
+    (theme-changer sunshine rase osx-location ibuffer-projectile slack emojify circe oauth2 websocket zenburn-theme zen-and-art-theme yapfify yaml-mode xterm-color xkcd ws-butler winum white-sand-theme web-mode volatile-highlights vi-tilde-fringe uuidgen use-package underwater-theme ujelly-theme typit mmt twilight-theme twilight-bright-theme twilight-anti-bright-theme toxi-theme toc-org tao-theme tangotango-theme tango-plus-theme tango-2-theme tagedit systemd sunny-day-theme sudoku sublime-themes subatomic256-theme subatomic-theme sql-indent spaceline powerline spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme smeargle slim-mode shell-pop seti-theme scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe reverse-theme restart-emacs rebecca-theme rbenv rake rainbow-mode rainbow-identifiers rainbow-delimiters railscasts-theme pyvenv pytest pyenv-mode py-isort purple-haze-theme puppet-mode pug-mode professional-theme powershell popwin planet-theme pip-requirements phpunit phpcbf php-extras php-auto-yasnippets phoenix-dark-pink-theme phoenix-dark-mono-theme persp-mode pcre2el paradox spinner pandoc-mode pacmacs ox-pandoc ox-gfm origami orgit organic-green-theme org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-plus-contrib org-mime org-download org-bullets open-junk-file omtose-phellack-theme oldlace-theme occidental-theme obsidian-theme noctilux-theme nginx-mode neotree naquadah-theme mustang-theme multi-term move-text monokai-theme monochrome-theme molokai-theme moe-theme minitest minimal-theme material-theme majapahit-theme magit-gitflow magit-gh-pulls madhat2r-theme macrostep lush-theme lua-mode lorem-ipsum live-py-mode linum-relative link-hint light-soap-theme ledger-mode jinja2-mode jbeans-theme jazz-theme ir-black-theme insert-shebang inkpot-theme indent-guide lv hy-mode dash-functional hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation heroku-theme hemisu-theme helm-themes helm-swoop helm-pydoc helm-projectile projectile helm-mode-manager helm-make helm-gtags helm-gitignore request helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag hc-zenburn-theme haml-mode gruvbox-theme gruber-darker-theme graphviz-dot-mode grandshell-theme gotham-theme google-translate golden-ratio gnuplot gitignore-mode github-search github-clone github-browse-file gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gist gh marshal logito pcache ht ggtags gandalf-theme fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck-ledger flycheck pkg-info epl flx-ido flx flatui-theme flatland-theme fish-mode fill-column-indicator farmhouse-theme fancy-battery eyebrowse expand-region exotica-theme exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit transient git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg eval-sexp-fu espresso-theme eshell-z eshell-prompt-extras esh-help engine-mode emoji-cheat-sheet-plus emmet-mode elisp-slime-nav dumb-jump drupal-mode php-mode dracula-theme dockerfile-mode docker json-mode tablist magit-popup docker-tramp json-snatcher json-reformat django-theme disaster diminish diff-hl define-word darktooth-theme autothemer darkokai-theme darkmine-theme darkburn-theme dakrone-theme cython-mode cyberpunk-theme csv-mode company-web web-completion-data company-statistics company-shell company-emoji company-c-headers company-ansible company-anaconda company command-log-mode column-enforce-mode color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized color-identifiers-mode cmake-mode clues-theme clean-aindent-mode clang-format chruby cherry-blossom-theme busybee-theme bundler inf-ruby bubbleberry-theme birds-of-paradise-plus-theme bind-map bind-key badwolf-theme auto-yasnippet yasnippet auto-highlight-symbol auto-dictionary auto-compile packed apropospriate-theme anti-zenburn-theme ansible-doc ansible anaconda-mode pythonic f dash s ample-zen-theme ample-theme alect-themes afternoon-theme ztree mmm-mode markdown-toc markdown-mode gh-md which-key undo-tree hydra evil-unimpaired async aggressive-indent adaptive-wrap ace-window)))
  '(save-place-mode t nil (saveplace))
  '(scroll-bar-mode (quote right))
  '(show-paren-mode t)
@@ -424,4 +456,4 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:background nil)))))
