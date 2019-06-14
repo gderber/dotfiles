@@ -1,0 +1,7 @@
+Host local
+     HostName localhost
+     CertificateFile ~/.ssh/%u-cert.pub
+
+Host localhost
+     HostName localhost
+     CertificateFile ~/.ssh/%u-cert.pub

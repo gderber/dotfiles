@@ -2,6 +2,7 @@ Include ~/.ssh/config.d/olympus
 Include ~/.ssh/config.d/swg
 Include ~/.ssh/config.d/drbr
 Include ~/.ssh/config.d/hm
+Include ~/.ssh/config.d/local
 
 Host github.com
     IdentityFile ~/.ssh/id_ed25519
