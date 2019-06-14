@@ -124,4 +124,3 @@ function update_timestamp () {
         done
     ' sh {} +
 }
-
