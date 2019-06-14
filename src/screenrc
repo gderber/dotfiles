@@ -37,7 +37,7 @@
 termcapinfo xterm-255color|xterm-color|screen-256color ti@:te@
 term screen-256color
 # Make the shell in every window a login shell
-shell -$SHELL
+#shell -$SHELL
 
 # ===============================================================
 # STARTUP of programs in an extra window:
@@ -59,7 +59,7 @@ screen  -t bash      6
 screen  -t bash      7
 screen  -t bash      8
 screen  -t bash      9
-screen  -t EDIT      10 -/bin/bash --init-file /usr/local/bin/screenemacs
+screen  -t EDIT      10 /bin/bash --init-file /usr/local/bin/screenemacs
 select 1
 
 #
