@@ -53,6 +53,8 @@ Host *.olympus.drbr.org
     # are sure the remote systems are secure.
     ForwardAgent yes
 
+    CertificateFile ~/.ssh/%u-cert.pub
+
     GSSAPIAuthentication yes
     GSSAPIKeyExchange yes
     GSSAPIRenewalForcesRekey yes

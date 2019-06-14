@@ -1,6 +1,0 @@
-Lisp:lua-block.el
-
-Highlight matching block.
-Heavily based on ruby-block.el
-----
-CategoryProgramming

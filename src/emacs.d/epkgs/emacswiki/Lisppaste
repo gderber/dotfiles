@@ -1,7 +1,0 @@
-= Description  =
-
-[[lisppaste.el]] is interface to http://common-lisp.net to send text "pastes".
-
-= Notes =
-
-2012-01-02 The utility is dead due to XML-RPC service no longer responding: "telnet common-lisp.net 8185"

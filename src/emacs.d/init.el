@@ -88,20 +88,20 @@
 (setq debug-on-error t)
 
 ;; External Packages
-(with-eval-after-load 'magit
-    (load (expand-file-name "~/.emacs.d/epkgs/password-store/contrib/emacs/password-store")))
-(load (expand-file-name "~/.emacs.d/epkgs/emacswiki/header2"))
-(load (expand-file-name "~/.emacs.d/epkgs/emacswiki/fill-column-indicator"))
-(load (expand-file-name "~/.emacs.d/epkgs/emacswiki/highlight-chars"))
-(load (expand-file-name "~/.emacs.d/epkgs/emacswiki/column-marker"))
-(load (expand-file-name "~/.emacs.d/epkgs/mediawiki-el/mediawiki"))
+;;(with-eval-after-load 'magit
+;;    (load (expand-file-name "~/.emacs.d/epkgs/password-store/contrib/emacs/password-store")))
+;;(load (expand-file-name "~/.emacs.d/epkgs/emacswiki/header2"))
+;;(load (expand-file-name "~/.emacs.d/epkgs/emacswiki/fill-column-indicator"))
+;;(load (expand-file-name "~/.emacs.d/epkgs/emacswiki/highlight-chars"))
+;;(load (expand-file-name "~/.emacs.d/epkgs/emacswiki/column-marker"))
+;;(load (expand-file-name "~/.emacs.d/epkgs/mediawiki-el/mediawiki"))
 
 ;; Configuration
-(load (expand-file-name "~/.emacs.d/global"))
-(load (expand-file-name "~/.emacs.d/filetypes"))
+;;(load (expand-file-name "~/.emacs.d/global"))
+;;(load (expand-file-name "~/.emacs.d/filetypes"))
 
 ;;
-(set-language-environment "UTF-8")
+;;(set-language-environment "UTF-8")
 
 ;; (load (expand-file-name "~/.emacs.d/mode-line"))
 
@@ -128,10 +128,10 @@
 ;;       ))
 
 ;; Mode Specific Setups
-(load (expand-file-name "~/.emacs.d/modes/apache-mode"))
-(load (expand-file-name "~/.emacs.d/modes/org-mode"))
-(load (expand-file-name "~/.emacs.d/modes/mediawiki-mode"))
+;;(load (expand-file-name "~/.emacs.d/modes/apache-mode"))
+;;(load (expand-file-name "~/.emacs.d/modes/org-mode"))
+;;(load (expand-file-name "~/.emacs.d/modes/mediawiki-mode"))
 
 ;; Start an org-agenda mode buffer upon startup
-(add-hook 'after-init-hook (lambda() (org-agenda-list 14)))
+;;(add-hook 'after-init-hook (lambda() (org-agenda-list 14)))
 ;;(add-hook 'after-init-hook (lambda() (initial-scratch-message my/fortune-scratch-message)))
