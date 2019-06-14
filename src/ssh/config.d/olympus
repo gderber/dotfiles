@@ -23,6 +23,7 @@ Host dionysus
 Host ha
     HostName hestia.olympus.drbr.org
     User homeassistant
+    CertificateFile ~/.ssh/%u-cert.pub
 
 Host hera
     HostName hera.olympus.drbr.org
