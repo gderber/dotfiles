@@ -16,7 +16,23 @@ if [ -n "$BASH_VERSION" ]; then
     fi
 fi
 
+# Application Specific PATH
+FSLINT=/usr/share/fslint/fslint
+FSLINTPATH="${FSLINT}:${FSLINT}/fstool"
+if [ -d ${FSLINT} ] ; then
+   PATH="${FSLINTPATH}:${PATH}"
+fi
+
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/.local/games:$PATH"
+fi
+if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
+fi
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/games:$PATH"
 fi
