@@ -212,6 +212,7 @@ install-beets:
 	done
 
 install-bin:
+	mkdir -pv $(HOME)/.local/bin/
 	@for file in $(BIN_FILES); \
 	do \
 		ln -nrvsf $(PWD)/src/local/bin/$$file $(PREFIX)/.local/bin/$$file; \
