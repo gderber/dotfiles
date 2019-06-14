@@ -1,7 +1,0 @@
-ClojureMode is a major mode that provides font-lock, indentation, and functions for communication with subprocesses for [http://clojure.org Clojure].
-
-It's more useful if used together with [[nREPL.el]] to interact with subprocesses. See [http://clojure-doc.org/articles/tutorials/emacs.html this guide] for details on setting up Emacs for Clojure development.
-
-Download it here: http://github.com/technomancy/clojure-mode
-
-Please note that http://github.com/jochu/clojure-mode is outdated and not actively developed although it is found on many websites.  

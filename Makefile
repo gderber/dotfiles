@@ -13,7 +13,9 @@
 ## URL: https://github.com/gderber/dotfiles
 ## Doc URL: https://github.com/gderber/dotfiles
 ## Keywords: dotfiles
-## Compatibility: 
+## Compatibility:
+##
+##   - References: https://github.com/xsnpdngv/keep
 ## 
 ######################################################################
 ## 
@@ -47,12 +49,12 @@
 
 
 NAME=dotfiles
-VERSION=0.0.5
+VERSION=0.0.6
 DESCRIPTION="My dotfiles"
 
 BASH_FILES=bash bashrc bash_profile bash_logout
 BEETS_FILES=config.yaml genres.txt
-EMACS_FILES=emacs.d spacemacs
+EMACS_FILES=drbr
 GIT_FILES=.gitignore .gitattributes .gitconfig
 GNUPG_FILES=gpg-agent.conf gpg.conf
 INPUT_FILES=editrc inputrc
@@ -60,7 +62,9 @@ MISC_FILES=kshrc netrc profile screenrc toprc wgetrc
 PYTHON_FILES=pylintrc pythonrc
 SSH_FILES=config config.d
 X_FILES=Xdefaults xscreensaver
-SYSTEMD_FILES=emacs.system
+SYSTEMD_FILES=emacs
+BIN_FILES=screenemacs
+SHARE_FILES=emacsclient.desktop
 
 F1_EXISTS=$(shell [ -d $(PREFIX)/.emacs.d/spacemacs ] && echo 1 || echo 0 )
 
@@ -74,9 +78,72 @@ SIG=$(PKG_DIR)/$(PKG_NAME).asc
 PREFIX=~
 DOC_DIR=$(PREFIX)/share/doc/$(PKG_NAME)
 
+# FIXME: Hackish, maybe something from getent
 USER=$(shell echo ${HOME}| sed 's|.*/||')
 
+# Applications
+PGP = gpg
+ASC = $(wildcard *.asc)
+SEC = $(filter-out $(ASC) $(PROJECT),$(wildcard *))
+PROJECT = Makefile README.md sdel
+#UID = "Tamas Dezso"
 
+# TODO: Rewrite for auto creation
+# help
+help:
+	@echo -e "Usage:\n\
+    make file.asc  Encrypt: file -> file.asc\n\
+    make file      Decrypt: file.asc -> file\n\
+    make clean     Encrypt plain files if needed, then remove originals\n\
+    make plain     Decrypt *.asc\n\
+    make keys      Generate key pair\n\
+    make export    Export keys to public_key.asc, private_key.asc\n\
+    make import    Import keys from public_key.asc and private_key.asc"
+
+
+# ======================================================================
+#
+# GPG Key Setup
+#
+# ======================================================================
+# keygen
+keys:
+	$(PGP) --full-generate-key
+
+# export public and private keys
+export:
+	$(PGP) --export --armor -o public_key.asc $(UID)
+	umask 077; $(PGP) --export-secret-key --armor -o private_key.asc $(UID)
+
+# import public and private keys
+import: public_key.asc private_key.asc
+	$(PGP) --import public_key.asc
+	$(PGP) --import private_key.asc
+
+# encrypt: file -> file.asc
+%.asc:: %
+	@$(PGP) --encrypt --default-recipient-self --armor -o $@ $<
+	@./sdel $<
+
+# decrypt: file.asc -> file
+%:: %.asc
+	@umask 077; $(PGP) --decrypt -o $@ $<
+	@touch -r $? $@ # to be no newer than the encrypted one
+
+# decrypt *.asc
+plain: $(basename $(ASC))
+
+# if file is present as .asc too, and is no newer than that, then
+# it is simply removed, otherwise it is encrypted before
+#clean:
+#	$(MAKE) $(SEC:=.asc)
+#@./sdel -f $(SEC)ASC = $(wildcard *.asc)
+
+# ======================================================================
+#
+# Packaging
+#
+# ======================================================================
 pkg:
 	mkdir -p $(PKG_DIR)
 
@@ -111,11 +178,13 @@ uninstall:
 install: \
 	install-bash \
 	install-beets \
+	install-bin \
 	install-emacs \
 	install-gnupg \
 	install-git \
 	install-misc \
 	install-python \
+	install-share \
 	install-ssh \
 	install-systemd \
 	install-x
@@ -124,6 +193,12 @@ install-bash:
 	@for file in $(BASH_FILES); \
 	do \
 		ln -nrvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
+	done
+
+uninstall-bash:
+	@for file in $(BASH_FILES); \
+	do \
+		rm $(PREFIX)/.$$file; \
 	done
 
 # Todo: a setup check if beets installed
@@ -136,10 +211,16 @@ install-beets:
 		ln -nrvsf $(PWD)/src/config/beets/$$file $(PREFIX)/.config/beets/$$file; \
 	done
 
+install-bin:
+	@for file in $(BIN_FILES); \
+	do \
+		ln -nrvsf $(PWD)/src/local/bin/$$file $(PREFIX)/.local/bin/$$file; \
+	done
+
 install-emacs:
-	@$(foreach f, $(EMACS_FILES), [ -f $(HOME)/$f ] || ln -n -r -v -s -f $(PWD)/src/$f $(PREFIX)/.$f ; )
+	@$(foreach f, $(EMACS_FILES), [ -f $(HOME)/.emacs.d/private/$f ] || ln -n -r -v -s -f $(PWD)/src/spacemacs.d/private/$f $(PREFIX)/.emacs.d/private/$f ; )
 #	ifeq ( $(F1_EXISTS) , 1 )
-#		git clone https://github.com/syl20bnr/spacemacs.git $(HOME)/emacs.d/spacemacs
+#		git clone https://github.com/syl20bnr/spacemacs.git $(HOME)/.emacs.d
 #       else
 #		( cd $(PREFIX)/.emacs.d/spacemacs; git pull origin master );
 #	endif
@@ -170,6 +251,14 @@ install-misc:
 		ln -rvsf $(PWD)/src/$$file $(PREFIX)/.$$file; \
 	done
 
+install-share:
+	mkdir -pv $(PREFIX)/.local/share/applications
+	@for file in $(SHARE_FILES); \
+	do \
+		ln -nrvsf $(PWD)/src/local/share/applications/$$file $(PREFIX)/.local/share/applications/$$file; \
+	done
+
+
 install-ssh:
 	mkdir -pv $(PREFIX)/.ssh
 	chmod 700 $(PREFIX)/.ssh
@@ -182,8 +271,8 @@ install-systemd:
 	mkdir -pv ${PREFIX}/.config/systemd/user
 	@for file in $(SYSTEMD_FILES); \
 	do \
-		ln -rvsf $(PWD)/src/config/systemd/$$file $(PREFIX)/.config/systemd/user/$$file; \
-		systemctl enable --user $$file
+		ln -rvsf $(PWD)/src/config/systemd/user/$$file.service $(PREFIX)/.config/systemd/user/$$file.service; \
+		systemctl enable --user $$file; \
 	done
 
 install-x:
@@ -199,7 +288,7 @@ install-backup:
 	backup \
 	install
 
-.PHONY: build sign clean test tag release install uninstall all
+.PHONY: build sign clean test tag release install uninstall all help keys export import plain clean Makefile
 
 
 ######################################################################

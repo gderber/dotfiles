@@ -12,14 +12,14 @@ function loadprompt () {
 
     #Set Default Mode
     if [ -z "$@" ]; then
-	MODE=main
+	      MODE=main
     else
-	MODE="$1"
+	      MODE="$1"
     fi
 
     # set a fancy prompt (non-color, unless we know we "want" color)
     case "$TERM" in
-	xterm-color) color_prompt=yes;;
+	      xterm-color) color_prompt=yes;;
     esac
 
     # uncomment for a colored prompt, if the terminal 
@@ -30,15 +30,15 @@ function loadprompt () {
     force_color_prompt=yes
 
     if [ -n "$force_color_prompt" ]; then
-	if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	    # We have color support; assume it's compliant with Ecma-48
-	    # (ISO/IEC-6429). (Lack of such support 
-	    # is extremely rare, and such
-	    # a case would tend to support setf rather than setaf.)
-	    color_prompt=yes
-	else
-	    color_prompt=
-	fi
+	      if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+	          # We have color support; assume it's compliant with Ecma-48
+	          # (ISO/IEC-6429). (Lack of such support 
+	          # is extremely rare, and such
+	          # a case would tend to support setf rather than setaf.)
+	          color_prompt=yes
+	      else
+	          color_prompt=
+	      fi
     fi
 
     export PROMPT_COMMAND=__prompt_command_full # Func to gen PS1 after CMDs
@@ -47,11 +47,11 @@ function loadprompt () {
 
 function __prompt_command_full() {
     history -a
-#    EXITSTATUS=$?
+    #    EXITSTATUS=$?
     PS1=""
 
     if [ "$color_prompt" = yes ]; then
-	define_colors
+	      define_colors
     fi
 
     local LOADTEXT=$(loadtext)
@@ -70,9 +70,9 @@ function __prompt_command_full() {
     local STOPPED_JOBS=$(stopped_jobs)
     local DEBIAN_CHROOT=$(__debian_chroot)
     if [[ -n ${BATTERY} ]]; then
-	local BATTERY=$(bat_color)    
+	      local BATTERY=$(bat_color)    
     else
-	local BATTERY=""
+	      local BATTERY=""
     fi
     local FC=$(disk_color)
     local SMILE=$(last_command)
@@ -84,7 +84,7 @@ ${DEBIAN_CHROOT} \n\
 [ ${USERTEXT}${HOSTTEXT} ] \n\
 [ ${LOADTEXT}${BATTERY}${SMILE}${SCREEN}${BACKGROUND_JOBS}${STOPPED_JOBS}] \n\
 [ ${FC}${BRANCH}] \n\
-${JC}\\$ \[${DC}\]" 
+${JC}\\$ \[${DC}\]"
 
     xterm_settings
 }
@@ -352,8 +352,8 @@ __debian_chroot () {
     # set variable identifying the chroot you work in 
     # (used in the prompt below)
     if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-	local debian_chroot=$(cat /etc/debian_chroot)
-	echo -ne "\[${DC}\][ ${debian_chroot:+($debian_chroot)} ]\n"
+	      local debian_chroot=$(cat /etc/debian_chroot)
+	      echo -ne "\[${DC}\][ ${debian_chroot:+($debian_chroot)} ]\n"
     fi
 }
 
@@ -361,11 +361,11 @@ function xterm_settings () {
     # Options for xterm
     # If this is an xterm set the title to user@host:dir
     case "$TERM" in
-	xterm*|rxvt*)
-	    PS1="\[\033]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-	    ;;
-	*)
-	    ;;
+	      xterm*|rxvt*)
+	          PS1="\[\033]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+	          ;;
+	      *)
+	          ;;
     esac
 }
 

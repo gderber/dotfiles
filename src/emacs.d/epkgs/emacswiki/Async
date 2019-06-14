@@ -1,8 +1,0 @@
-An addon by JohnWiegley to spawn Emacs instances to do multiple processing for you.
-
-The GitHub is here: https://github.com/jwiegley/emacs-async
-
-
-----
-
-See also ConcurrentEmacs NoThreading
