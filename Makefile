@@ -55,6 +55,7 @@ DESCRIPTION="My dotfiles"
 BASH_FILES=bash bashrc bash_profile bash_logout
 BEETS_FILES=config.yaml genres.txt
 EMACS_FILES=drbr
+SPACEMACS_FILES=spacemacs
 GIT_FILES=.gitignore .gitattributes .gitconfig
 GNUPG_FILES=gpg-agent.conf gpg.conf
 INPUT_FILES=editrc inputrc
@@ -220,9 +221,13 @@ install-bin:
 
 install-emacs:
 # TODO: Clear original emacs directory safely
+# HACK: Ensure either a directory or file exists.
+	touch $(PREFIX)/.emacs.d
 	mv $(HOME)/.emacs.d $(HOME)/.emacs.d.old
 	git clone https://github.com/syl20bnr/spacemacs.git $(HOME)/.emacs.d
 	@$(foreach f, $(EMACS_FILES), [ -f $(HOME)/.emacs.d/private/$f ] || ln -n -r -v -s -f $(PWD)/src/spacemacs.d/private/$f $(PREFIX)/.emacs.d/private/$f ; )
+	ln -nrvsf $(PWD)/src/spacemacs $(PREFIX)/.spacemacs
+	mkdir -p $(PREFIX)/.emacs.d/emms/
 #	ifeq ( $(F1_EXISTS) , 1 )
 #	git clone https://github.com/syl20bnr/spacemacs.git $(HOME)/.emacs.d	
 #       else
