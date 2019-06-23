@@ -1,6 +1,6 @@
 # Global Config
 [include]
-path = ~/.gitconfig.local
+	path = ~/.gitconfig.local
 
 # This section is now in .gitconfig.local
 #[user]
@@ -9,10 +9,11 @@ path = ~/.gitconfig.local
 	#signingkey = **Your GPG ID**
 
 [core]
-    editor = emacsclient -t
-    pager = less -FRSX
-    whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
-    excludesfile = ~/.gitignore # Creates a global git ignore
+	#editor = emacsclient -t
+	editor = emacs
+	pager = less -FRSX
+	whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+	excludesfile = ~/.gitignore # Creates a global git ignore
 
 [github]
 	user = gderber
