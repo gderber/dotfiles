@@ -1,23 +1,27 @@
 Host deathstar
-    HostName deathstar.swg.home
+    HostName deathstar.swg.drbr.org
     User VNs6XqNc7
 
 Host defiance
-     HostName defiance.swg.home
+    HostName defiance.swg.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
 
 Host endeavor
-     HostName endeavor.swg.home
+    HostName endeavor.swg.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
 
 Host independence
-     HostName independence.swg.home
+    HostName independence.swg.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
 
 Host liberty
-     HostName liberty.swg.home
-
+    HostName liberty.swg.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
 Host redemption
-     Hostname redemption.swg.home
+    Hostname redemption.swg.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
 
-Host *.swg.home
+Host *.swg.drbr.org
     # Forward agent for pushing your ssh-agent. You will need to add your ssh key
     # to the authorized_keys file on the remote system.
     # Normally not a great idea to make this a global always on option unless you
