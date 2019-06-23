@@ -2,6 +2,10 @@ Host angelia
     HostName angelia.olympus.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
 
+Host apollo
+    HostName apollo.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
+
 Host aphrodite
     HostName aphrodite.olympus.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
@@ -74,6 +78,13 @@ Host persephone
 
 Host hera
     HostName hera.olympus.drbr.org
+
+Host orion
+    HostName orion.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
+
+Host persephone
+    HostName persephone.olympus.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
 
 Host telete
