@@ -1,3 +1,7 @@
+Host angelia
+    HostName angelia.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
+
 Host apollo
     HostName apollo.olympus.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
@@ -8,6 +12,10 @@ Host aphrodite
 
 Host ariadne
     HostName ariadne.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
+
+Host atlas
+    HostName atlas.olympus.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
 
 Host calliope
@@ -35,6 +43,10 @@ Host hestia
     HostName hestia.olympus.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
 
+Host iris
+    HostName iris.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
+
 Host mnemosyne
     HostName mnemosyne.olympus.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
@@ -44,8 +56,16 @@ Host morpheus
     HostName morpheus.olympus.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
 
+Host nyx
+    HostName nyx.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
+
 Host orion
     HostName orion.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
+
+Host persephone
+    HostName persephone.olympus.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
 
 Host telete
