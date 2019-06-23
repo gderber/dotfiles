@@ -10,6 +10,10 @@ Host endeavor
     HostName endeavor.swg.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
 
+Host homeone
+    HostName homeone.swg.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
+
 Host independence
     HostName independence.swg.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
@@ -17,6 +21,7 @@ Host independence
 Host liberty
     HostName liberty.swg.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
+
 Host redemption
     Hostname redemption.swg.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
