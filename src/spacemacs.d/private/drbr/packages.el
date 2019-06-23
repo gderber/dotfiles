@@ -80,6 +80,9 @@
     (helm-emms :location elpa)
     (org-emms :location elpa)
 
+    ;; Ansible
+    (ansible-vault :location elpa)
+
     )
     "The list of Lisp packages required by the drbr layer.
 
@@ -168,6 +171,9 @@ Each entry is either:
 
 (defun drbr/init-org-emms()
   (use-package org-emms))
+
+(defun drbr/init-ansible-vault()
+  (use-package ansible-vault))
 
 ;;(when (configuration-layer/package-drbr 'company)
 ;;  (defun drbr/post-init-firelpace ()
