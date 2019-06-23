@@ -81,7 +81,7 @@ so ~/.bash/bashrc # main configuration
 export ENV_NAME=$(uname -s|tr 'A-Z' 'a-z')
 so ~/.bash/${ENV_NAME}_profile # configuration per OS linux/OSX/WIN
 so ~/.bash/common              # common stuff or overriding
-so ~/.bash/export              # Exports
+so ~/.bash/exports              # Exports
 so ~/.bash/shopt               # Shopts
 
 ### Interactive ### {{{
