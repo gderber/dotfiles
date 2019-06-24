@@ -14,6 +14,10 @@ Host calliope
     HostName calliope.olympus.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
 
+Host calypso
+    HostName calypso.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
+
 Host demeter
     HostName demeter.olympus.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
@@ -27,12 +31,20 @@ Host ha
     User homeassistant
     CertificateFile ~/.ssh/%u-cert.pub
 
+Host hades
+    HostName hades.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
+
 Host hera
     HostName hera.olympus.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
 
 Host hestia
     HostName hestia.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
+
+Host iris
+    HostName iris.olympus.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
 
 Host mnemosyne
@@ -44,8 +56,16 @@ Host morpheus
     HostName morpheus.olympus.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
 
-Host orion
-    HostName orion.olympus.drbr.org
+Host nyx
+    HostName nyx.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
+
+Host persephone
+    HostName persephone.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
+
+Host hera
+    HostName hera.olympus.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
 
 Host telete
