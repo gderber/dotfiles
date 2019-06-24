@@ -1,13 +1,21 @@
-Host apollo
-    HostName apollo.olympus.drbr.org
+Host angelia
+    HostName angelia.olympus.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
 
 Host aphrodite
     HostName aphrodite.olympus.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
 
+Host apollo
+    HostName apollo.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
+
 Host ariadne
     HostName ariadne.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
+
+Host atlas
+    HostName atlas.olympus.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
 
 Host calliope
