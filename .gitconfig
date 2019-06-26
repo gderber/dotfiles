@@ -1,12 +1,19 @@
 # Global Config
 [include]
-path = ~/.gitconfig.local
+	path = ~/.gitconfig.local
 
 # This section is now in .gitconfig.local
 #[user]
 	#email = emai@address.com
 	#name = Y R Name
 	#signingkey = **Your GPG ID**
+
+[core]
+	#editor = emacsclient -t
+	editor = emacs
+	pager = less -FRSX
+	whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+	excludesfile = ~/.gitignore # Creates a global git ignore
 
 [github]
 	user = gderber
@@ -45,12 +52,6 @@ path = ~/.gitconfig.local
     changed = green
     untracked = cyan
     branch = magenta
-
-[core]
-    editor = emacs
-    pager = less -FRSX
-    whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
-    excludesfile = ~/.gitignore # Creates a global git ignore
 
 [diff]
     tool = vimdiff

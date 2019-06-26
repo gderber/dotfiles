@@ -1,51 +1,88 @@
-Host apollo
-    HostName apollo.olympus.drbr.org
+Host angelia
+    HostName angelia.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
 
 Host aphrodite
     HostName aphrodite.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
+
+Host apollo
+    HostName apollo.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
 
 Host ariadne
     HostName ariadne.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
+
+Host atlas
+    HostName atlas.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
 
 Host calliope
     HostName calliope.olympus.drbr.org
-    ForwardX11 yes
+    CertificateFile ~/.ssh/%u-cert.pub
+
+Host calypso
+    HostName calypso.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
 
 Host demeter
     HostName demeter.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
 
 Host dionysus
     HostName dionysus.olympus.drbr.org
-
-#Host git
-     #IdentityFile ~/.ssh/id_ed25519
+    CertificateFile ~/.ssh/%u-cert.pub
 
 Host ha
     HostName hestia.olympus.drbr.org
     User homeassistant
     CertificateFile ~/.ssh/%u-cert.pub
 
+Host hades
+    HostName hades.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
+
 Host hera
     HostName hera.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
 
 Host hestia
     HostName hestia.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
+
+Host iris
+    HostName iris.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
 
 Host mnemosyne
     HostName mnemosyne.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
     ForwardX11 yes
 
 Host morpheus
     HostName morpheus.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
 
-Host orion
-    HostName orion.olympus.drbr.org
+Host nyx
+    HostName nyx.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
+
+Host persephone
+    HostName persephone.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
+
+Host hera
+    HostName hera.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
 
 Host telete
     HostName telete.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
 
 Host zeus
     HostName zeus.olympus.drbr.org
+    CertificateFile ~/.ssh/%u-cert.pub
 
 Host *.olympus.drbr.org
     # Forward agent for pushing your ssh-agent. You will need to add your ssh key
