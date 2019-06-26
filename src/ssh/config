@@ -4,8 +4,9 @@ Include ~/.ssh/config.d/drbr
 Include ~/.ssh/config.d/hm
 Include ~/.ssh/config.d/local
 
-Host github.com
-    IdentityFile ~/.ssh/id_ed25519
+Host github
+     User git
+     Hostname github.com
 
 Host *
     StrictHostKeyChecking ask
