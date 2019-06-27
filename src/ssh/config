@@ -1,3 +1,10 @@
+Host *
+    StrictHostKeyChecking ask
+    UpdateHostKeys ask
+    SendEnv WINDOW
+    SendEnv LANG LC_*
+    CanonicalizeHostname yes
+
 Host *.drbr.org
     ForwardAgent yes
     CertificateFile ~/.ssh/%u-cert.pub
@@ -9,7 +16,7 @@ Host angelia aphrodite apollo ariadne atlas calliope calypso demeter dionysus ha
 Host ha
     HostName hestia.olympus.drbr.org
     User homeassistant
-    #CertificateFile ~/.ssh/%u-cert.pub
+    CertificateFile ~/.ssh/%u-cert.pub
 
 Host mnemosyne
     HostName %h.olympus.drbr.org
@@ -45,13 +52,7 @@ Host hm
     VisualHostKey yes
 
 Host local localhost
-     HostName local
-
-Host *
-    StrictHostKeyChecking ask
-    UpdateHostKeys ask
-    SendEnv WINDOW
-    SendEnv LANG LC_*
+     HostName localhost
 
     # All Options
     # Can speed up logins to some servers
