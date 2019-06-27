@@ -1,6 +1,0 @@
-Host hm
-    HostName hearthminion.com
-    User hearthmi
-    StrictHostKeyChecking yes
-    VerifyHostKeyDNS ask
-    VisualHostKey yes
