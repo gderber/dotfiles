@@ -5,7 +5,7 @@
 ## Author: Geoff S Derber
 ## Maintainer: 
 ## Created: Sun Jan  6 12:25:15 2019 (-0500)
-## Version: 0.0.4
+## Version: 0.1.11
 ## Package-Requires: ()
 ## Last-Updated: Sun Jun  9 14:39:57 2019 (-0400)
 ##           By: Geoff S Derber
@@ -49,7 +49,7 @@
 
 
 NAME=dotfiles
-VERSION=0.0.6
+VERSION=0.1.11
 DESCRIPTION="My dotfiles"
 
 BASH_FILES=bash bashrc bash_profile bash_logout
@@ -61,7 +61,7 @@ GNUPG_FILES=gpg-agent.conf gpg.conf
 INPUT_FILES=editrc inputrc
 MISC_FILES=kshrc netrc profile screenrc toprc wgetrc
 PYTHON_FILES=pylintrc pythonrc
-SSH_FILES=config config.d
+SSH_FILES=config
 X_FILES=Xdefaults xscreensaver
 SYSTEMD_FILES=emacs
 BIN_FILES=screenemacs
