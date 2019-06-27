@@ -49,3 +49,5 @@ Host hm
 
 Host local localhost
      HostName localhost
+     CertificateFile ~/.ssh/%u-cert.pub
+
