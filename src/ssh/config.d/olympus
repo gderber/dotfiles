@@ -84,6 +84,9 @@ Host zeus
     HostName zeus.olympus.drbr.org
     CertificateFile ~/.ssh/%u-cert.pub
 
+Host drbr
+     HostName drbr.org
+
 Host *.olympus.drbr.org
     # Forward agent for pushing your ssh-agent. You will need to add your ssh key
     # to the authorized_keys file on the remote system.
