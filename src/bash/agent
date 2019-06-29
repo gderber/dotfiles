@@ -81,7 +81,7 @@ function keychain_agents () {
 
 function start_agents () {
     if [[ -n "$DESKTOP_SESSION" ]]; then
-        gnome_agents
+        keychain_agents
     else
         keychain_agents
     fi
