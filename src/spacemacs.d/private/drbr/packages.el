@@ -56,10 +56,10 @@
     (magit-filenotify :location elpa)
 
     ;; Org
-    ;;(org-mind-map :location elpa)
+    (org-mind-map :location elpa)
     (org-journal :location elpa)
     ;; Org-noter maybe?
-    ;;(org-super-agenda :location elpa)
+    (org-super-agenda :location elpa)
     ;;(org-contacts :location built-in)
 
     ;; Password Store
@@ -114,8 +114,11 @@ Each entry is either:
 (defun drbr/init-fireplace()
   (use-package fireplace))
 
-;;(defun drbr/init-org-mind-map()
-;;  (use-package org-mind-map))
+(defun drbr/init-org-mind-map()
+  (use-package org-mind-map))
+
+(defun drbr/init-org-super-agenda()
+  (use-package org-super-agenda))
 
 (defun drbr/init-forge()
   (use-package forge
