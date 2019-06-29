@@ -117,6 +117,9 @@ Each entry is either:
 (defun drbr/init-org-mind-map()
   (use-package org-mind-map))
 
+(defun drbr/init-org-super-agenda()
+  (use-package org-super-agenda))
+
 (defun drbr/init-forge()
   (use-package forge
     :after magit))
