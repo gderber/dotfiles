@@ -1,4 +1,4 @@
-;; packages.el ---
+;;; packages.el ---
 ;;
 ;; Filename: packages.el
 ;; Description:
@@ -45,8 +45,13 @@
 ;;
 ;;; Code:
 
-(defconst drbr-packages
+(defconst drbr-passwordstore-packages
   '(
+    ;; Password Store
+    (password-store :location elpa)
+    (password-store-otp :location elpa)
+    (pass :location elpa)
+    (auth-source-pass :location elpa)
 
     )
     "The list of Lisp packages required by the drbr layer.
@@ -75,6 +80,19 @@ Each entry is either:
 
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
+
+
+(defun drbr-passwordstore/init-password-store()
+  (use-package password-store))
+
+(defun drbr-passwordstore/init-password-store-otp()
+  (use-package password-store-otp))
+
+(defun drbr-passwordstore/init-pass()
+  (use-package pass))
+
+(defun drbr-passwordstore/init-auth-source-pass()
+  (use-package auth-source-pass))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

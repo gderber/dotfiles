@@ -1,13 +1,13 @@
-;;; layers.el --- 
+;;; funcs.el --- 
 ;; 
-;; Filename: layers.el
+;; Filename: funcs.el
 ;; Description: 
 ;; Author: Geoff S Derber
 ;; Maintainer: 
-;; Created: Mon Jun 10 18:41:03 2019 (-0400)
+;; Created: Mon Jun 10 18:41:17 2019 (-0400)
 ;; Version: 
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jun 10 18:41:04 2019 (-0400)
+;; Last-Updated: Mon Jun 10 18:48:10 2019 (-0400)
 ;;           By: Geoff S Derber
 ;;     Update #: 1
 ;; URL: 
@@ -45,15 +45,7 @@
 ;; 
 ;;; Code:
 
-(configuration-layer/declare-layers
- '(
-   drbr-git
-   drbr-org-mode
-   drbr-emms
-   drbr-mediawiki
-   drbr-ansible
-   drbr-passwordstore
-   ))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; layers.el ends here
+;;; funcs.el ends here

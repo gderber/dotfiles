@@ -1,15 +1,15 @@
-;;; layers.el --- 
+;;; mediawiki-mode.el --- 
 ;; 
-;; Filename: layers.el
+;; Filename: mediawiki-mode.el
 ;; Description: 
 ;; Author: Geoff S Derber
 ;; Maintainer: 
-;; Created: Mon Jun 10 18:41:03 2019 (-0400)
+;; Created: Thu Mar 21 15:43:42 2019 (-0400)
 ;; Version: 
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jun 10 18:41:04 2019 (-0400)
+;; Last-Updated: Thu Mar 21 21:07:14 2019 (-0400)
 ;;           By: Geoff S Derber
-;;     Update #: 1
+;;     Update #: 13
 ;; URL: 
 ;; Doc URL: 
 ;; Keywords: 
@@ -45,15 +45,11 @@
 ;; 
 ;;; Code:
 
-(configuration-layer/declare-layers
- '(
-   drbr-git
-   drbr-org-mode
-   drbr-emms
-   drbr-mediawiki
-   drbr-ansible
-   drbr-passwordstore
-   ))
-
+(require 'mediawiki)
+;; (setq mediawiki-site-alist '(("Sitename", "http://example.com/" "username" "password" "Page")
+(setq mediawiki-site-alist '(("Bloodymage" "http://en.bloodymage.org/" "" "" "Main Page")
+                             ("Xwinglegends" "http://en.xwinglegends.com/" "" "" "Main Page")
+                             ("Olympus" "http://wiki.olympus.home/" "" "" "Main Page")))
+(setq mediawiki-site-default "Olympus")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; layers.el ends here
+;;; mediawiki-mode.el ends here
