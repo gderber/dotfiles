@@ -1,4 +1,4 @@
-;; packages.el ---
+;;; packages.el ---
 ;;
 ;; Filename: packages.el
 ;; Description:
@@ -45,8 +45,14 @@
 ;;
 ;;; Code:
 
-(defconst drbr-packages
+(defconst drbr-org-mode-packages
   '(
+    ;; Org
+    ;;(org-mind-map :location elpa)
+    (org-journal :location elpa)
+    ;; Org-noter maybe?
+    (org-super-agenda :location elpa)
+    ;;(org-contacts :location built-in)
 
     )
     "The list of Lisp packages required by the drbr layer.
@@ -76,6 +82,23 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
+;;(defun drbr-org-mode/init-org-mind-map()
+;;  (use-package org-mind-map))
+
+(defun drbr-org-mode/init-org-super-agenda()
+  (use-package org-super-agenda))
+
+(defun drbr-org-mode/init-org-journal()
+  (use-package org-journal))
+
+;;(defun drbr/init-org-contacts()
+;;  (use-package org-contacts))
+
+;;(when (configuration-layer/package-drbr 'company)
+;;  (defun drbr/post-init-firelpace ()
+;; This makes no reference to `some-weird-package', which may have
+;; been excluded by the user
+;;    (spacemacs|add-company-hook fireplace)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; packages.el ends here

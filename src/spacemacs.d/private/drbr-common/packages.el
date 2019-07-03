@@ -1,4 +1,4 @@
-;; packages.el ---
+;;; packages.el ---
 ;;
 ;; Filename: packages.el
 ;; Description:
@@ -45,8 +45,9 @@
 ;;
 ;;; Code:
 
-(defconst drbr-packages
+(defconst drbr-common-packages
   '(
+    (fireplace :location elpa)
 
     )
     "The list of Lisp packages required by the drbr layer.
@@ -76,6 +77,15 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
+(defun drbr-common/init-fireplace()
+  (use-package fireplace))
+
+
+;;(when (configuration-layer/package-drbr 'company)
+;;  (defun drbr/post-init-firelpace ()
+;; This makes no reference to `some-weird-package', which may have
+;; been excluded by the user
+;;    (spacemacs|add-company-hook fireplace)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; packages.el ends here

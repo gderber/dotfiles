@@ -1,4 +1,4 @@
-;; packages.el ---
+;;; packages.el ---
 ;;
 ;; Filename: packages.el
 ;; Description:
@@ -45,8 +45,16 @@
 ;;
 ;;; Code:
 
-(defconst drbr-packages
+(defconst drbr-emms-packages
   '(
+
+    ;; EMMS
+    (emms :location elpa)
+    (emms-state :location elpa)
+    (emms-info-mediainfo :location elpa)
+    (emms-mark-ext :location elpa)
+    (helm-emms :location elpa)
+    (org-emms :location elpa)
 
     )
     "The list of Lisp packages required by the drbr layer.
@@ -76,6 +84,29 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
+(defun drbr-emms/init-emms()
+  (use-package emms))
+
+(defun drbr-emms/init-emms-state()
+  (use-package emms-state))
+
+(defun drbr-emms/init-emms-info-mediainfo()
+  (use-package emms-info-mediainfo))
+
+(defun drbr-emms/init-emms-mark-ext()
+  (use-package emms-mark-ext))
+
+(defun drbr-emms/init-helm-emms()
+  (use-package helm-emms))
+
+(defun drbr-emms/init-org-emms()
+  (use-package org-emms))
+
+;;(when (configuration-layer/package-drbr 'company)
+;;  (defun drbr/post-init-firelpace ()
+;; This makes no reference to `some-weird-package', which may have
+;; been excluded by the user
+;;    (spacemacs|add-company-hook fireplace)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; packages.el ends here
