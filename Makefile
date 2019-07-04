@@ -54,7 +54,7 @@ DESCRIPTION="My dotfiles"
 
 BASH_FILES=bash bashrc bash_profile bash_logout
 BEETS_FILES=config.yaml genres.txt
-EMACS_FILES=drbr
+EMACS_FILES=drbr drbr-ansible drbr-apache drbr-common drbr-emms drbr-git drbr-mediawiki drbr-org-mode drbr-passwordstore
 SPACEMACS_FILES=spacemacs
 GIT_FILES=.gitignore .gitattributes .gitconfig
 GNUPG_FILES=gpg-agent.conf gpg.conf
@@ -185,7 +185,6 @@ install: \
 	install-misc \
 	install-python \
 	install-share \
-	install-ssh \
 	install-systemd \
 	install-x
 
@@ -223,10 +222,10 @@ install-emacs:
 # HACK: Ensure either a directory or file exists.
 # HACK: Only clear if not a spacemacs emacs.d
 	touch $(PREFIX)/.emacs.d
-	mv $(HOME)/.emacs.d $(HOME)/.emacs.d.old
-	git clone https://github.com/syl20bnr/spacemacs.git $(HOME)/.emacs.d
-	@$(foreach f, $(EMACS_FILES), [ -f $(HOME)/.emacs.d/private/$f ] || ln -n -r -v -s -f $(PWD)/src/spacemacs.d/private/$f $(PREFIX)/.emacs.d/private/$f ; )
-	ln -nrvsf $(PWD)/src/spacemacs $(PREFIX)/.spacemacs
+	#mv $(HOME)/.emacs.d $(HOME)/.emacs.d.old
+	#git clone https://github.com/syl20bnr/spacemacs.git $(HOME)/.emacs.d
+	@$(foreach f, $(EMACS_FILES), [ -f $(HOME)/.emacs.d/private/$f ] || ln -n -r -v -s -f $(PWD)/src/emacs.d/$f $(PREFIX)/.emacs.d/private/$f ; )
+	patch $(PREFIX)/.spacemacs $(PWD)/src/spacemacs.patch
 	mkdir -p $(PREFIX)/.emacs.d/emms/
 #	ifeq ( $(F1_EXISTS) , 1 )
 #	git clone https://github.com/syl20bnr/spacemacs.git $(HOME)/.emacs.d
@@ -267,15 +266,6 @@ install-share:
 		ln -nrvsf $(PWD)/src/local/share/applications/$$file $(PREFIX)/.local/share/applications/$$file; \
 	done
 
-
-#install-ssh:
-#	mkdir -pv $(PREFIX)/.ssh
-#	chmod 700 $(PREFIX)/.ssh
-#	@for file in $(SSH_FILES); \
-#	do \
-#		ln -rvsf $(PWD)/src/ssh/$$file $(PREFIX)/.ssh/$$file; \
-#	done
-
 install-systemd:
 	mkdir -pv ${PREFIX}/.config/systemd/user
 	@for file in $(SYSTEMD_FILES); \
@@ -298,7 +288,6 @@ install-backup:
 	install
 
 .PHONY: build sign clean test tag release install uninstall all help keys export import plain clean Makefile
-
 
 ######################################################################
 ### Makefile ends here
