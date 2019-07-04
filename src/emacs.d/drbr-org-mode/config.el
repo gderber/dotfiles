@@ -75,7 +75,7 @@
  '(org-enforce-todo-checkbox-dependencies t)
  '(org-deadline-warning-days 14)
  ;; Prepare for export backends
- ;;'(org-export-backends '(org latex icalendar html ascii))
+ '(org-export-backends '(org latex icalendar html ascii))
 
   )
 ;;(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
