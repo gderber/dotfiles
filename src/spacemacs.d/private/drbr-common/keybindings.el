@@ -1,13 +1,13 @@
-;;; layers.el --- 
+;;; keybindings.el --- 
 ;; 
-;; Filename: layers.el
+;; Filename: keybindings.el
 ;; Description: 
 ;; Author: Geoff S Derber
 ;; Maintainer: 
-;; Created: Mon Jun 10 18:41:03 2019 (-0400)
+;; Created: Mon Jun 10 18:42:15 2019 (-0400)
 ;; Version: 
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jun 10 18:41:04 2019 (-0400)
+;; Last-Updated: Mon Jun 10 18:42:16 2019 (-0400)
 ;;           By: Geoff S Derber
 ;;     Update #: 1
 ;; URL: 
@@ -45,16 +45,31 @@
 ;; 
 ;;; Code:
 
-(configuration-layer/declare-layers
- '(
-   drbr-git
-   drbr-org-mode
-   drbr-emms
-   drbr-mediawiki
-   drbr-ansible
-   drbr-passwordstore
-   drbr-apache
-   ))
+; Now the functions are defined, we can assign them to keys.
+(global-set-key (kbd "C-c d") 'insert-date)
+;; keyboard mods not specific to any mode.
+;;  note the use of kbd function to make these work in emacs or
+;;  xemacs.
+;;(global-set-key (kbd "C-h") 'delete-backward-char)   ;backspace, not help!
+(global-set-key (kbd "C-c g") 'goto-line)
+(global-set-key (kbd "<f2>") 'other-window)       ;convenient shortcuts.
+(global-set-key (kbd "<f3>") 'kill-this-buffer)
+(global-set-key (kbd "<f4>") 'speedbar-get-focus) ;jump to the speedbar.
+
+;;(global-unset-key (kbd "ESC ESC"))         ;eval-expr gets in my way.
+(global-set-key (kbd "C-`") 'capitalize-word)      ;I want c-~, but
+      ;that's too
+                                                   ;hard to type.
+
+;; Duplicates of some of the keys above so everything works
+;; properly on remote xterms.
+;;(global-set-key "\e[12~" 'other-window)
+;;(global-set-key "\e[13~" 'kill-this-buffer)
+
+;; Keys that Jeff likes - maybe I'll try them too.
+;;(global-set-key (kbd "C-x C-k") 'compile)
+(global-set-key (kbd "C-x C-j") 'fill-paragraph)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; layers.el ends here
+;;; keybindings.el ends here

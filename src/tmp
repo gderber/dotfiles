@@ -1,9 +1,0 @@
-@@ -56,7 +56,7 @@
-      ;; ibuffer
-      org(with-eval-after-load 'org-agenda
-           (require 'org-projectile)
--            (push (org-projectile:todo-files) org-ag))
-+            (push (org-projectile:todo-files) org-agenda-files))
- 
-      ;; 6. Email
-      gnus
