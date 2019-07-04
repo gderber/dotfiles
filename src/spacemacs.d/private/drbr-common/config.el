@@ -122,6 +122,7 @@
 ;;(setq font-lock-maximum-decoration t)
 (setq indent-tabs-mode nil)                ; Use spaces instead of tabs for indentation.
 (setq tab-width 4)                         ; Set tab width to 4
+(setq default-tab-width 4)                 ; Required by graphviz-dot-mode
 (setq transient-mark-mode t)               ;where's that selection?
 (setq mouse-yank-at-point t)               ;paste at point NOT at cursor
 ;;(setq next-line-add-newlines nil)          ;no newlines if I cursor past EOF.

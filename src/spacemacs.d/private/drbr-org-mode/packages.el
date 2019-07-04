@@ -99,6 +99,18 @@ Each entry is either:
 (defun drbr-org-mode/init-org-journal()
   (use-package org-journal))
 
+;; (defun drbr-org-mode/post-init-persp-mode ()
+;;   (spacemacs|define-custom-layout "@Drbr-Org"
+;;     :binding "O"
+;;     :body
+;;     (split-window-right)
+;;     (winum-select-window-2)
+;;     (let ((agenda-files (org-agenda-files)))
+;;       (if agenda-files
+;;           (find-file (first agenda-files))
+;;         (user-error "Error: No agenda files configured, nothing to display.")))
+;;     (winum-select-window-1)))
+
 ;;(defun drbr/init-org-contacts()
 ;;  (use-package org-contacts))
 

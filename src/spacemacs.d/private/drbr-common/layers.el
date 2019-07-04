@@ -1,5 +1,5 @@
 ;;; layers.el --- 
-;; 
+;;
 ;; Filename: layers.el
 ;; Description: 
 ;; Author: Geoff S Derber
