@@ -1,4 +1,4 @@
-;; packages.el ---
+;;; packages.el ---
 ;;
 ;; Filename: packages.el
 ;; Description:
@@ -45,9 +45,10 @@
 ;;
 ;;; Code:
 
-(defconst drbr-packages
+(defconst drbr-apache-packages
   '(
-
+    ;; Password Store
+    (apache-mode :location elpa)
     )
     "The list of Lisp packages required by the drbr layer.
 
@@ -75,6 +76,10 @@ Each entry is either:
 
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
+
+
+(defun drbr-apache/init-apache-mode()
+  (use-package apache-mode))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

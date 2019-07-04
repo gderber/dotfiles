@@ -1,4 +1,4 @@
-;; packages.el ---
+;;; packages.el ---
 ;;
 ;; Filename: packages.el
 ;; Description:
@@ -45,9 +45,11 @@
 ;;
 ;;; Code:
 
-(defconst drbr-packages
+(defconst drbr-mediawiki-packages
   '(
-
+    ;; Mediawiki
+    (mediawiki :location elpa)
+    (ox-mediawiki :location elpa)
     )
     "The list of Lisp packages required by the drbr layer.
 
@@ -76,6 +78,11 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
+(defun drbr-mediawiki/init-mediawiki()
+  (use-package mediawiki))
+
+(defun drbr-mediawiki/init-ox-mediawiki()
+  (use-package ox-mediawiki))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; packages.el ends here
