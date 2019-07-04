@@ -1,4 +1,4 @@
-;; packages.el ---
+;;; packages.el ---
 ;;
 ;; Filename: packages.el
 ;; Description:
@@ -45,9 +45,13 @@
 ;;
 ;;; Code:
 
-(defconst drbr-packages
+(defconst drbr-git-packages
   '(
-
+    ;; Git
+    (forge :location elpa)
+    (ghub :location elpa)
+    (magit-todos :location elpa)
+    (magit-filenotify :location elpa)
     )
     "The list of Lisp packages required by the drbr layer.
 
@@ -75,6 +79,19 @@ Each entry is either:
 
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
+
+(defun drbr-git/init-forge()
+  (use-package forge
+    :after magit))
+
+(defun drbr-git/init-ghub()
+  (use-package ghub))
+
+(defun drbr-git/init-magit-todos()
+  (use-package magit-todos))
+
+(defun drbr-git/init-magit-filenotify()
+  (use-package magit-filenotify))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
