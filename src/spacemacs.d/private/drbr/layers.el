@@ -53,6 +53,7 @@
    drbr-mediawiki
    drbr-ansible
    drbr-passwordstore
+   drbr-apache
    ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

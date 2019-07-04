@@ -1,13 +1,13 @@
-;;; config.el --- 
+;;; keybindings.el --- 
 ;; 
-;; Filename: config.el
+;; Filename: keybindings.el
 ;; Description: 
 ;; Author: Geoff S Derber
 ;; Maintainer: 
-;; Created: Mon Jun 10 18:42:03 2019 (-0400)
+;; Created: Mon Jun 10 18:42:15 2019 (-0400)
 ;; Version: 
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jun 10 18:42:09 2019 (-0400)
+;; Last-Updated: Mon Jun 10 18:42:16 2019 (-0400)
 ;;           By: Geoff S Derber
 ;;     Update #: 1
 ;; URL: 
@@ -45,12 +45,7 @@
 ;; 
 ;;; Code:
 
-;; (setq mediawiki-site-alist '(("Sitename", "http://example.com/" "username" "password" "Page")
-(setq mediawiki-site-alist '(("Bloodymage" "http://en.bloodymage.org/" "" "" "Main Page")
-                             ("Xwinglegends" "http://en.xwinglegends.com/" "" "" "Main Page")
-                             ("Olympus" "http://wiki.olympus.home/" "" "" "Main Page")))
-(setq mediawiki-site-default "Olympus")
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; config.el ends here
+;;; keybindings.el ends here

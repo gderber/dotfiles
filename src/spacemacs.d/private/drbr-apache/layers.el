@@ -1,13 +1,13 @@
-;;; config.el --- 
+;;; layers.el --- 
 ;; 
-;; Filename: config.el
+;; Filename: layers.el
 ;; Description: 
 ;; Author: Geoff S Derber
 ;; Maintainer: 
-;; Created: Mon Jun 10 18:42:03 2019 (-0400)
+;; Created: Mon Jun 10 18:41:03 2019 (-0400)
 ;; Version: 
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jun 10 18:42:09 2019 (-0400)
+;; Last-Updated: Mon Jun 10 18:41:04 2019 (-0400)
 ;;           By: Geoff S Derber
 ;;     Update #: 1
 ;; URL: 
@@ -45,12 +45,10 @@
 ;; 
 ;;; Code:
 
-;; (setq mediawiki-site-alist '(("Sitename", "http://example.com/" "username" "password" "Page")
-(setq mediawiki-site-alist '(("Bloodymage" "http://en.bloodymage.org/" "" "" "Main Page")
-                             ("Xwinglegends" "http://en.xwinglegends.com/" "" "" "Main Page")
-                             ("Olympus" "http://wiki.olympus.home/" "" "" "Main Page")))
-(setq mediawiki-site-default "Olympus")
-
+(configuration-layer/declare-layers
+ '(
+   drbr-common
+   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; config.el ends here
+;;; layers.el ends here

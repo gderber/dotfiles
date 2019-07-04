@@ -1,15 +1,15 @@
-;;; mediawiki-mode.el --- 
+;;; config.el --- 
 ;; 
-;; Filename: mediawiki-mode.el
+;; Filename: config.el
 ;; Description: 
 ;; Author: Geoff S Derber
 ;; Maintainer: 
-;; Created: Thu Mar 21 15:43:42 2019 (-0400)
+;; Created: Mon Jun 10 18:42:03 2019 (-0400)
 ;; Version: 
 ;; Package-Requires: ()
-;; Last-Updated: Thu Mar 21 21:07:14 2019 (-0400)
+;; Last-Updated: Mon Jun 10 18:42:09 2019 (-0400)
 ;;           By: Geoff S Derber
-;;     Update #: 13
+;;     Update #: 1
 ;; URL: 
 ;; Doc URL: 
 ;; Keywords: 
@@ -45,11 +45,7 @@
 ;; 
 ;;; Code:
 
-(require 'mediawiki)
-;; (setq mediawiki-site-alist '(("Sitename", "http://example.com/" "username" "password" "Page")
-(setq mediawiki-site-alist '(("Bloodymage" "http://en.bloodymage.org/" "" "" "Main Page")
-                             ("Xwinglegends" "http://en.xwinglegends.com/" "" "" "Main Page")
-                             ("Olympus" "http://wiki.olympus.home/" "" "" "Main Page")))
-(setq mediawiki-site-default "Olympus")
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; mediawiki-mode.el ends here
+;;; config.el ends here

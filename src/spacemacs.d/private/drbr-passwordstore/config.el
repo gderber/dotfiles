@@ -45,6 +45,8 @@
 ;; 
 ;;; Code:
 
+;;; (see The Unix password store)
+(setq auth-sources '(password-store))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

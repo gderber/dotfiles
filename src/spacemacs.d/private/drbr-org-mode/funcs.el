@@ -45,6 +45,38 @@
 ;; 
 ;;; Code:
 
+(defun drbr-org-mode/hide-other ()
+  (interactive)
+  (save-excursion
+    (org-back-to-heading 'invisible-ok)
+    (hide-other)
+    (org-cycle)
+    (org-cycle)
+    (org-cycle)))
+
+(defun drbr-org-mode/set-truncate-lines ()
+  "Toggle value of truncate-lines and refresh window display."
+  (interactive)
+  (setq truncate-lines (not truncate-lines))
+  ;; now refresh window display (an idiom from simple.el):
+  (save-excursion
+    (set-window-start (selected-window)
+                      (window-start (selected-window)))))
+
+(defun drbr-org-mode/make-org-scratch ()
+  (interactive)
+  (find-file "/tmp/publish/scratch.org")
+  (gnus-make-directory "/tmp/publish"))
+
+(defun drbr-org-mode/switch-to-scratch ()
+  (interactive)
+  (switch-to-buffer "*scratch*"))
+
+(defun drbr-org-mode/org-summary-todo (n-done n-not-done)
+  "Switch entry to DONE when all subentries are done, to TODO otherwise."
+  (let (org-log-done org-log-states)   ; turn off logging
+    (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
