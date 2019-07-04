@@ -158,6 +158,19 @@
 ;;(add-hook 'font-lock-mode-hook 'hc-highlight-trailing-whitespace)
 ;;(add-hook 'after-change-major-mode-hook 'fci-mode)
 
+;; Add hooks for various modes
+(add-hook 'c-mode-hook 'fci-mode)
+(add-hook 'shell-mode-hook 'fci-mode)
+(add-hook 'conf-mode-hook 'fci-mode)
+(add-hook 'python-mode-hook 'fci-mode)
+(add-hook 'yaml-mode-hook 'fci-mode)
+(add-hook 'emacs-lisp-mode-hook 'fci-mode)
+(add-hook 'ansible-vault-mode-hook 'fci-mode)
+(add-hook 'php-mode-hook 'fci-mode)
+(add-hook 'html-mode-hook 'fci-mode)
+(add-hook 'nxml-mode-hook 'fci-mode)
+(add-hook 'graphviz-dot-mode-hook 'fci-mode)
+
 
 ;; Header
 ;;(autoload 'auto-update-file-header "header2")
