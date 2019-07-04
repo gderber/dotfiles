@@ -47,13 +47,7 @@
 
 (configuration-layer/declare-layers
  '(
-   drbr-git
-   drbr-org-mode
-   drbr-emms
-   drbr-mediawiki
-   drbr-ansible
-   drbr-passwordstore
-   drbr-apache
+   drbr-common
    ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

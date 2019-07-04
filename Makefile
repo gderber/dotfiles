@@ -61,7 +61,6 @@ GNUPG_FILES=gpg-agent.conf gpg.conf
 INPUT_FILES=editrc inputrc
 MISC_FILES=kshrc netrc profile screenrc toprc wgetrc
 PYTHON_FILES=pylintrc pythonrc
-SSH_FILES=config
 X_FILES=Xdefaults xscreensaver
 SYSTEMD_FILES=emacs
 BIN_FILES=screenemacs
@@ -222,6 +221,7 @@ install-bin:
 install-emacs:
 # TODO: Clear original emacs directory safely
 # HACK: Ensure either a directory or file exists.
+# HACK: Only clear if not a spacemacs emacs.d
 	touch $(PREFIX)/.emacs.d
 	mv $(HOME)/.emacs.d $(HOME)/.emacs.d.old
 	git clone https://github.com/syl20bnr/spacemacs.git $(HOME)/.emacs.d
@@ -229,7 +229,7 @@ install-emacs:
 	ln -nrvsf $(PWD)/src/spacemacs $(PREFIX)/.spacemacs
 	mkdir -p $(PREFIX)/.emacs.d/emms/
 #	ifeq ( $(F1_EXISTS) , 1 )
-#	git clone https://github.com/syl20bnr/spacemacs.git $(HOME)/.emacs.d	
+#	git clone https://github.com/syl20bnr/spacemacs.git $(HOME)/.emacs.d
 #       else
 #		( cd $(PREFIX)/.emacs.d/spacemacs; git pull origin master );
 #	endif
@@ -268,13 +268,13 @@ install-share:
 	done
 
 
-install-ssh:
-	mkdir -pv $(PREFIX)/.ssh
-	chmod 700 $(PREFIX)/.ssh
-	@for file in $(SSH_FILES); \
-	do \
-		ln -rvsf $(PWD)/src/ssh/$$file $(PREFIX)/.ssh/$$file; \
-	done
+#install-ssh:
+#	mkdir -pv $(PREFIX)/.ssh
+#	chmod 700 $(PREFIX)/.ssh
+#	@for file in $(SSH_FILES); \
+#	do \
+#		ln -rvsf $(PWD)/src/ssh/$$file $(PREFIX)/.ssh/$$file; \
+#	done
 
 install-systemd:
 	mkdir -pv ${PREFIX}/.config/systemd/user
