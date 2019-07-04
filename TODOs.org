@@ -1,2 +1,9 @@
 * Outstanding Items
 ** TODO Add org-super-agenda
+* Special Dates
+* Notes
+* Tasks
+** TODO Update Readme.md
+** TODO Get gpg-agent to work with gitolite
+
+

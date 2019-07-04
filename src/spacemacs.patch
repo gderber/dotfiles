@@ -1,0 +1,10 @@
+--- .spacemacs	2019-07-04 12:16:57.130387188 -0400
++++ .local/src/dotfiles/src/spacemacs	2019-07-04 09:05:37.077569154 -0400
+@@ -37,6 +37,7 @@
+      ;; <M-m f e R> (Emacs style) to install them.
+      ;; ----------------------------------------------------------------
+      helm
++     drbr
+      ;; auto-completion
+      ;; better-defaults
+      emacs-lisp

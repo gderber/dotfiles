@@ -75,13 +75,21 @@
  '(org-enforce-todo-checkbox-dependencies t)
  '(org-deadline-warning-days 14)
  ;; Prepare for export backends
- '(org-export-backends '(org latex icalendar html ascii))
+ ;;'(org-export-backends '(org latex icalendar html ascii))
 
   )
+;;(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+;;(add-to-list 'auto-mode-alist '("\\.org.gpg$" . org-mode))
+;;(add-to-list 'auto-mode-alist '("\\.ref$" . org-mode))
+;;(add-to-list 'auto-mode-alist '("\\.ref.gpg$" . org-mode))
+;;(add-to-list 'auto-mode-alist '("\\.nnotes$" . org-mode))
+;;(add-to-list 'auto-mode-alist '("\\.nnotes.gpg$" . org-mode))
 
 ;; Files and Directories
-(setq org-agenda-files (file-expand-wildcards "~/Documents/Org/*"))
-
+;(setq org-agenda-file-regexp )
+;;(setq org-agenda-files "~/Documents/Org/*")
+(setq org-agenda-files (list "~/Documents/Org/work.org"
+                             "~/Documents/Org/personal.org"))
 ;; Todo Options
 (setq org-todo-state-tags-triggers
       '(("CANCELLED" ("CANCELLED" . t))
@@ -191,6 +199,19 @@
 (add-to-list 'auto-mode-alist '("\\.ref.gpg$" . org-mode))
 (add-to-list 'auto-mode-alist '("\\.nnotes$" . org-mode))
 (add-to-list 'auto-mode-alist '("\\.nnotes.gpg$" . org-mode))
+
+(spacemacs|define-custom-layout "@Drbr-Org"
+  :binding "O"
+  :body
+  (split-window-right)
+  (winum-select-window-1)
+  (let ((agenda-files (org-agenda-files)))
+    (if agenda-files
+        (find-file (first agenda-files))
+      (user-error "Error: No agenda files configured, nothing to display.")))
+  (winum-select-window-2)
+  (org-agenda-list 14)
+  (winum-select-window-1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; config.el ends here
