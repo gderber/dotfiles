@@ -60,6 +60,10 @@
  '(org-agenda-skip-scheduled-if-done t)
  '(org-agenda-skip-timestamp-if-done t)
  '(org-reverse-note-order t)
+ '(org-agenda-sorting-strategy '((agenda ts-up habit-down time-up priority-down category-keep)
+                                 (todo priority-down category-keep)
+                                 (tags priority-down category-keep)
+                                 (search category-keep)))
  ;; Logging / Habit Tracking
  '(org-log-into-drawer "LOGBOOK")
  '(org-log-done-with-time t)
@@ -81,6 +85,7 @@
 ;;(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 ;;(add-to-list 'auto-mode-alist '("\\.org.gpg$" . org-mode))
 ;;(add-to-list 'auto-mode-alist '("\\.ref$" . org-mode))
+
 ;;(add-to-list 'auto-mode-alist '("\\.ref.gpg$" . org-mode))
 ;;(add-to-list 'auto-mode-alist '("\\.nnotes$" . org-mode))
 ;;(add-to-list 'auto-mode-alist '("\\.nnotes.gpg$" . org-mode))
