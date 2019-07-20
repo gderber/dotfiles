@@ -1,6 +1,0 @@
-[submodule "src/emacs.d/epkgs/password-store"]
-	path = src/emacs.d/epkgs/password-store
-	url = https://git.zx2c4.com/password-store
-[submodule "src/emacs.d/epkgs/emacswiki"]
-	path = src/emacs.d/epkgs/emacswiki
-	url = https://github.com/emacsmirror/emacswiki.org

@@ -51,8 +51,7 @@ function gnome_agents () {
     export SSH_AUTH_SOCK
 }
 
-function keychain_agents () {
-    local sshKeys
+function start_gpg_agent () {
     local keyVal
     if command -v keychain > /dev/null 2>&1; then
         # ID GPG Keys
@@ -68,15 +67,30 @@ function keychain_agents () {
 
         export GPG_TTY=$(tty)
         gpg-connect-agent updatestartuptty /bye >/dev/null
-        # ID SSH Keys
-#        sshKeys=$(getsshkey) &&
-#            [[ -n ${sshKeys} ]] &&
-#            if [[ ! ${TERM} =~ screen ]]; then
-#                eval "$(keychain --clear --eval --agents ssh ${sshKeys})"
-#            else
-#                eval "$(keychain --eval --agents ssh ${sshKeys})"
-#            fi
     fi
+}
+
+function start_ssh_agent () {
+    local sshKeys
+    if command -v keychain > /dev/null 2>&1; then
+    # ID SSH Keys
+    sshKeys=$(getsshkey) &&
+        [[ -n ${sshKeys} ]] &&
+        if [[ ! ${TERM} =~ screen ]]; then
+            eval "$(keychain --clear --eval --agents ssh ${sshKeys})"
+        else
+            eval "$(keychain --eval --agents ssh ${sshKeys})"
+        fi
+    fi
+}
+
+function keychain_agents () {
+    if [[ -f ~/.ssh/id_rsa.pub ]] || [[ -f ~/.ssh/id_ed25519.pub ]]; then
+        start_ssh_agent
+    else
+        start_gpg_agent
+    fi
+
 }
 
 function start_agents () {
