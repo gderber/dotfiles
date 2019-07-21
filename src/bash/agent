@@ -71,14 +71,17 @@ function start_gpg_agent () {
 }
 
 function start_ssh_agent () {
+    local keyVal
     local sshKeys
     if command -v keychain > /dev/null 2>&1; then
     # ID SSH Keys
     sshKeys=$(getsshkey) &&
         [[ -n ${sshKeys} ]] &&
         if [[ ! ${TERM} =~ screen ]]; then
+            eval "$(keychain --clear --systemd --eval --agents gpg ${keyVal})"
             eval "$(keychain --clear --eval --agents ssh ${sshKeys})"
         else
+            eval "$(keychain --eval --agents gpg ${keyVal})"
             eval "$(keychain --eval --agents ssh ${sshKeys})"
         fi
     fi
