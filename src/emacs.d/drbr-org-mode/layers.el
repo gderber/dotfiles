@@ -48,6 +48,12 @@
 (configuration-layer/declare-layers
  '(
    drbr-common
+   (org :variables
+        ;;org-enable-org-journal-support t
+        org-enable-github-support t
+        org-projectile-file "TODOs.org"
+        org-want-todo-bindings t)
+
    ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
