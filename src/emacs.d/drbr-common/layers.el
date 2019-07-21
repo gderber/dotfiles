@@ -74,11 +74,6 @@
      ;;better-defaults
    (ibuffer :variables
             ibuffer-group-buffers-by 'projects)
-   (org :variables
-        ;;org-enable-org-journal-support t
-        org-enable-github-support t
-        org-projectile-file "TODOs.org"
-        org-want-todo-bindings t)
 
    ;; 6. Email
    gnus
@@ -136,7 +131,6 @@
    theming
 
    ;; 18. Tools
-   ansible
    command-log
    docker
    finance
