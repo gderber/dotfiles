@@ -9,6 +9,7 @@
 	#signingkey = **Your GPG ID**
 
 [core]
+	# Why does commit messages not work with emacsclient?
 	#editor = emacsclient -t
 	editor = emacs
 	pager = less -FRSX
