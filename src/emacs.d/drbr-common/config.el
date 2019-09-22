@@ -134,6 +134,12 @@
 (setq browse-url-browser-function          ;call netscape on URLs.
       (quote browse-url-firefox))
 
+;; Neotree settings:
+(when (display-graphic-p)
+  (setq neo-theme icons)
+  (setq neo-vc-integration face)
+  )
+
 ;;(setq browse-url-new-window-p t)           ;open a fresh netscape window.
 ;;(if (boundp 'running-xemacs)
 ;;    (progn

@@ -10,8 +10,8 @@
 
 [core]
 	# Why does commit messages not work with emacsclient?
-	#editor = emacsclient -t
-	editor = emacs
+	editor = emacsclient -t
+	#editor = emacs
 	pager = less -FRSX
 	whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
 	excludesfile = ~/.gitignore # Creates a global git ignore
