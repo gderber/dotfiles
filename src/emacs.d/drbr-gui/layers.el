@@ -48,62 +48,27 @@
 (configuration-layer/declare-layers
  '(
    ;; 1. Chat
-   ;; erc
-   ;; jabber
-   ;; rcirc
-   slack
 
    ;; 2. Checkers
-   spell-checking
-   syntax-checking
 
    ;; 3. Completion
-   (auto-completion :variables
-                    auto-completion-return-key-behavior 'complete
-                    auto-completion-tab-key-behavior 'complete
-                    auto-completion-enable-snippets-in-popup t)
-   helm
-   ;; ivy
 
      ;; 4. Distributionss
-     ;; spacemacs
-     ;; spacemacs-base
-     ;; spacemacs-bootstrap
 
      ;; 5. Emacs
-     ;;better-defaults
-   (ibuffer :variables
-            ibuffer-group-buffers-by 'projects)
 
    ;; 6. Email
-   gnus
 
    ;; 7. Frameworks
 
    ;; 8. Fun
-   ;;emoji (Moved to drbr-gui)
-   ;;games (Moved to drbr-gui)
-   ;;xkcd (Moved to drbr-gui)
+   emoji
+   games
+   xkcd
 
    ;; 9. international
-   ;;(keyboard-layout :variables kl-layout 'dvorak)
 
    ;; 10. Programming  and markup languages
-   c-c++
-   csv
-   emacs-lisp
-   graphviz
-   html
-   lua
-   markdown
-   php
-   (python :variables
-           python-test-runner 'pytest
-           python-spacemacs-indent-guess nil)
-   shell-scripts
-   sql
-   windows-scripts
-   yaml
 
    ;; 11. Misc
 
@@ -112,49 +77,20 @@
    ;; 13. Pair Programing
 
    ;; 14. Source Control
-   ;; Moved to drbr-git layer
 
    ;; 15. Spacemacs distribution layers
 
    ;; 16. Tags
-   ;;cscope
-   gtags
 
    ;; 17. Themes
-   colors
-   themes-megapack
-   theming
 
    ;; 18. Tools
-   command-log
-   docker
-   finance
-   ;;(geolocation :variables
-   ;;             geolocation-enable-weather-forecast t)
-   nginx
-   pandoc
-   puppet
-   (shell :variables
-          shell-default-height 30
-          shell-default-position 'bottom
-          shell-default-shell 'ansi-term)
-   ;;speed-reading
-   systemd
-   search-engine
 
    ;; 19. Vim
-   ;;evil-cleverparens
 
    ;; 20. Web Services
-   ;;elfeed
-   ;;evernote
-   search-engine
-   ;;spotify
-   ;;twititer
-   ;;wakatime
 
    ;; Misc
-   ;;ranger
 
    ))
 

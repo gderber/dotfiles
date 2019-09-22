@@ -82,13 +82,6 @@
  '(org-export-backends '(org latex icalendar html ascii))
 
   )
-;;(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-;;(add-to-list 'auto-mode-alist '("\\.org.gpg$" . org-mode))
-;;(add-to-list 'auto-mode-alist '("\\.ref$" . org-mode))
-
-;;(add-to-list 'auto-mode-alist '("\\.ref.gpg$" . org-mode))
-;;(add-to-list 'auto-mode-alist '("\\.nnotes$" . org-mode))
-;;(add-to-list 'auto-mode-alist '("\\.nnotes.gpg$" . org-mode))
 
 ;; Files and Directories
 ;(setq org-agenda-file-regexp )

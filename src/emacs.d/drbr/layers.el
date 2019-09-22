@@ -50,6 +50,10 @@
    drbr-git
    drbr-org-mode
    drbr-passwordstore
+   (when (display-graphic-p)
+     drbr-gui
+     )
+
    ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
