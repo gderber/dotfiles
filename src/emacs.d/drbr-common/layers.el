@@ -118,7 +118,8 @@
 
    ;; 16. Tags
    ;;cscope
-   gtags
+   ;; TODO Fix errors (possbily recompile global from source)
+   ;;gtags
 
    ;; 17. Themes
    colors

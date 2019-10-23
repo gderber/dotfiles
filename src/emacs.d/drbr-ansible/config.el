@@ -45,7 +45,11 @@
 ;; 
 ;;; Code:
 
-
+;; If file "~/.vault_pass.txt" exists; use it as the vault password
+;; file.
+;;(when file-)
+;;(setq ansible::vault-password-file (expand-file-name "~/.vault_pass.txt"))
+(setq ansible::vault-password-file "~/.vault_pass.txt")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; config.el ends here
