@@ -60,7 +60,7 @@
  '(org-agenda-skip-scheduled-if-done t)
  '(org-agenda-skip-timestamp-if-done t)
  '(org-reverse-note-order t)
- '(org-agenda-sorting-strategy '((agenda ts-up habit-down time-up priority-down category-keep)
+ '(org-agenda-sorting-strategy '((agenda time-up ts-up habit-down priority-down category-keep)
                                  (todo priority-down category-keep)
                                  (tags priority-down category-keep)
                                  (search category-keep)))
