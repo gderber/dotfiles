@@ -9,9 +9,8 @@
 	#signingkey = **Your GPG ID**
 
 [core]
-	# Why does commit messages not work with emacsclient?
+	# Be sure to use C-c C-c to complete the commit message when done.
 	editor = emacsclient -t
-	#editor = emacs
 	pager = less -FRSX
 	whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
 	excludesfile = ~/.gitignore # Creates a global git ignore

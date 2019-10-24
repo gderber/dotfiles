@@ -50,10 +50,22 @@
    drbr-git
    drbr-org-mode
    drbr-passwordstore
-   (when (display-graphic-p)
-     drbr-gui
-     )
 
+   ;; ==================================================================
+   ;;
+   ;; Conditionally loaded layers
+   ;; drbr-gui: Only used in graphical environments
+   ;; drbr-ansible: Only loaded if ansible exists on the system
+   ;;
+   ;; TODO Set to conditionally load these layers
+   ;;
+   ;; ==================================================================
+   ;;(when (display-graphic-p)
+   ;;  drbr-gui
+   ;;  )
+   ;;(when executable-find ansible
+   ;;      drbr-ansible
+   ;;      )
    ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

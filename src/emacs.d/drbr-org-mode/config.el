@@ -100,13 +100,15 @@
 
 (setq org-todo-keywords
       '(;; Sequent for TODOs
-        (sequence "TODO(t@/!)" "WAITING(w@/!)" "DELEGATED(d@/!)" "HOLD(h@/!)" "FEEDBACK(f@/!)" "VERIFY(v@/!)" "|" "DONE()" "DELEGATED")
+        (sequence "TODO(t@/!)" "WAITING(w@/!)" "DELEGATED(d@/!)" "HOLD(h@/!)" "FEEDBACK(f@/!)" "VERIFY(v@/!)" "|" "DONE()" "DELEGATED()" "Cancelled()")
         ;; Sequence for Bugs
         (sequence "NEW(n!)" "CONFIRMED" "ASSIGNED" "IN PROGRESS" "|" "INVALID" "COMPLETE" "VERIFIED" "CLOSED")
-        ;; Sequence for POSSESSIONS
-        (sequence "PURCHASE(p@/!)" "PURCHASED(j@/!)" "TRANSIT(u@/!)" "GIFT(h@/!)" "SELL(k@/!)" "LOANED(n@/!)" "|" "UNWANTED(a@/!)" "OWN(o@/!)" "GIFTED(g@/!)"  "SOLD(c@/!)" "DISCARDED(q@/!)")
+        ;; Sequence for PURCHASES
+        ;;(sequence "IDENTIFICATION(p@/!)" "RESEARCH(j@/!)" "PURCHASE()" "TRANSIT(u@/!)" | "RECEIVED()")
+        ;; Sequence for 
+        ;;(sequence "GIFT(h@/!)" "SELL(k@/!)" "LOANED(n@/!)" "|" "UNWANTED(a@/!)" "OWN(o@/!)" "GIFTED(g@/!)"  "SOLD(c@/!)" "DISCARDED(q@/!)")
         ;; Sequence for MULTIMEDIA
-        (sequence "CONSUME(r@/!)" "SUBSCRIBE(b@/!)" "CONSUMING(l@/!)" "SHARE(s@/!)" "|" "IGNORED(i@/!)" "REFERENCE(f@/!)")
+        ;;(sequence "CONSUME(r@/!)" "SUBSCRIBE(b@/!)" "CONSUMING(l@/!)" "SHARE(s@/!)" "|" "IGNORED(i@/!)" "REFERENCE(f@/!)")
         ;; Sequence for EVENTS
         (sequence "VISIT(v@/!)" "|" "DIDNOTGO(z@/!)" "MEETING(m@/!)" "VISITED(y@/!)")))
 
@@ -125,7 +127,7 @@
       '(("d" todo "DELEGATED" nil)
         ("c" todo "DONE|DEFERRED|CANCELLED" nil)
         ("w" todo "WAITING" nil)
-        ("f" agenda "" ((org-agenda-fortnight-view)))
+        ("f" agenda "" ((org-agenda-ndays 14)))
         ("W" agenda "" ((org-agenda-ndays 21)))
         ("A" agenda ""
          ((org-agenda-skip-function
