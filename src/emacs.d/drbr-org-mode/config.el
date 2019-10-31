@@ -187,18 +187,19 @@
 ;;                  ))
 
 ;; Hooks
-(add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+(with-eval-after-load 'org
+  (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
 
-;;(with-eval-after-load 'org-agenda
-;;  (require 'org-projectile)
-;;  (push (org-projectile-todo-files) org-agenda-files))
-
-(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-(add-to-list 'auto-mode-alist '("\\.org.gpg$" . org-mode))
-(add-to-list 'auto-mode-alist '("\\.ref$" . org-mode))
-(add-to-list 'auto-mode-alist '("\\.ref.gpg$" . org-mode))
-(add-to-list 'auto-mode-alist '("\\.nnotes$" . org-mode))
-(add-to-list 'auto-mode-alist '("\\.nnotes.gpg$" . org-mode))
+  ;;(with-eval-after-load 'org-agenda
+  ;;  (require 'org-projectile)
+  ;;  (push (org-projectile:todo-files) org-agenda-files))
+  (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+  (add-to-list 'auto-mode-alist '("\\.org.gpg$" . org-mode))
+  (add-to-list 'auto-mode-alist '("\\.ref$" . org-mode))
+  (add-to-list 'auto-mode-alist '("\\.ref.gpg$" . org-mode))
+  (add-to-list 'auto-mode-alist '("\\.nnotes$" . org-mode))
+  (add-to-list 'auto-mode-alist '("\\.nnotes.gpg$" . org-mode))
+  )
 
 (spacemacs|define-custom-layout "@Drbr-Org"
   :binding "O"

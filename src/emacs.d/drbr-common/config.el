@@ -166,17 +166,26 @@
 ;;(add-hook 'after-change-major-mode-hook 'fci-mode)
 
 ;; Add hooks for various modes
-(add-hook 'c-mode-hook 'fci-mode)
-(add-hook 'shell-mode-hook 'fci-mode)
-(add-hook 'conf-mode-hook 'fci-mode)
-(add-hook 'python-mode-hook 'fci-mode)
-(add-hook 'yaml-mode-hook 'fci-mode)
-(add-hook 'emacs-lisp-mode-hook 'fci-mode)
-(add-hook 'ansible-vault-mode-hook 'fci-mode)
-(add-hook 'php-mode-hook 'fci-mode)
-(add-hook 'html-mode-hook 'fci-mode)
-(add-hook 'nxml-mode-hook 'fci-mode)
-(add-hook 'graphviz-dot-mode-hook 'fci-mode)
+(with-eval-after-load 'cc-mode
+  (add-hook 'cc-mode-hook 'fci-mode))
+(with-eval-after-load 'shell-mode
+  (add-hook 'shell-mode-hook 'fci-mode))
+(with-eval-after-load 'conf-mode
+  (add-hook 'conf-mode-hook 'fci-mode))
+(with-eval-after-load 'python-mode
+  (add-hook 'python-mode-hook 'fci-mode))
+(with-eval-after-load 'yaml-mode
+  (add-hook 'yaml-mode-hook 'fci-mode))
+(with-eval-after-load 'emacs-lisp-mode
+  (add-hook 'emacs-lisp-mode-hook 'fci-mode))
+(with-eval-after-load 'php-mode-hook
+  (add-hook 'php-mode-hook 'fci-mode))
+(with-eval-after-load 'html-mode
+  (add-hook 'html-mode-hook 'fci-mode))
+(with-eval-after-load 'nxml-mode
+  (add-hook 'nxml-mode-hook 'fci-mode))
+(with-eval-after-load 'graphviz-dot-mode
+  (add-hook 'graphviz-dot-mode-hook 'fci-mode))
 
 
 ;; Header
