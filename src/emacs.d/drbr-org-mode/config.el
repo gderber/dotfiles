@@ -84,10 +84,11 @@
   )
 
 ;; Files and Directories
-;(setq org-agenda-file-regexp )
-;;(setq org-agenda-files "~/Documents/Org/*")
-(setq org-agenda-files (list "~/Documents/Org/work.org"
-                             "~/Documents/Org/personal.org"))
+(custom-set-variables
+ '(org-directory "~/Documents/Org")
+ '(org-agenda-files (list org-directory)))
+;;(setq org-agenda-files (list "~/Documents/Org/work.org"
+;;                             "~/Documents/Org/personal.org"))
 ;; Todo Options
 (setq org-todo-state-tags-triggers
       '(("CANCELLED" ("CANCELLED" . t))
