@@ -49,6 +49,11 @@
 (custom-set-variables
  ;; Files and Directories
  '(org-directory "~/Documents/Org/")
+ '(org-journal-dir "~/Documents/Org/.journal/")
+ '(org-journal-file-format "%Y%m%d")
+ ;;'(org-journal-date-format "%e %b %Y (%A)")
+ ;;'(org-journal-time-format "")
+ '(org-agenda-files (list org-directory))
  '(org-default-notes-file "~/Documents/Org/notes.org")
  '(org-archive-location "~/Documents/Org/archive.org")
  ;; Agenda Settings
@@ -83,10 +88,7 @@
 
   )
 
-;; Files and Directories
-(custom-set-variables
- '(org-directory "~/Documents/Org")
- '(org-agenda-files (list org-directory)))
+
 ;;(setq org-agenda-files (list "~/Documents/Org/work.org"
 ;;                             "~/Documents/Org/personal.org"))
 ;; Todo Options
@@ -119,6 +121,7 @@
         ("NEXT" :foreground "blue" :weight bold)
         ("DONE" :foreground "forest green" :weight bold)
         ("WAITING" :foreground "orange" :weight bold)
+
         ("HOLD" :foreground "magenta" :weight bold)
         ("CANCELLED" :foreground "forest green" :weight bold)
         ("MEETING" :foreground "forest green" :weight bold)
