@@ -179,7 +179,6 @@ install: \
 	install-bash \
 	install-beets \
 	install-bin \
-	install-emacs \
 	install-gnupg \
 	install-git \
 	install-misc \
@@ -216,22 +215,6 @@ install-bin:
 	do \
 		ln -nrvsf $(PWD)/src/local/bin/$$file $(PREFIX)/.local/bin/$$file; \
 	done
-
-install-emacs:
-# TODO: Clear original emacs directory safely
-# HACK: Ensure either a directory or file exists.
-# HACK: Only clear if not a spacemacs emacs.d
-	touch $(PREFIX)/.emacs.d
-	#mv $(HOME)/.emacs.d $(HOME)/.emacs.d.old
-	#git clone https://github.com/syl20bnr/spacemacs.git $(HOME)/.emacs.d
-	@$(foreach f, $(EMACS_FILES), [ -f $(HOME)/.emacs.d/private/$f ] || ln -n -r -v -s -f $(PWD)/src/emacs.d/$f $(PREFIX)/.emacs.d/private/$f ; )
-	patch $(PREFIX)/.spacemacs $(PWD)/src/spacemacs.patch
-	mkdir -p $(PREFIX)/.emacs.d/emms/
-#	ifeq ( $(F1_EXISTS) , 1 )
-#	git clone https://github.com/syl20bnr/spacemacs.git $(HOME)/.emacs.d
-#       else
-#		( cd $(PREFIX)/.emacs.d/spacemacs; git pull origin master );
-#	endif
 
 install-git:
 	@for file in $(GIT_FILES); \
