@@ -117,7 +117,7 @@
  ;; If there is more than one, they won't work right.
 ;; )
 
-(setq-default fill-column 72)
+(setq-default fill-column 100)
 ;;(setq global-font-lock-mode t)             ; Enable syntax-highlighting
 ;;(setq font-lock-maximum-decoration t)
 (setq indent-tabs-mode nil)                ; Use spaces instead of tabs for indentation.
