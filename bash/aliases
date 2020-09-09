@@ -49,9 +49,9 @@ alias df='df -kh'
 alias dfx4='df -kh -t ext4'
 
 #
-alias h='history' 
-alias j='jobs -l' 
-#alias which='type -a' 
+alias h='history'
+alias j='jobs -l'
+#alias which='type -a'
 
 # Pretty-print of some PATH variables: 
 alias path='echo -e ${PATH//:/\\n}' 
@@ -59,12 +59,9 @@ alias libpath='echo -e ${LD_LIBRARY_PATH//:/\\n}'
 
 alias namemaker="shuf -n 2 /usr/share/dict/words | tr -dc 'A-Za-z0-9'"
 
-#
-alias wget='wget -c'
-
-#set -o nounset # These two options are useful for debugging. 
-#set -o xtrace 
-alias debug="set -o nounset; set -o xtrace" 
+#set -o nounset # These two options are useful for debugging.
+#set -o xtrace
+alias debug="set -o nounset; set -o xtrace"
 
 alias scratch='history -d $((HISTCMD-2)) && history -d $((HISTCMD-1))'
 
