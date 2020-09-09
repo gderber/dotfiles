@@ -30,7 +30,7 @@ function loadcolor () {
 	LOADCOLOR="${RED}"
     elif [ ${LOADPER} -gt ${LOWUSE} ]; then 
 	LOADCOLOR="${BRED}"
-    else 
+    else
 	LOADCOLOR="${BLUE}"
     fi
     echo -ne "$LOADCOLOR"
