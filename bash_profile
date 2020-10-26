@@ -19,8 +19,6 @@ FSLINTPATH="${FSLINT}:${FSLINT}/fstool"
 [[ -d "${HOME}/bin" ]] && PATH="$HOME/bin:$PATH"
 [[ -d "${HOME}/games" ]] && PATH="${HOME}/games:${PATH}"
 
-/usr/local/bin/start_agents
-
 if [[ -n $SSH_CLIENT ]] || [[ -n $SSH_TTY ]]; then
     if [[ ! $TERM =~ screen ]]; then
         screen -Rd
