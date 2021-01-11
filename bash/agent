@@ -11,6 +11,7 @@ OFF="[0m"
 function getgpgkey () {
     local keyVal
     keyVal=$(gpg -K |
+                 grep -v expired |
                  awk '/sec/{if (length($2) > 0) print $2}' |
                  sed 's|.*/0x||' )
     echo -ne ${keyVal}
