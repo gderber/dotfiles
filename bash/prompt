@@ -58,7 +58,7 @@ function __prompt_command_full() {
     local USERTEXT=$(usertext)
     local JC=$(job_color)
 
-    # Repositories    
+    # Repositories
     # git
     #local BRANCH=$(__git_prompt)
 
@@ -70,13 +70,13 @@ function __prompt_command_full() {
     local STOPPED_JOBS=$(stopped_jobs)
     local DEBIAN_CHROOT=$(__debian_chroot)
     if [[ -n ${BATTERY} ]]; then
-	      local BATTERY=$(bat_color)    
+	      local BATTERY=$(bat_color)
     else
 	      local BATTERY=""
     fi
     local FC=$(disk_color)
     local SMILE=$(last_command)
-    local HOSTTEXT=$(host_color)    
+    local HOSTTEXT=$(host_color)
     local SCREEN=$(__screen)
 
     PS1="\n\
@@ -93,10 +93,10 @@ ${JC}\\$ \[${DC}\]"
 function usertext () {
     if [ "$color_prompt" = yes ]; then
     	# Root different color
-	if [ $UID -eq 0 ]; then 
-	    #root user color 
+	if [ $UID -eq 0 ]; then
+	    #root user color
 	    echo -ne "\[${RED}\]\u\[${DC}\]"
-	elif [[ ${USER} != $(logname) ]]; then 
+	elif [[ -n ${SUDO_USER} && ${SUDO_USER} != ${USER} ]]; then 
 	    echo -ne "\[${BYELLOW}\]\u\[${DC}\]" # User is not login user.
 	else
 	    echo -ne "\[${GREEN}\]\u\[${DC}\]"
@@ -106,8 +106,8 @@ function usertext () {
     fi
 }
 
-# Returns a color indicating system load. 
-function loadtext() { 
+# Returns a color indicating system load.
+function loadtext() {
 
     local LOADPER=$(loadper)
 
@@ -128,7 +128,6 @@ function loadtext() {
 	echo -ne "\[${LOADCOLOR}\]${SYMBOL} \[${DC}\]"
     fi
 }
-
 
 function background_jobs () {
     local BKGJBS=$(jobs -r | wc -l | tr -d ' ')
@@ -271,12 +270,11 @@ function __git_prompt() {
 
 
 last_command () {
-
     if [ ${MODE} = full ]; then
-	local CMDNUMB="\! "
+	      local CMDNUMB="\! "
     else
-	local CMDNUMB=""
-    fi 
+	      local CMDNUMB=""
+    fi
 
     # Last Command Success
     if [ ${EXITSTATUS} = 0 ]; then
@@ -287,7 +285,7 @@ last_command () {
 	else
             local SMILE=":) ${CMDNUMB}"
 	fi
-    else 
+    else
 	#frowney
 	local FACE='☹'
 	local EXITSTATUS="${EXITSTATUS} "

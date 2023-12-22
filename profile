@@ -15,10 +15,18 @@ if [ -d ${FSLINT} ] ; then
    PATH="${FSLINTPATH}:${PATH}"
 fi
 
-# Qt HiDPI Screens
-# https://wiki.archlinux.org/index.php/HiDPI
-# https://doc.qt.io/qt-5/highdpi.html
-# [boolean] enables automatic scaling, based on the monitor's pixel density. This won't change the size of point-sized fonts, since point is a physical measurement unit. Multiple screens may get different scale factors.
-export QT_AUTO_SCREEN_SCALE_FACTOR=0
-# [numeric] defines a global scale factor for the whole application, including point-sized fonts.
-export QT_SCALE_FACTOR=2
+PATH="/usr/games:${PATH}"
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "${HOME}/.local/bin" ] ; then
+    PATH="${HOME}/.local/bin:$PATH"
+fi
+if [ -d "${HOME}/.local/games" ] ; then
+    PATH="$HOME/.local/games:$PATH"
+fi
+if [ -d "${HOME}/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+if [ -d "${HOME}/games" ] ; then
+    PATH="$HOME/games:$PATH"
+fi

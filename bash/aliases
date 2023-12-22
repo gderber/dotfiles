@@ -4,7 +4,11 @@
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-if [[ -e "/usr/bin/trash" ]]; then
+inside_git_repo="$(git rev-parse --is-inside-work-tree 2>/dev/null)"
+
+if [[ $inside_get_repo ]]; then
+    alias rm='git rm'
+elif [[ -e "/usr/bin/trash" ]]; then
     alias rm='trash'
 else
     alias rm='rm -i'
@@ -49,9 +53,9 @@ alias df='df -kh'
 alias dfx4='df -kh -t ext4'
 
 #
-alias h='history' 
-alias j='jobs -l' 
-#alias which='type -a' 
+alias h='history'
+alias j='jobs -l'
+#alias which='type -a'
 
 # Pretty-print of some PATH variables: 
 alias path='echo -e ${PATH//:/\\n}' 
@@ -59,12 +63,9 @@ alias libpath='echo -e ${LD_LIBRARY_PATH//:/\\n}'
 
 alias namemaker="shuf -n 2 /usr/share/dict/words | tr -dc 'A-Za-z0-9'"
 
-#
-alias wget='wget -c'
-
-#set -o nounset # These two options are useful for debugging. 
-#set -o xtrace 
-alias debug="set -o nounset; set -o xtrace" 
+#set -o nounset # These two options are useful for debugging.
+#set -o xtrace
+alias debug="set -o nounset; set -o xtrace"
 
 alias scratch='history -d $((HISTCMD-2)) && history -d $((HISTCMD-1))'
 

@@ -3,47 +3,47 @@
 # bashrc ---
 #
 # Filename: bashrc
-# Description: 
+# Description:
 # Author: Geoff S Derber
-# Maintainer: 
+# Maintainer:
 # Created: Sun Jan  6 12:22:35 2019 (-0500)
-# Version: 
+# Version:
 # Package-Requires: ()
 # Last-Updated: Sun Jun  9 14:50:12 2019 (-0400)
 #           By: Geoff S Derber
 #     Update #: 2
-# URL: 
-# Doc URL: 
-# Keywords: 
-# Compatibility: 
-# 
-# 
+# URL:
+# Doc URL:
+# Keywords:
+# Compatibility:
+#
+#
 
-# Commentary: 
-# 
-# 
-# 
-# 
+# Commentary:
+#
+#
+#
+#
 
 # Change Log:
-# 
-# 
-# 
-# 
+#
+#
+#
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or (at
 # your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
-# 
-# 
+#
+#
 
 # Code:
 
@@ -67,9 +67,7 @@
 #-------------------------------------------------------------
 if [ -f /etc/bashrc ]; then
     . /etc/bashrc
-    # --> Read /etc/bashrc, if present.
 fi
-
 
 so() { [ -s $1 ] && source $1; }
 
@@ -112,5 +110,5 @@ so ~/.bash/settings                     # Machine dependent settings
 ## This is last, so it can override everything. Less fighting with mini installs.
 so ~/.bash/bashrc.local            # machine specific config. not tracked
 
-# 
+#
 # bashrc ends here
