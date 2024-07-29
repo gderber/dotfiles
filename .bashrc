@@ -71,6 +71,8 @@ fi
 
 so() { [ -s $1 ] && source $1; }
 
+so ~/.profile
+
 # Host Specific settings
 so ~/.bash/${HOSTNAME}_settings
 so ~/.bash/bashrc # main configuration

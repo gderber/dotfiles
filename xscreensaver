@@ -147,7 +147,7 @@ programs:								      \
 				greynetic -root				    \n\
 				halftone -root				    \n\
 				halo -root				    \n\
-  GL: 				handsy -root				    \n\
+- GL: 				handsy -root				    \n\
   GL: 				headroom -root				    \n\
 				helix -root				    \n\
 				hexadrop -root				    \n\

@@ -90,3 +90,5 @@ TAGS
 *.xlk      # Excel Backup File
 ~$*.ppt*   # PowerPoint temporary
 *.~vsd*    # Visio autosave temporary files
+
+*

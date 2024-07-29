@@ -9,48 +9,50 @@ PURP="[35;01m"
 OFF="[0m"
 
 function getgpgkey () {
-    local keyVal
-    keyVal=$(gpg -K |
-                 grep -v expired |
-                 grep -v revoked |
-                 awk '/sec/{if (length($2) > 0) print $2}' |
-                 sed 's|.*/0x||' )
-    echo -ne ${keyVal}
+    # local keyVal
+    # keyVal=$(gpg -K |
+    #              grep -v expired |
+    #              grep -v revoked |
+    #              awk '/sec/{if (length($2) > 0) print $2}' |
+    #              sed 's|.*/0x||' )
+    #echo -ne ${keyVal}
+    echo -ne ${GPG_KEY}
 }
 
 function getsshkey () {
-    local sshKeys
-    local Keys
+    # local sshKeys
+    # local Keys
 
-    cd ${HOME}/.ssh/ &&
-        sshKeys=$(ls *.pub |
-                      cut -d. -f1 |
-                      cut -d- -f1 |
-                      cut -d_ -f2 |
-                      sort -u) &&
-        cd ${HOME}
+    # cd ${HOME}/.ssh/ &&
+    #     sshKeys=$(ls *.pub |
+    #                   cut -d. -f1 |
+    #                   cut -d- -f1 |
+    #                   cut -d_ -f2 |
+    #                   sort -u) &&
+    #     cd ${HOME}
 
-    for key in ${sshKeys}
-    do
-        if [[ "${key}" != "gpg" ]]; then
-            if [[ -f ${HOME}/.ssh/id_${key} ]]; then
-                if [[ -z ${Keys} ]]; then
-                    Keys="id_${key}"
-                else
-                    Keys="${Keys} id_${key}"
-                fi
-                [[ "${key}" == "dsa" ]] &&
-                    echo "Warning: you are still using dsa keys."
-            fi
-        fi
-    done
-    echo -ne ${Keys}
+    # for key in ${sshKeys}
+    # do
+    #     if [[ "${key}" != "gpg" ]]; then
+    #         if [[ -f ${HOME}/.ssh/id_${key} ]]; then
+    #             if [[ -z ${Keys} ]]; then
+    #                 Keys="id_${key}"
+    #             else
+    #                 Keys="${Keys} id_${key}"
+    #             fi
+    #             [[ "${key}" == "dsa" ]] &&
+    #                 echo "Warning: you are still using dsa keys."
+    #         fi
+    #     fi
+    # done
+    # echo -ne ${Keys}
+    echo -ne "${SSH_KEYS}"
 
 }
 
 function gnome_agents () {
-    eval $(gnome-keyring-daemon --start)
-    export SSH_AUTH_SOCK
+    #eval $(gnome-keyring-daemon --start)
+    export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/keyring/ssh"
 }
 
 function start_gpg_agent () {
@@ -64,7 +66,6 @@ function start_gpg_agent () {
             else
                 eval "$(keychain --eval --agents gpg ${keyVal})"
             fi
-        export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
         gpgconf --launch gpg-agent
 
         export GPG_TTY=$(tty)
@@ -96,13 +97,14 @@ function keychain_agents () {
     else
         start_gpg_agent
     fi
-
 }
 
 function start_agents () {
     if [[ -n "$DESKTOP_SESSION" ]]; then
+        export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/keyring/ssh"
         keychain_agents
     else
+        export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
         keychain_agents
     fi
 }
