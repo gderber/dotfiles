@@ -1,0 +1,363 @@
+# ==================================================================================================
+#
+# Git global ignores
+#
+# ==================================================================================================
+# Ansible
+*.retry
+
+# ==================================================================================================
+#
+# Archives
+#
+# It's better to unpack these files and commit the raw source because  git has its own built in
+# compression methods.
+#
+# ==================================================================================================
+*.7z
+*.jar
+*.rar
+*.zip
+*.gz
+*.gzip
+*.tgz
+*.bzip
+*.bzip2
+*.bz2
+*.xz
+*.lzma
+*.cab
+*.xar
+*.zst
+*.tzst
+
+# Packing-only formats
+*.iso
+*.tar
+
+# Package management formats
+*.dmg
+*.xpi
+*.gem
+*.egg
+*.deb
+*.rpm
+*.msi
+*.msm
+*.msp
+*.txz
+
+# ==================================================================================================
+#
+# Backup Files
+#
+# ==================================================================================================
+*.bak
+*.gho
+*.ori
+*.orig
+*.tmp
+
+# ==================================================================================================
+#
+# Diff Files
+#
+# ==================================================================================================
+*.patch
+*.diff
+
+# ==================================================================================================
+#
+# Dropbox settings and caches
+#
+# ==================================================================================================
+.dropbox
+.dropbox.attr
+.dropbox.cache
+
+# ==================================================================================================
+#
+# Emacs
+#
+# ==================================================================================================
+*.elc
+*~
+.*~
+.\#*
+.emacs.desktop
+.emacs.desktop.lock
+/.emacs.desktop
+/.emacs.desktop.lock
+\#*\#
+auto-save-list
+auto-save-list/
+savehist
+session.*
+tramp
+
+# Org-mode
+.org-id-locations
+*_archive
+
+# flymake-mode
+*_flymake.*
+
+# eshell files
+/eshell/history
+/eshell/lastdir
+
+# elpa packages
+/elpa/
+
+# reftex files
+*.rel
+
+# AUCTeX auto folder
+/auto/
+
+# cask packages
+.cask/
+dist/
+
+# Flycheck
+flycheck_*.el
+
+# server auth directory
+/server/
+
+# projectiles files
+.projectile
+
+# directory configuration
+.dir-locals.el
+
+# network security
+/network-security.data
+
+# ==================================================================================================
+#
+# GPG
+#
+# ==================================================================================================
+secring.*
+
+# ==================================================================================================
+#
+# Image Files
+#
+# ==================================================================================================
+# JPEG
+*.jpg
+*.jpeg
+*.jpe
+*.jif
+*.jfif
+*.jfi
+
+# JPEG 2000
+*.jp2
+*.j2k
+*.jpf
+*.jpx
+*.jpm
+*.mj2
+
+# JPEG XR
+*.jxr
+*.hdp
+*.wdp
+
+# Graphics Interchange Format
+*.gif
+
+# RAW
+*.raw
+
+# Web P
+*.webp
+
+# Portable Network Graphics
+*.png
+
+# Animated Portable Network Graphics
+*.apng
+
+# Multiple-image Network Graphics
+*.mng
+
+# Tagged Image File Format
+*.tiff
+*.tif
+
+# Scalable Vector Graphics
+*.svg
+*.svgz
+
+# Portable Document Format
+*.pdf
+
+# X BitMap
+*.xbm
+
+# BMP
+*.bmp
+*.dib
+
+# ICO
+*.ico
+
+# 3D Images
+*.3dm
+*.max
+
+# ==================================================================================================
+#
+# LibreOffice
+#
+# ==================================================================================================
+.~lock.*#
+
+# ==================================================================================================
+#
+# Linux
+#
+# ==================================================================================================
+*~
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+# .nfs files are created when an open file is removed but is still being accessed
+.nfs*
+
+# gitginore template for creating Snap packages
+# website: https://snapcraft.io/
+
+parts/
+prime/
+stage/
+*.snap
+
+# Snapcraft global state tracking data(automatically generated)
+# https://forum.snapcraft.io/t/location-to-save-global-state/768
+/snap/.snapcraft/
+
+# Source archive packed by `snapcraft cleanbuild` before pushing to the LXD container
+/*_source.tar.bz2
+
+
+# ==================================================================================================
+#
+# Microsoft Office
+#
+# ==================================================================================================
+*.tmp
+
+# Word temporary
+~$*.doc*
+
+# Word Auto Backup File
+Backup of *.doc*
+
+# Excel temporary
+~$*.xls*
+
+# Excel Backup File
+*.xlk
+
+# PowerPoint temporary
+~$*.ppt*
+
+# Visio autosave temporary files
+*.~vsd*
+
+# ==================================================================================================
+#
+# Python VENV
+#
+# ==================================================================================================
+# Virtualenv
+# http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
+.Python
+[Bb]in
+[Ii]nclude
+[Ll]ib
+[Ll]ib64
+[Ll]ocal
+[Ss]cripts
+pyvenv.cfg
+.venv
+pip-selfcheck.json
+
+# ==================================================================================================
+#
+# Subversion
+#
+# ==================================================================================================
+.svn/
+svn-commit.*
+
+# ==================================================================================================
+#
+# TAGS
+#
+# ==================================================================================================
+# Ignore tags created by etags, ctags, gtags (GNU global) and cscope
+TAGS
+.TAGS
+!TAGS/
+tags
+.tags
+!tags/
+gtags.files
+GTAGS
+GRTAGS
+GPATH
+GSYMS
+cscope.files
+cscope.out
+cscope.in.out
+cscope.po.out
+
+# ==================================================================================================
+#
+# Windows
+#
+# ==================================================================================================
+# Windows thumbnail cache files
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+
+# Dump file
+*.stackdump
+
+# Folder config file
+[Dd]esktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# ==================================================================================================
+#
+# Misc
+#
+# ==================================================================================================
+*.sass-cache
+*.swp

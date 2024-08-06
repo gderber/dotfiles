@@ -1,94 +1,33 @@
-#-*- mode: gitignore; -*-
 # ==================================================================================================
 #
-# Git global ignores
-#
-# Authors:
-#   Ben O'Hara <bohara@gmail.com>
-#
-# Modified by:
-#   Geoff S Derber
+# Dotfiles
 #
 # ==================================================================================================
+/**
+!/.bash/
+!/.bash/*
+!/.bash_logout
+!/.bash_profile
+!/.bashrc
+/.bash/bashrc.local
 
-# ==================================================================================================
-#
-# Emacs
-#
-# ==================================================================================================
-*~
-\#*\#
-.emacs.desktop
-.emacs.desktop.lock
-session.*
-*.elc
-auto-save-list/
-savehist
-tramp
-.\#*
-.*~
-*_flymake.*  # flymake-mode
-session.*
+!/.config/
+!/.config/beets/
+!/.config/beets/config.yaml
+!/.config/beets/genres.txt
+!/.config/git/
+!/.config/git/ignore
 
-*.rel        # reftex files
-/auto/       # AUCTeX auto folder
-flycheck_*.el  # Flycheck
-/server/   # server auth directory
-.projectile # projectiles files
-.dir-locals.el  # directory configuration
-
-# Org-mode
-.org-id-locations
-*_archive
-
-# ==================================================================================================
-#
-# Linux
-#
-# ==================================================================================================
-*~
-# temporary files which can be created if a process still has a handle open of a deleted file
-.fuse_hidden*
-
-# KDE directory preferences
-.directory
-
-# Linux trash folder which might appear on any partition or disk
-.Trash-*
-
-# .nfs files are created when an open file is removed but is still being accessed
-.nfs*
-
-# ==================================================================================================
-#
-# Windows
-#
-# ==================================================================================================
-# Windows thumbnail cache files
-Thumbs.db
-ehthumbs.db
-ehthumbs_vista.db
-
-*.stackdump     # Dump file
-*.lnk           # Windows shortcuts
-[Dd]esktop.ini  # Folder config file
-#\$RECYCLE.BIN/   # Recycle Bin used on file shares
-
-*.sass-cache
-.directory
-*~
-.svn/*
-*.swp
-svn-commit.*
-tags
-TAGS
-
-# Microsoft Office
-*.tmp
-~$*.doc*   # Word temporary
-~$*.xls*   # Excel temporary
-*.xlk      # Excel Backup File
-~$*.ppt*   # PowerPoint temporary
-*.~vsd*    # Visio autosave temporary files
-
-*
+!/.editrc
+!/.gitignore
+!/.inputrc
+!/.kshrc
+!/.profile
+!/.pylintrc
+!/.pythonrc
+!/.selected_editor
+!/.spacemacs
+!/.toprc
+!/.xscreensaver
+!/.wgetrc
+!/.pre-commit-config.yaml
