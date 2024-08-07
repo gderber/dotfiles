@@ -212,7 +212,7 @@ paths:
   sort:Meditation: $sort/%the{%asciify{$albumartist}}/%the{%asciify{$album}}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
   singleton: %ifdef{sort,$sort,Unsorted}/%ifdef{album_holiday,$album_holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/Non-Album/%the{%asciify{$title}}
   comp: %ifdef{sort,$sort,Unsorted}/%ifdef{album_holiday,$album_holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
-  default: %ifdef{sort,$sort,Unsorted}/%ifdef{album_holiday,$album_holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%ifdef{series,%the{$series}}/%ifdef{series_no,$series_no - }%the{%asciify{$album}}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
+  default: %ifdef{sort,$sort,Unsorted}/%ifdef{album_holiday,$album_holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%ifdef{series,%the{$series}}/%ifdef{series_no,$series_no - }%the{%asciify{$album%aunique{}}}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
 
 
 #---------------------------------------------------------------------------------------------------
