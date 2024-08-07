@@ -8,25 +8,13 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
-# Application Specific PATH
-FSLINT=/usr/share/fslint/fslint
-FSLINTPATH="${FSLINT}:${FSLINT}/fstool"
-if [ -d ${FSLINT} ] ; then
-   PATH="${FSLINTPATH}:${PATH}"
-fi
+source /etc/profile
 
-PATH="/usr/games:${PATH}"
-
-# set PATH so it includes user's private bin if it exists
-if [ -d "${HOME}/.local/bin" ] ; then
-    PATH="${HOME}/.local/bin:$PATH"
-fi
-if [ -d "${HOME}/.local/games" ] ; then
-    PATH="$HOME/.local/games:$PATH"
-fi
-if [ -d "${HOME}/bin" ] ; then
-    PATH="$HOME/bin:$PATH"
-fi
-if [ -d "${HOME}/games" ] ; then
-    PATH="$HOME/games:$PATH"
+if [ -d ~/.profile.d ]; then
+    for i in ~/.profile.d/*; do
+        if [ -r $i ]; then
+            . $i
+        fi
+    done
+    unset i
 fi
