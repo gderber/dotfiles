@@ -16,7 +16,7 @@ function getgpgkey () {
     #              awk '/sec/{if (length($2) > 0) print $2}' |
     #              sed 's|.*/0x||' )
     #echo -ne ${keyVal}
-    echo -ne ${GPG_KEY}
+    echo -ne "${GPG_KEY}"
 }
 
 function getsshkey () {
@@ -50,10 +50,10 @@ function getsshkey () {
 
 }
 
-function gnome_agents () {
-    #eval $(gnome-keyring-daemon --start)
-    export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/keyring/ssh"
-}
+# function gnome_agents () {
+#     #eval $(gnome-keyring-daemon --start)
+#     #export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/keyring/ssh"
+# }
 
 function start_gpg_agent () {
     local keyVal
@@ -93,20 +93,20 @@ function start_ssh_agent () {
 
 function keychain_agents () {
     if [[ -f ~/.ssh/id_rsa.pub ]] || [[ -f ~/.ssh/id_ed25519.pub ]]; then
+        echo "Starting SSH Agent"
         start_ssh_agent
     else
+        echo "Starting GPG Agent"
         start_gpg_agent
     fi
 }
 
 function start_agents () {
     if [[ -n "$DESKTOP_SESSION" ]]; then
-        export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/keyring/ssh"
         keychain_agents
     else
-        export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
         keychain_agents
     fi
 }
-
+ 
 start_agents

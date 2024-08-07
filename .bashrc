@@ -1,10 +1,10 @@
 #!/bin/bash
-# ======================================================================
-# bashrc ---
+# ==================================================================================================
+# .bashrc
 #
 # Filename: bashrc
 # Description:
-# Author: Geoff S Derber
+# Author: G S Derber
 # Maintainer:
 # Created: Sun Jan  6 12:22:35 2019 (-0500)
 # Version:
@@ -16,19 +16,6 @@
 # Doc URL:
 # Keywords:
 # Compatibility:
-#
-#
-
-# Commentary:
-#
-#
-#
-#
-
-# Change Log:
-#
-#
-#
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -43,74 +30,50 @@
 # You should have received a copy of the GNU General Public License
 # along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
 #
-#
-
-# Code:
-
-
-
-# =============================================================== #
-#
-# PERSONAL $HOME/.bashrc FILE
-#
-# Last modified: Tue Mar 26 2016
-#
-# Code from:
-#
-#
-# Others...
-#
-# =============================================================== #
-
-#-------------------------------------------------------------
-# Source global definitions (if any)
-#-------------------------------------------------------------
-if [ -f /etc/bashrc ]; then
-    . /etc/bashrc
-fi
-
+# ==================================================================================================
 so() { [ -s $1 ] && source $1; }
 
+# Source global definitions (if any)
+so /etc/bash.bashrc
 so ~/.profile
 
 # Host Specific settings
-so ~/.bash/${HOSTNAME}_settings
-so ~/.bash/bashrc # main configuration
+so ~/.bash.d/${HOSTNAME}_settings
+so ~/.bash.d/bashrc # main configuration
 
 ## Uses:
-export ENV_NAME=$(uname -s|tr 'A-Z' 'a-z')
-so ~/.bash/${ENV_NAME}_profile # configuration per OS linux/OSX/WIN
-so ~/.bash/common              # common stuff or overriding
-so ~/.bash/exports             # Exports
-so ~/.bash/shopt               # Shopts
+ENV_NAME="$(uname -s|tr 'A-Z' 'a-z')"
+
+so ~/.bash.d/${ENV_NAME}_profile # configuration per OS linux/OSX/WIN
+so ~/.bash.d/common              # common stuff or overriding
+so ~/.bash.d/exports             # Exports
+so ~/.bash.d/shopt               # Shopts
 
 ### Interactive ### {{{
 if [[ $- == *i* ]]; then
-    so ~/.bash/colors
-    so ~/.bash/commonfunctions          # Common Functions
-    so ~/.bash/functions                # Functions
-    so ~/.bash/prompt                   # COMMAND_PROMPT function
-    so ~/.bash/aliases                  # Alias
-    so ~/.bash/agent                    # GPG and SSH agents, have before settings
+    so ~/.bash.d/colors
+    so ~/.bash.d/commonfunctions          # Common Functions
+    so ~/.bash.d/functions                # Functions
+    so ~/.bash.d/prompt                   # COMMAND_PROMPT function
+    so ~/.bash.d/aliases                  # Alias
+    #so ~/.bash.d/agent                    # GPG and SSH agents, have before settings
+    so ~/.bash.d/dotfiles
 
     # Conditional functions
     # Functions requiring sudo, which you may not have access to.
     #if sudo -v ; then
     #   so ~/.bash/sudo_functions
     #fi
+
     # These functions are only useful for laptops
     if [[ ${LAPTOP} == "true" ]]; then
-        so ~/.bash/laptop_functions
+        so ~/.bash.d/laptop_functions
     fi
-    # so ~/.bash/xdisplay
 fi
 ### End Interactive ### }}}
 
 ## This needs to be after Interactive, to override
-so ~/.bash/settings                     # Machine dependent settings
+so ~/.bash.d/settings                     # Machine dependent settings
 
 ## This is last, so it can override everything. Less fighting with mini installs.
-so ~/.bash/bashrc.local            # machine specific config. not tracked
-
-#
-# bashrc ends here
+so ~/.bash.d/bashrc.local            # machine specific config. not tracked

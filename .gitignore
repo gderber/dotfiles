@@ -4,12 +4,12 @@
 #
 # ==================================================================================================
 /**
-!/.bash/
-!/.bash/*
+!/.bash.d/
+!/.bash.d/*
 !/.bash_logout
 !/.bash_profile
 !/.bashrc
-/.bash/bashrc.local
+/.bash.d/bashrc.local
 
 !/.config/
 !/.config/beets/
@@ -18,16 +18,21 @@
 !/.config/git/
 !/.config/git/ignore
 
+!/.profile
+!/.profile.d/
+!/.profile.d/*
+
+
 !/.editrc
 !/.gitignore
 !/.inputrc
 !/.kshrc
-!/.profile
+!/.pre-commit-config.yaml
 !/.pylintrc
 !/.pythonrc
 !/.selected_editor
 !/.spacemacs
 !/.toprc
-!/.xscreensaver
 !/.wgetrc
-!/.pre-commit-config.yaml
+!/.xscreensaver
+!/.xsession
