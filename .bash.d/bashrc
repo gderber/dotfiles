@@ -14,17 +14,6 @@
 #
 # =============================================================== #
 
-# If not running interactively, don't do anything
-case $- in
-    *i*) ;;
-      *) return;;
-esac
-
-#-------------------------------------------------------------
-# Some settings
-#-------------------------------------------------------------
-
-
 #ulimit -S -c 0 # Don't want coredumps.
 #set -o notify
 #set -o noclobber

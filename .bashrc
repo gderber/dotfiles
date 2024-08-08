@@ -31,6 +31,12 @@
 # along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
 #
 # ==================================================================================================
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+    *) return;;
+esac
+
 so() { [ -s $1 ] && source $1; }
 
 # Source global definitions (if any)
