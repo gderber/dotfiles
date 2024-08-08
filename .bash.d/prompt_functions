@@ -10,7 +10,7 @@ function usertext () {
         if [ $UID -eq 0 ]; then
 	          #root user color
 	          echo -ne "\[${RED}\]\u\[${DC}\]"
-	      elif [[ -n ${SUDO_USER} && ${SUDO_USER} != ${USER} ]]; then 
+	      elif [[ -n ${SUDO_USER} && ${SUDO_USER} != ${USER} ]]; then
 	          echo -ne "\[${BYELLOW}\]\u\[${DC}\]" # User is not login user.
 	      else
 	          echo -ne "\[${GREEN}\]\u\[${DC}\]"
@@ -60,52 +60,52 @@ function stopped_jobs () {
     fi
 }
 
-# Returns a color according to running/suspended jobs. 
-function job_color() { 
-    if [ $(jobs -s | wc -l) -gt "0" ]; then 
+# Returns a color according to running/suspended jobs.
+function job_color() {
+    if [ $(jobs -s | wc -l) -gt "0" ]; then
 	      echo -en "\[${BYELLOW}\]"
-    elif [ $(jobs -r | wc -l) -gt "0" ] ; then 
-	      echo -en "\[${BCYAN}\]" 
-    elif [ $(jobs -r | wc -l) -gt "0" ] && [ $(jobs -s | wc -l) -gt "0" ]; then 
+    elif [ $(jobs -r | wc -l) -gt "0" ] ; then
+	      echo -en "\[${BCYAN}\]"
+    elif [ $(jobs -r | wc -l) -gt "0" ] && [ $(jobs -s | wc -l) -gt "0" ]; then
 	      echo -en "\[${RED}\]"
     else
-	      if [ $UID -eq 0 ]; then 
-	          #root user color 
+	      if [ $UID -eq 0 ]; then
+	          #root user color
 	          echo -ne "\[${RED}\]"
-	      elif [[ ${USER} != $(logname) ]]; then 
+	      elif [[ ${USER} != $(logname) ]]; then
 	          echo -ne "\[${BYELLOW}\]" # User is not login user.
 	      else
 	          echo -ne "\[${GREEN}\]"
 	      fi
-    fi 
+    fi
 }
 
 
-#Returns a color according to free disk space in $PWD. 
-function disk_color() { 
-    if [ ! -w "${PWD}" ] ; then 
-	      echo -ne "\[${RED}\]\w \[${DC}\] " # No 'write' privilege in the current directory. 
-    elif [ -s "${PWD}" ] ; then 
+#Returns a color according to free disk space in $PWD.
+function disk_color() {
+    if [ ! -w "${PWD}" ] ; then
+	      echo -ne "\[${RED}\]\w \[${DC}\] " # No 'write' privilege in the current directory.
+    elif [ -s "${PWD}" ] ; then
 	      local used=$(command df -P "$PWD" | awk 'END {print $5} {sub(/%/,"")}')
 
-	      if [ ${used} -gt ${ALERTUSE} ]; then 
-	          echo -ne "${ALERT}\w \[${DC}\] " # Disk almost full (>95%). 
-	      elif [ ${used} -gt ${HIGHUSE} ]; then 
-	          echo -ne "\[${BRED}\]\w \[${DC}\] " # Free disk space almost gone. 
+	      if [ ${used} -gt ${ALERTUSE} ]; then
+	          echo -ne "${ALERT}\w \[${DC}\] " # Disk almost full (>95%).
+	      elif [ ${used} -gt ${HIGHUSE} ]; then
+	          echo -ne "\[${BRED}\]\w \[${DC}\] " # Free disk space almost gone.
 	      else
             echo -ne "\[${GREEN}\]\w \[${DC}\] " # Free disk space is ok.
-	      fi 
-    else 
-	      echo -ne "\[${CYAN}\]\w \[${DC}\] " # Current directory is size '0' (like /proc, /sys etc). 
-    fi 
+	      fi
+    else
+	      echo -ne "\[${CYAN}\]\w \[${DC}\] " # Current directory is size '0' (like /proc, /sys etc).
+    fi
 }
 
 
-# Display the branch name of git repository 
-# Green -> clean 
-# purple -> untracked files 
-# red -> files to commit 
-function __git_prompt() {   
+# Display the branch name of git repository
+# Green -> clean
+# purple -> untracked files
+# red -> files to commit
+function __git_prompt() {
     ### Add Git Status ### {{{
     ## Inspired by http://www.terminally-incoherent.com/blog/2013/01/14/whats-in-your-bash-prompt/
     if [[ $(command -v git) ]]; then
@@ -125,7 +125,7 @@ function __git_prompt() {
 		            fi
 	          fi
 	          ### End Fetch Check ### }}}
-	    
+
 	          ### Test For Changes ### {{{
 	          ## Change this to test for 'ahead' or 'behind'!
 	          local GChanges="$(echo ${GStat} | tr ':' '\n' | grep -v "^$" | grep -v "^\#\#" | wc -l | tr -d ' ')"
@@ -135,7 +135,7 @@ function __git_prompt() {
 		            local GitCol=${CYAN}
 	          fi
 	          ### End Test Changes ### }}}
-	    
+
 	          ### Find Branch ### {{{
 	          local GBra="$(echo ${GStat} | tr ':' '\n' | grep "^##" | cut -c4- | grep -o "^[a-zA-Z/]\{1,\}[^\.]")"
 	          if [ "$GBra" ]; then
@@ -148,7 +148,7 @@ function __git_prompt() {
 	          ### End Branch ### }}}
 
 	          GITSTATUSPROMPT=" \[${GitCol}\][$GBra]\[${DC}\]"	# Add result to prompt
-	    
+
 	          ### Find Commit Status ### {{{
 	          ## Test Modified and Untracked for "0"
 	          # local GDel="$(echo ${GStat} | tr ':' '\n' | grep -c "^[ MARC]D")"
@@ -163,7 +163,7 @@ function __git_prompt() {
 	          if [ "$GBeh" ]; then
 		            GITSTATUSPROMPT+="\[${RED}\]↓\[${DC}\]${GBeh}"	# Behind
 	          fi
-	    
+
 	          local GMod="$(echo ${GStat} | tr ':' '\n' | grep -c "^[ MARC]M")"
 	          if [ "$GMod" -gt "0" ]; then
 		            GITSTATUSPROMPT+="\[${MAGENTA}\]≠\[${DC}\]${GMod}"	# Modified
@@ -237,16 +237,16 @@ function __svn_prompt () {
     #REV=$(svn info 2>/dev/null | grep Revision | sed -e 's/Revision: //')
     #[ "$REV" ] || return
     #[ "$(svn st)" ] && DIRTY=' *'
-    
+
     #subversion2
-    #parse_svn_branch() { 
-    #parse_svn_url | sed -e ’s#^’“$(parse_svn_repository_root)”‘##g’ | awk ‘{print “ (svn::”$1")“ }’ 
+    #parse_svn_branch() {
+    #parse_svn_url | sed -e ’s#^’“$(parse_svn_repository_root)”‘##g’ | awk ‘{print “ (svn::”$1")“ }’
     #}
-    #parse_svn_url() { 
-    #svn info 2>/dev/null | sed -ne ’s#^URL: ##p' 
+    #parse_svn_url() {
+    #svn info 2>/dev/null | sed -ne ’s#^URL: ##p'
     #}
-    #parse_svn_repository_root() { 
-    #svn info 2>/dev/null | sed -ne ’s#^Repository Root: ##p' 
+    #parse_svn_repository_root() {
+    #svn info 2>/dev/null | sed -ne ’s#^Repository Root: ##p'
     #
 }
 
@@ -261,7 +261,7 @@ __screen () {
 }
 
 __debian_chroot () {
-    # set variable identifying the chroot you work in 
+    # set variable identifying the chroot you work in
     # (used in the prompt below)
     if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
 	      local debian_chroot=$(cat /etc/debian_chroot)

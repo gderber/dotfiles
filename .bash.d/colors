@@ -11,7 +11,7 @@ function define_colors() {
     MAGENTA='\033[0;35m'
     CYAN='\033[0;36m'
     WHITE='\033[0;37m'
-				        
+
     # Define Bold Colors
     BBLACK='\033[1;30m'
     BRED='\033[1;31m'
@@ -31,7 +31,7 @@ function define_colors() {
     DMAGENTA='\033[2;35m' # Purple
     DCYAN='\033[2;36m' # Cyan
     DWHITE='\033[2;37m' # White
-    
+
     # Define Italic Colors
     IBLACK='\033[3;30m' # Black
     IRED='\033[3;31m' # Red
@@ -71,7 +71,7 @@ function define_colors() {
 #    UMAGENTA='\033[6;35m' # Purple
 #    UCYAN='\033[6;36m' # Cyan
 #    UWHITE='\033[6;37m' # White
-	    
+
     # Define Reverse Colors
     RBLACK='\033[7;30m' # Black
     RRED='\033[7;31m' # Red
@@ -106,4 +106,3 @@ function define_colors() {
     #default color
     DC=$(echo -ne ${NO_COLOR})
 }
-

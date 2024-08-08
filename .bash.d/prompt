@@ -31,7 +31,7 @@ function loadprompt () {
     if [ -n "$force_color_prompt" ]; then
 	      if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
 	          # We have color support; assume it's compliant with Ecma-48
-	          # (ISO/IEC-6429). (Lack of such support 
+	          # (ISO/IEC-6429). (Lack of such support
 	          # is extremely rare, and such
 	          # a case would tend to support setf rather than setaf.)
 	          color_prompt=yes
@@ -40,31 +40,31 @@ function loadprompt () {
 	      fi
     fi
 
-    case "$MODE" in 
-	      none) 
+    case "$MODE" in
+	      none)
 	          # ""
 	          export PROMPT_COMMAND=__prompt_command_none
-	          ;; 
-	      off) 
+	          ;;
+	      off)
 	          # $
 	          export PROMPT_COMMAND=__prompt_command_off
 	          ;;
-        date) 
-	          # [\t]\$ 
-	          export PROMPT_COMMAND=__prompt_command_date 
-	          ;; 
+        date)
+	          # [\t]\$
+	          export PROMPT_COMMAND=__prompt_command_date
+	          ;;
 	      basic)
 	          # [\u \w]\$
 	          export PROMPT_COMMAND=__prompt_command_basic
-	          ;; 
-	      main) 
+	          ;;
+	      main)
 	          export PROMPT_COMMAND=__prompt_command_main # Func to gen PS1 after CMDs
 	          ;;
 	      amain)
 	          MODE=main
 	          export PROMPT_COMMAND=__prompt_command_advanced_main
 	          ;;
-	      full) 
+	      full)
 	          export PROMPT_COMMAND=__prompt_command_full # Func to gen PS1 after CMDs
 	          ;;
 	      *)
@@ -87,7 +87,7 @@ function __prompt_command_off () {
 
     local JC=$(job_color)
 
-    PS1="${JC}\\$ \[${DC}\]" 
+    PS1="${JC}\\$ \[${DC}\]"
 
     unset color_prompt force_color_prompt
     xterm_settings
@@ -104,7 +104,7 @@ function __prompt_command_date () {
     local LOADTEXT=$(loadtext)
     local JC=$(job_color)
 
-    PS1="[ ${LOADTEXT}]${JC}\\$ \[${DC}\]" 
+    PS1="[ ${LOADTEXT}]${JC}\\$ \[${DC}\]"
 
     unset color_prompt force_color_prompt
 
@@ -124,7 +124,7 @@ function __prompt_command_basic() {
     local FC=$(disk_color)
     local HOSTTEXT=$(host_color)
 
-    PS1="\n[ ${USERTEXT}${HOSTTEXT} ${FC}]${JC}\\$ \[${DC}\]" 
+    PS1="\n[ ${USERTEXT}${HOSTTEXT} ${FC}]${JC}\\$ \[${DC}\]"
 
     xterm_settings
 }
@@ -151,7 +151,7 @@ function __prompt_command_main() {
     local HOSTTEXT=$(host_color)
 
     PS1="\n\
-[ ${USERTEXT}${HOSTTEXT}${LOADTEXT}${BATTERY}${SMILE}${FC}]${JC}\\$ \[${DC}\]" 
+[ ${USERTEXT}${HOSTTEXT}${LOADTEXT}${BATTERY}${SMILE}${FC}]${JC}\\$ \[${DC}\]"
 
     xterm_settings
 }
@@ -180,10 +180,10 @@ function __prompt_command_advanced_main() {
 
     PS1="\n\
 ${DEBIAN_CHROOT}\
-[ ${USERTEXT}${HOSTTEXT}${LOADTEXT}${BATTERY}${SMILE}${FC}]${JC}\\$ \[${DC}\]" 
+[ ${USERTEXT}${HOSTTEXT}${LOADTEXT}${BATTERY}${SMILE}${FC}]${JC}\\$ \[${DC}\]"
 
     xterm_settings
-    
+
 }
 
 function __prompt_command_full() {

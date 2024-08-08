@@ -24,15 +24,14 @@ function loadper () {
 function loadcolor () {
     local LOADCOLOR=""
     local LOADPER=$(loadper)
-    if [ ${LOADPER} -gt ${HIGHUSE} ]; then 
+    if [ ${LOADPER} -gt ${HIGHUSE} ]; then
 	LOADCOLOR="${ALERT}"
-    elif [ ${LOADPER} -gt ${MEDUSE} ]; then 
+    elif [ ${LOADPER} -gt ${MEDUSE} ]; then
 	LOADCOLOR="${RED}"
-    elif [ ${LOADPER} -gt ${LOWUSE} ]; then 
+    elif [ ${LOADPER} -gt ${LOWUSE} ]; then
 	LOADCOLOR="${BRED}"
     else
 	LOADCOLOR="${BLUE}"
     fi
     echo -ne "$LOADCOLOR"
 }
-

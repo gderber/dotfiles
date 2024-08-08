@@ -10,12 +10,12 @@ function batteryvariables () {
 
 function batteryinfo () {
     batteryvariables
-    if [ ${BAT_PERCENTAGE} -lt 5 ]; then 
-	BC=${ALERT} # Battery almost dead (<5%). 
-    elif [ ${BAT_PERCENTAGE} -lt 20 ]; then 
+    if [ ${BAT_PERCENTAGE} -lt 5 ]; then
+	BC=${ALERT} # Battery almost dead (<5%).
+    elif [ ${BAT_PERCENTAGE} -lt 20 ]; then
 	BC=${YELLOW} # Battery almost gone
-    else 
-	    BC=${GREEN} # Battery is ok. 
+    else
+	    BC=${GREEN} # Battery is ok.
     fi
     echo -ne "${BC}${BAT_PERCENTAGE}% ${BAT_STATE} ${BAT_FULL}${BAT_EMPTY}${DC} "
 }

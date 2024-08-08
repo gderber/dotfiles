@@ -26,17 +26,17 @@ dpmsOff:	4:00:00
 grabDesktopImages:  False
 grabVideoFrames:    False
 chooseRandomImages: False
-imageDirectory:	
+imageDirectory:
 
 mode:		random
 selected:	-1
 
 textMode:	program
 textLiteral:	XScreenSaver
-textFile:	
+textFile:
 textProgram:	fortune
 textURL:	https://planet.debian.org/rss20.xml
-dialogTheme:	
+dialogTheme:
 settingsGeom:	0,25 -1,-1
 
 programs:								      \
@@ -321,4 +321,3 @@ programs:								      \
 
 pointerHysteresis:  10
 authWarningSlack:   20
-
