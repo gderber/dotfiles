@@ -7,7 +7,7 @@ function getgpgkey () {
                  grep -v revoked |
                  awk '/sec/{if (length($2) > 0) print $2}' |
                  sed 's|.*/0x||' )
-    echo -ne ${keyVal}
+    echo -ne "${keyVal}"
 }
 
 function getsshkey () {
@@ -20,7 +20,7 @@ function getsshkey () {
                       cut -d- -f1 |
                       cut -d_ -f2 |
                       sort -u) &&
-        cd "${HOME}"
+        cd "${HOME}" || return
 
     for key in ${sshKeys}
     do
@@ -31,65 +31,87 @@ function getsshkey () {
                 else
                     Keys="${Keys} id_${key}"
                 fi
-                [[ "${key}" == "dsa" ]] &&
-                    echo "Warning: you are still using dsa keys."
             fi
         fi
     done
-    echo -ne ${Keys}
+    echo -ne "${Keys}"
 }
 
 function start_gpg_agent () {
-    local keyVal
+    local gpg_keys=$1
     if command -v keychain > /dev/null 2>&1; then
-        # ID GPG Keys
-        keyVal=$(getgpgkey) &&
-            [[ -n ${keyVal} ]] &&
-            if [[ ! ${TERM} =~ screen ]]; then
-                eval "$(keychain --clear --systemd --eval --agents gpg ${keyVal})"
-            else
-                eval "$(keychain --eval --agents gpg ${keyVal})"
-            fi
-
-        export GPG_TTY=$(tty)
-        gpg-connect-agent updatestartuptty /bye >/dev/null
+        if [[ ${TERM} =~ screen ]]; then
+            eval "$(keychain --quick --eval --agents gpg ${gpg_keys})"
+        else
+            eval "$(keychain --clear --systemd --eval --agents gpg ${gpg_keys})"
+        fi
     fi
 }
 
-function start_ssh_agent () {
-    local keyVal
-    local sshKeys
+function start_desktop_ssh_agent () {
+    local sshKeys=$1
     if command -v keychain > /dev/null 2>&1; then
-        # ID SSH Keys
-        keyVal=$(getgpgkey) &&
-            sshKeys=$(getsshkey) &&
-            [[ -n ${sshKeys} ]] &&
-            if [[ ! ${TERM} =~ screen ]]; then
-                eval "$(keychain --clear --systemd --eval --agents gpg ${keyVal})"
-                eval "$(keychain --clear --eval --agents ssh ${sshKeys})"
-            else
-                eval "$(keychain --eval --agents gpg ${keyVal})"
-                eval "$(keychain --eval --agents ssh ${sshKeys})"
-            fi
+        eval "$(keychain --quick --eval --agents ssh ${sshKeys})"
     fi
 }
 
-function keychain_agents () {
-    if [[ -f ~/.ssh/id_rsa.pub ]] || [[ -f ~/.ssh/id_ed25519.pub ]]; then
-        echo "Starting SSH Agent"
-        start_ssh_agent
+function start_cli_ssh_agent () {
+    local ssh_keys=$1
+    if command -v keychain > /dev/null 2>&1; then
+        if [[ ${TERM} =~ screen ]]; then
+            eval "$(keychain --quick --eval --agents ssh ${ssh_keys})"
+        else
+            eval "$(keychain --clear --eval --agents ssh ${ssh_keys})"
+        fi
     fi
-
-    echo "Starting GPG Agent"
-    start_gpg_agent
 }
 
+function cli_agents () {
+    local gpg_keys
+    local ssh_keys
+
+    gpg_keys=$(getgpgkey)
+    ssh_keys=$(getsshkey)
+
+    if [[ -n "${gpg_keys}" ]]; then
+       start_gpg_agent $"{gpg_key}"
+    fi
+
+    if [[ -n "${ssh_keys}" ]]; then
+        start_cli_ssh_agent "${ssh_keys}"
+    elif [[ -n "${gpg_keys}" ]]; then
+        config_gpg_ssh_agent
+    fi
+}
+
+function config_gpg_ssh_agent () {
+    unset SSH_AGENT_PID
+    if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
+        export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+    fi
+    export GPG_TTY=$(tty)
+    gpg-connect-agent updatestartuptty /bye >/dev/null
+
+}
 
 function desktop_agents () {
-    export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
+    # #export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
+    # #export SSH_AGENT_PID="$(ps -e|grep gcr | cut -d\  -f3)"
+    local gpg_keys
+    local ssh_keys
 
-    echo "Starting GPG Agent"
-    start_gpg_agent
+    gpg_keys=$(getgpgkey)
+    ssh_keys=$(getsshkey)
+
+    if [[ -n "${gpg_keys}" ]]; then
+       start_gpg_agent "${gpg_keys}"
+    fi
+
+    if [[ -n "${ssh_keys}" ]]; then
+        start_desktop_ssh_agent "${ssh_keys}"
+    elif [[ -n "${gpg_keys}" ]]; then
+        config_gpg_ssh_agent
+    fi
 
 }
 
@@ -97,7 +119,7 @@ function start_agents () {
     if [ -n "$DESKTOP_SESSION" ]; then
         desktop_agents
     else
-        keychain_agents
+        cli_agents
     fi
 }
 
