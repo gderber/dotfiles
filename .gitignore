@@ -17,6 +17,7 @@
 !/.config/beets/genres.txt
 !/.config/git/
 !/.config/git/ignore
+!/.config/starship.toml
 
 !/.profile
 !/.profile.d/
