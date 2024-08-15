@@ -38,7 +38,10 @@ This function should only modify configuration layer settings."
      ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      drbr
+     drbr-ansible
      drbr-private
+     drbr-gitolite
+     drbr-trading
      )
 
 
