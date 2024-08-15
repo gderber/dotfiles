@@ -10,11 +10,24 @@ function getgpgkey () {
     echo -ne "${keyVal}"
 }
 
+function get_ssh_dir_depth () {
+    local ssh_dir
+    local dir_depth
+
+    ssh_dir="${HOME}/.ssh"
+    dir_depth="$(var=${ssh_dir//[!\/]}; echo ${#var})"
+
+    echo -ne "${dir_depth}"
+}
+
 function getsshkey () {
     local sshKeys
     local Keys
 
-    sshKeys="$(find .ssh -name '*.pub' | grep -v cert | cut -d/ -f2- | cut -d. -f1)"
+    ssh_dir_depth=$(get_ssh_dir_depth)
+    cut_depth=$((ssh_dir_depth + 2))
+
+    sshKeys="$(find ${HOME}/.ssh -name '*.pub' | grep -v cert | cut -d/ -f${cut_depth}- | cut -d. -f1)"
 
     for key in ${sshKeys}
     do
@@ -79,7 +92,7 @@ function cli_agents () {
 }
 
 function config_gpg_ssh_agent () {
-    if [[ -z "${DESKTOP_SESSOIN}" ]]; then
+    if [[ -z "${DESKTOP_SESSION}" ]]; then
         unset SSH_AGENT_PID
         if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
             export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
@@ -92,7 +105,7 @@ function config_gpg_ssh_agent () {
 }
 
 function desktop_agents () {
-    # #export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
+    # export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
     # #export SSH_AGENT_PID="$(ps -e|grep gcr | cut -d\  -f3)"
     local gpg_keys
     local ssh_keys
