@@ -230,6 +230,8 @@ ${JC}\\$ \[${DC}\]"
     xterm_settings
 }
 
-
+function __prompt_command_starship() {
+    PS1="$(starship prompt --status=$STATUS --jobs=$NUM_JOBS)"
+}
 
 loadprompt $@
