@@ -4,3 +4,22 @@ export ALTERNATE_EDITOR=""
 export EDITOR="emacsclient -t"
 # GUI editor
 export VISUAL="emacsclient -c -a emacs"
+
+
+# ==================================================================================================
+#
+# XDG Base Directory
+#
+# ==================================================================================================
+#export ANSIBLE_COLLECTIONS_PATH="${XDG_DATA_HOME}/ansible/collections"
+#export ANSIBLE_CONFIG="${HOME}/.config/ansible.cfg"
+#export ANSIBLE_GALAXY_CACHE_DIR="${XDG_CACHE_HOME}/ansible/galaxy_cache"
+#export ANSIBLE_HOME="${XDG_CONFIG_HOME}/ansible"
+#export DVDCSS_CACHE="${HOME}/.local/share/dvdcss"
+export ICEAUTHORITY="${HOME}/.cache/ICEauthority"
+export PASSWORD_STORE_DIR="${HOME}/.local/share/password-store"
+export PYLINTRC="${HOME}/.config/pylint/pylintrc"
+#export SCREENDIR="${XDG_RUNTIME_DIR}/screen"
+#export SCREENRC="${HOME}/.config/screen/screenrc"
+export SPACEMACSDIR="${HOME}/.config/spacemacs"
+export WGETRC="${HOME}/.config/wgetrc"
