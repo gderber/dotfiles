@@ -11,10 +11,10 @@
 source /etc/profile
 
 if [ -d ~/.profile.d ]; then
-    for i in ~/.profile.d/*; do
-        if [ -r $i ]; then
-            . $i
+    for file in ~/.profile.d/*.sh; do
+        if [ -r "${file}" ]; then
+            source "${file}"
         fi
     done
-    unset i
+    unset file
 fi

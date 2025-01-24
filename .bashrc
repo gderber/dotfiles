@@ -14,7 +14,7 @@
 # Compatibility:
 #
 # ==================================================================================================
-so() { [ -s $1 ] && source $1; }
+so() { [ -s "${1}" ] && source "${1}"; }
 
 # Source global definitions (if any)
 so /etc/bash.bashrc
@@ -28,12 +28,12 @@ so ~/.bash.d/bashrc # main configuration
 ENV_NAME="$(uname -s|tr 'A-Z' 'a-z')"
 
 so ~/.bash.d/${ENV_NAME}_profile # configuration per OS linux/OSX/WIN
-so ~/.bash.d/common              # common stuff or overriding
-so ~/.bash.d/exports             # Exports
+so ~/.bash.d/common              # common stuff for overriding
 so ~/.bash.d/shopt               # Shopts
 
 #  Interactive ### {{{
 if [[ $- == *i* ]]; then
+    so ~/.bash.d/agent
     so ~/.bash.d/colors
     so ~/.bash.d/commonfunctions          # Common Functions
     so ~/.bash.d/functions                # Functions
@@ -62,7 +62,7 @@ so ~/.bash.d/bashrc.local            # machine specific config. not tracked
 
 # If interactive mode, start ssh and gpg agents
 if [[ $- == *i* ]]; then
-    so ~/.bash.d/agent
+    start_agents
 fi
 
 eval "$(starship init bash)"
