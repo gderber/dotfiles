@@ -5,57 +5,57 @@
 #
 # --------------------------------------------------------------------------------------------------
 plugins: [
-#autotagger extentions
-  chroma,
-  #discogs,
-  fromfilename,
+  advancedrewrite,
   albumtypes,
-  #autobpm,
-  #edit,
-  embedart,
-  fetchart,
-  #ftintitle,
-  #keyfinder,
-  #importadded,
-  lastgenre,
-  #lastimport,
-  lyrics,
-  mbsync,
-  metasync,
-  #mpdstats,
-  replaygain,
-  #scrub,
-  #zero,
-#path format plugins
-  bucket,
-  inline,
-  rewrite,
-  the,
-#Interoperability plugins
-  #embyupdate,
-  #importfeeds,
-  #mpdupdate,
-  #play,
-  smartplaylist,
-  #thumbnails,
+  alternatives,
+  autobpm,
   badfiles,
-#Misc plugins
+  bareasc,
+  #beetport,
   #bpd,
+  #bpm,
+  #bpsync,
+  bucket,
+  chroma,
   convert,
+  #discogs,
   duplicates,
-  #export,
-  #fuzzy,
-  #hook,
-  #ihate,
+  edit,
+  embedart,
+  embyupdate,
+  export,
+  fetchart,
+  filefilter,
+  fromfilename,
+  ftintitle,
+  fuzzy,
+  hook,
+  ihate,
+  importadded,
+  importfeeds,
   info,
+  inline,
+  keyfinder,
+  lastgenre,
+  lastimport,
+  lyrics,
   mbcollection,
   mbsubmit,
+  mbsync,
+  metasync,
   missing,
+  #mpdstats,
+  #mpdupdate,
+  play,
   random,
-  #filefilter,
+  replaygain,
+  rewrite,
+  scrub,
+  smartplaylist,
+  the,
+  thumbnails,
   types,
-#Other plugins
-  alternatives
+  zero,
   #smartalternatives,
   #setlister
 ]
@@ -216,22 +216,56 @@ paths:
   default: %ifdef{sort,$sort,Unsorted}/%ifdef{album_holiday,$album_holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%ifdef{series,%the{$series}}/%ifdef{series_no,$series_no - }%the{%asciify{$album%aunique{}}}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
 
 
-#---------------------------------------------------------------------------------------------------
+# ==================================================================================================
 #
 # Plugins Config
 #
-#---------------------------------------------------------------------------------------------------
+# ==================================================================================================
+# albumtypes:
+#   types:
+#     - soundtrack: "Soundtracks"
+autobpm:
+  auto: yes
+  overwrite: no
+
+badfiles:
+  check_on_import: yes
+  commands:
+    ogg: myoggchecker --opt1 --opt2
+    flac: flac --test --warnings-as-errors --silent
+
 chroma:
   auto: yes
 
 convert:
   auto: no
-  format: mp3
+  auto_keep: no
+  #tmpdir:
+  copy_album_art: no
+  #album_art_maxwidth:
+  #dest:
+  embed: yes
+  id3v23: inherit
+  #max_bitrate:
+  no_convert: ^path::\.(wav)$
+  never_convert_lossy_files: yes
+  #paths:
+  quiet: false
+  threads: 2
+  link: false
+  hardlink: false
+  delete_originals: false
+  #playlist:
+  format: flac
   formats:
     mp3:
       command: "/home/HOME/geoff/.local/bin/mp3_converter $source $dest"
       extention: mp3
-  threads: 2
+    wav:
+      command: ffmpeg -i $source -y -acodec pcm_s16le $dest
+      extention: wav
+    flac:
+      command: flac --best $source
 
 edit:
   itemfields: track title artist album
@@ -380,11 +414,6 @@ smartplaylist:
 thumbnails:
   force: yes
 
-badfiles:
-  commands:
-    ogg: myoggchecker --opt1 --opt2
-    flac: flac --test --warnings-as-errors --silent
-
 duplicates:
   album: no
 
@@ -401,30 +430,30 @@ types:
   rating: int
   playcount: int
 
-smartalternatives:
-  auto: false
-  alt_dir: ~
-#  alt_formats:
-#    mp3: ...
-#    flac: ...
-  alternatives:
-    - name: by-year
-      query: ^year::%
-      directories:
-        - directory: MusicAlt/Year
-          formats: link
-          paths:
-            default: %bucket{$original_year}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
+# smartalternatives:
+#   auto: false
+#   alt_dir: ~
+# #  alt_formats:
+# #    mp3: ...
+# #    flac: ...
+#   alternatives:
+#     - name: by-year
+#       query: ^year::%
+#       directories:
+#         - directory: MusicAlt/Year
+#           formats: link
+#           paths:
+#             default: %bucket{$original_year}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
 
-    - name: Cloud
-      query: "cloud:true"
-      directories:
-        - directory: OneDrive/Music
-          formats: mp3 aac
-          paths:
-            singleton:true: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/Non-Album/%the{%asciify{$title}}
-            comp: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
-            default: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
+#     - name: Cloud
+#       query: "cloud:true"
+#       directories:
+#         - directory: OneDrive/Music
+#           formats: mp3 aac
+#           paths:
+#             singleton:true: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/Non-Album/%the{%asciify{$title}}
+#             comp: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
+#             default: %ifdef{sort,$sort,Modern}/%ifdef{holiday,$holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/%the{%asciify{$album}}%aunique{}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
 
 
 # ==================================================================================================
@@ -453,7 +482,7 @@ alternatives:
     query: "bmw:true"
     removable: true
   mythtv:
-    directory: "/srv/mythtv/music/"
+    directory: "/home/HOME/geoff/sshfs/mythtvb01/music"
     paths:
       sort:Meditation: $sort/%the{%asciify{$albumartist}}/%the{%asciify{$album}}/%if{$multidisc,%if{$lmultidisc,$disc,%right{$disc,1}}}$track - %asciify{$title}
       singleton: %ifdef{sort,$sort,Unsorted}/%ifdef{album_holiday,$album_holiday}%ifdef{soundtrack_type,$soundtrack_type}/%the{%asciify{$albumartist}}/Non-Album/%the{%asciify{$title}}
