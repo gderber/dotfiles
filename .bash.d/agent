@@ -1,137 +1,139 @@
 #!/bin/bash
 
-function getgpgkey () {
-    local keyVal
-    keyVal=$(gpg -K |
-                 grep -v expired |
-                 grep -v revoked |
-                 awk '/sec/{if (length($2) > 0) print $2}' |
-                 sed 's|.*/0x||' )
-    echo -ne "${keyVal}"
+function getgpgkey() {
+	local gpg_keys
+	gpg_keys=$(gpg -K |
+		grep -v expired |
+		grep -v revoked |
+		awk '/sec/{if (length($2) > 0) print $2}' |
+		sed 's|.*/0x||')
+	echo -ne "${gpg_keys}"
 }
 
-function get_ssh_dir_depth () {
-    local ssh_dir
-    local dir_depth
+function get_ssh_dir_depth() {
+	local ssh_dir
+	local dir_depth
 
-    ssh_dir="${HOME}/.ssh"
-    dir_depth="$(var=${ssh_dir//[!\/]}; echo ${#var})"
+	ssh_dir="${HOME}/.ssh"
+	dir_depth="$(
+		var=${ssh_dir//[!\/]/}
+		echo ${#var}
+	)"
 
-    echo -ne "${dir_depth}"
+	echo -ne "${dir_depth}"
 }
 
-function getsshkey () {
-    local sshKeys
-    local Keys
+function getsshkey() {
+	local sshKeys
+	local Keys
 
-    ssh_dir_depth=$(get_ssh_dir_depth)
-    cut_depth=$((ssh_dir_depth + 2))
+	ssh_dir_depth=$(get_ssh_dir_depth)
+	cut_depth=$((ssh_dir_depth + 2))
 
-    sshKeys="$(find ${HOME}/.ssh -name '*.pub' | grep -v cert | cut -d/ -f${cut_depth}- | cut -d. -f1)"
+	sshKeys="$(find ${HOME}/.ssh -name '*.pub' | grep -v cert | cut -d/ -f${cut_depth}- | cut -d. -f1)"
 
-    for key in ${sshKeys}
-    do
-        if [[ "${key}" != "gpg" ]]; then
-            if [[ -f "${HOME}/.ssh/${key}" ]]; then
-                if [[ -z ${Keys} ]]; then
-                    Keys="${key}"
-                else
-                    Keys="${Keys} ${key}"
-                fi
-            fi
-        fi
-    done
-    echo -ne "${Keys}"
+	for key in ${sshKeys}; do
+		if [[ "${key}" != "gpg" ]]; then
+			if [[ -f "${HOME}/.ssh/${key}" ]]; then
+				if [[ -z ${Keys} ]]; then
+					Keys="${key}"
+				else
+					Keys="${Keys} ${key}"
+				fi
+			fi
+		fi
+	done
+	echo -ne "${Keys}"
 }
 
-function start_gpg_agent () {
-    local gpg_keys=$1
-    if command -v keychain > /dev/null 2>&1; then
-        if [[ ${TERM} =~ screen ]]; then
-            eval "$(keychain --eval --agents gpg ${gpg_keys})"
-        else
-            eval "$(keychain --clear --systemd --eval --agents gpg ${gpg_keys})"
-        fi
-    fi
+function start_gpg_agent() {
+	local gpg_keys=$1
+	if command -v keychain >/dev/null 2>&1; then
+		if [[ ${TERM} =~ screen ]]; then
+			eval "$(keychain --absolute --dir ${XDG_RUNTIME_DIR}/keychain --eval --agents gpg ${gpg_keys})"
+		else
+			eval "$(keychain --absolute --dir ${XDG_RUNTIME_DIR}/keychain --clear --systemd --eval --agents gpg ${gpg_keys})"
+		fi
+	fi
 }
 
-function start_desktop_ssh_agent () {
-    local sshKeys=$1
-    if command -v keychain > /dev/null 2>&1; then
-        eval "$(keychain --eval --agents ssh ${sshKeys})"
-    fi
+function start_desktop_ssh_agent() {
+	local ssh_keys=$1
+	if command -v keychain >/dev/null 2>&1; then
+		eval "$(keychain --absolute --dir ${XDG_RUNTIME_DIR}/keychain --eval --agents ssh ${ssh_keys})"
+	fi
 }
 
-function start_cli_ssh_agent () {
-    local ssh_keys="$(echo ${1} | sort -u)"
-    if command -v keychain > /dev/null 2>&1; then
-        if [[ ${TERM} =~ screen ]]; then
-            eval "$(keychain --eval --agents ssh ${ssh_keys})"
-        else
-            eval "$(keychain --clear --eval --agents ssh ${ssh_keys})"
-        fi
-    fi
+function start_cli_ssh_agent() {
+	local ssh_keys="$(echo ${1} | sort -u)"
+	if command -v keychain >/dev/null 2>&1; then
+		if [[ ${TERM} =~ screen ]]; then
+			eval "$(keychain --absolute --dir ${XDG_RUNTIME_DIR}/keychain --eval --agents ssh ${ssh_keys})"
+		else
+			eval "$(keychain --absolute --dir ${XDG_RUNTIME_DIR}/keychain --clear --eval --agents ssh ${ssh_keys})"
+		fi
+	fi
 }
 
-function cli_agents () {
-    local gpg_keys
-    local ssh_keys
+function cli_agents() {
+	local gpg_keys
+	local ssh_keys
 
-    gpg_keys=$(getgpgkey)
-    ssh_keys=$(getsshkey)
+	gpg_keys=$(getgpgkey)
+	ssh_keys=$(getsshkey)
 
-    if [[ -n "${gpg_keys}" ]]; then
-       start_gpg_agent "${gpg_key}"
-    fi
+	if [[ -n "${gpg_keys}" ]]; then
+		start_gpg_agent "${gpg_key}"
+	fi
 
-    if [[ -n "${ssh_keys}" ]]; then
-        start_cli_ssh_agent "${ssh_keys}"
-    elif [[ -n "${gpg_keys}" ]]; then
-        config_gpg_ssh_agent
-    fi
+	if [[ -n "${ssh_keys}" ]]; then
+		start_cli_ssh_agent "${ssh_keys}"
+	fi
+
+	if [[ -n "${gpg_keys}" ]]; then
+		config_gpg_ssh_agent
+	fi
 }
 
-function config_gpg_ssh_agent () {
-    if [[ -z "${DESKTOP_SESSION}" ]]; then
-        unset SSH_AGENT_PID
-        if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
-            export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
-        fi
-    fi
+function config_gpg_ssh_agent() {
+	if [[ -z "${DESKTOP_SESSION}" ]]; then
+		unset SSH_AGENT_PID
+		if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
+			export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+		fi
+	fi
 
-    export GPG_TTY=$(tty)
-    gpg-connect-agent updatestartuptty /bye >/dev/null
+	export GPG_TTY=$(tty)
+	gpg-connect-agent updatestartuptty /bye >/dev/null
 
 }
 
-function desktop_agents () {
-    # export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
-    # #export SSH_AGENT_PID="$(ps -e|grep gcr | cut -d\  -f3)"
-    local gpg_keys
-    local ssh_keys
+function desktop_agents() {
+	#export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/keyring/.ssh"
+	#export SSH_AGENT_PID="$(ps -aux| grep keyring | grep "keyring/ssh" | head -n1 | cut -d\  -f7)"
+	local gpg_keys
+	local ssh_keys
 
-    gpg_keys=$(getgpgkey)
-    ssh_keys=$(getsshkey)
+	gpg_keys=$(getgpgkey)
+	ssh_keys=$(getsshkey)
 
-    if [[ -n "${gpg_keys}" ]]; then
-       start_gpg_agent "${gpg_keys}"
-    fi
+	if [[ -n "${gpg_keys}" ]]; then
+		start_gpg_agent "${gpg_keys}"
+	fi
 
-    if [[ -n "${ssh_keys}" ]]; then
-        start_desktop_ssh_agent "${ssh_keys}"
-    fi
+	if [[ -n "${ssh_keys}" ]]; then
+		start_desktop_ssh_agent "${ssh_keys}"
+	fi
 
-    if [[ -n ${gpg_keys} ]]; then
-        config_gpg_ssh_agent
-    fi
+	if [[ -n ${gpg_keys} ]]; then
+		config_gpg_ssh_agent
+	fi
 }
 
-function start_agents () {
-    if [ -n "$DESKTOP_SESSION" ]; then
-        desktop_agents
-    else
-        cli_agents
-    fi
+function start_agents() {
+	if [ -n "$DESKTOP_SESSION" ]; then
+		desktop_agents
+	else
+		cli_agents
+	fi
 }
-
-start_agents

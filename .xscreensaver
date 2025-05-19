@@ -1,5 +1,5 @@
 # XScreenSaver Preferences File
-# Written by xscreensaver-settings 6.06 for geoff on Mon Jul  1 16:38:21 2024.
+# Written by xscreensaver-settings 6.06 for geoff on Thu Jan  9 09:26:17 2025.
 # https://www.jwz.org/xscreensaver/
 
 timeout:	0:05:00
@@ -37,20 +37,20 @@ textFile:
 textProgram:	fortune
 textURL:	https://planet.debian.org/rss20.xml
 dialogTheme:
-settingsGeom:	0,25 -1,-1
+settingsGeom:	0,33 -1,-1
 
 programs:								      \
 				abstractile --root			    \n\
 				anemone --root				    \n\
 				anemotaxis --root			    \n\
-  GL: 				antinspect --root			    \n\
-  GL: 				antmaze --root				    \n\
+- GL: 				antinspect --root			    \n\
+- GL: 				antmaze --root				    \n\
   GL: 				antspotlight --root			    \n\
 				apollonian --root			    \n\
 				apple2 --root				    \n\
   GL: 				atlantis --root				    \n\
 				attraction --root			    \n\
-  GL: 				atunnel --root				    \n\
+- GL: 				atunnel --root				    \n\
 				barcode --root				    \n\
   GL: 				beats --root				    \n\
 				binaryring --root			    \n\
@@ -129,18 +129,18 @@ programs:								      \
   GL: 				geodesicgears --root			    \n\
   GL: 				gflux --root				    \n\
   GL: 				gibson --root				    \n\
-  GL: 				glblur --root				    \n\
-  GL: 				glcells --root				    \n\
+- GL: 				glblur --root				    \n\
+- GL: 				glcells --root				    \n\
   GL: 				gleidescope --root			    \n\
-  GL: 				glhanoi --root				    \n\
+- GL: 				glhanoi --root				    \n\
 				glitchpeg --root			    \n\
-  GL: 				glknots --root				    \n\
-  GL: 				glmatrix --root				    \n\
-  GL: 				glplanet --root				    \n\
-  GL: 				glschool --root				    \n\
-  GL: 				glslideshow --root			    \n\
-  GL: 				glsnake --root				    \n\
-  GL: 				gltext --root				    \n\
+- GL: 				glknots --root				    \n\
+- GL: 				glmatrix --root				    \n\
+- GL: 				glplanet --root				    \n\
+- GL: 				glschool --root				    \n\
+- GL: 				glslideshow --root			    \n\
+- GL: 				glsnake --root				    \n\
+- GL: 				gltext --root				    \n\
 				goop --root				    \n\
 				grav --root				    \n\
   GL: 				gravitywell --root			    \n\
@@ -186,9 +186,9 @@ programs:								      \
   GL: 				moebiusgears --root			    \n\
 -				moire --root				    \n\
 -				moire2 --root				    \n\
-  GL: 				molecule --root				    \n\
-  GL: 				morph3d --root				    \n\
-				mountain --root				    \n\
+- GL: 				molecule --root				    \n\
+- GL: 				morph3d --root				    \n\
+-				mountain --root				    \n\
 				munch --root				    \n\
   GL: 				nerverot --root				    \n\
   GL: 				noof --root				    \n\
@@ -202,7 +202,7 @@ programs:								      \
 				phosphor -root -ticks 73		    \n\
   GL: 				photopile --root			    \n\
 				piecewise --root			    \n\
-  GL: 				pinion --root				    \n\
+- GL: 				pinion --root				    \n\
   GL: 				pipes --root				    \n\
   GL: 				polyhedra --root			    \n\
 				polyominoes --root			    \n\
@@ -226,7 +226,7 @@ programs:								      \
 				rotzoomer --root			    \n\
   GL: 				rubik --root				    \n\
   GL: 				rubikblocks --root			    \n\
-  GL: 				sballs --root				    \n\
+- GL: 				sballs --root				    \n\
 				scooter --root				    \n\
 				shadebobs --root			    \n\
 				sierpinski --root			    \n\
@@ -270,7 +270,7 @@ programs:								      \
   GL: 				vigilance --root			    \n\
   GL: 				voronoi --root				    \n\
 				wander --root				    \n\
-				webcollage --root			    \n\
+-				webcollage --root			    \n\
 				whirlwindwarp --root			    \n\
   GL: 				winduprobot --root			    \n\
 				wormhole --root				    \n\
@@ -300,7 +300,7 @@ programs:								      \
   GL: 				matrixview --root			    \n\
   GL: 				pixelcity --root			    \n\
   GL: 				plasma --root				    \n\
-  GL: 				skyrocket --root			    \n\
+- GL: 				skyrocket --root			    \n\
   GL: 				solarwinds --root			    \n\
   GL: 				spirographx --root			    \n\
   GL: 				sundancer2 --root			    \n\
@@ -311,8 +311,8 @@ programs:								      \
   GL: 				chompytower --root			    \n\
   GL: 				hextrail --root				    \n\
   GL: 				mapscroller --root			    \n\
-  GL: 				nakagin --root				    \n\
-  GL: 				squirtorus --root			    \n\
+- GL: 				nakagin --root				    \n\
+- GL: 				squirtorus --root			    \n\
 - GL: 				cubocteversion --root			    \n\
 -				droste --root				    \n\
 - GL: 				papercube --root			    \n\

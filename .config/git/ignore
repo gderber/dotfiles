@@ -130,6 +130,7 @@ flycheck_*.el
 
 # directory configuration
 .dir-locals.el
+.editorconfig
 
 # network security
 /network-security.data
