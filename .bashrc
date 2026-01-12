@@ -66,3 +66,6 @@ if [[ $- == *i* ]]; then
 fi
 
 eval "$(starship init bash)"
+. "/home/HOME/geoff/.deno/env"
+source /home/HOME/geoff/.local/share/bash-completion/completions/deno.bash
+. "$HOME/.local/share/../bin/env"

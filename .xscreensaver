@@ -1,8 +1,8 @@
 # XScreenSaver Preferences File
-# Written by xscreensaver-settings 6.06 for geoff on Thu Jan  9 09:26:17 2025.
+# Written by xscreensaver-settings 6.09 for geoff on Sat Nov 29 14:27:49 2025.
 # https://www.jwz.org/xscreensaver/
 
-timeout:	0:05:00
+timeout:	0:02:00
 cycle:		0:10:00
 lock:		False
 lockTimeout:	0:00:00
@@ -37,7 +37,7 @@ textFile:
 textProgram:	fortune
 textURL:	https://planet.debian.org/rss20.xml
 dialogTheme:
-settingsGeom:	0,33 -1,-1
+settingsGeom:	1920,0 -1,-1
 
 programs:								      \
 				abstractile --root			    \n\
@@ -130,13 +130,13 @@ programs:								      \
   GL: 				gflux --root				    \n\
   GL: 				gibson --root				    \n\
 - GL: 				glblur --root				    \n\
-- GL: 				glcells --root				    \n\
+  GL: 				glcells --root				    \n\
   GL: 				gleidescope --root			    \n\
-- GL: 				glhanoi --root				    \n\
+  GL: 				glhanoi --root				    \n\
 				glitchpeg --root			    \n\
 - GL: 				glknots --root				    \n\
-- GL: 				glmatrix --root				    \n\
-- GL: 				glplanet --root				    \n\
+  GL: 				glmatrix --root				    \n\
+  GL: 				glplanet --root				    \n\
 - GL: 				glschool --root				    \n\
 - GL: 				glslideshow --root			    \n\
 - GL: 				glsnake --root				    \n\
@@ -314,9 +314,11 @@ programs:								      \
 - GL: 				nakagin --root				    \n\
 - GL: 				squirtorus --root			    \n\
 - GL: 				cubocteversion --root			    \n\
--				droste --root				    \n\
+				droste --root				    \n\
 - GL: 				papercube --root			    \n\
 - GL: 				skulloop --root				    \n\
+  GL: 				highvoltage --root			    \n\
+  GL: 				kallisti --root				    \n\
 
 
 pointerHysteresis:  10

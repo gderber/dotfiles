@@ -17,3 +17,6 @@ if [[ -n $SSH_CLIENT ]] || [[ -n $SSH_TTY ]]; then
         screen -Rd
     fi
 fi
+. "/home/HOME/geoff/.deno/env"
+source /home/HOME/geoff/.local/share/bash-completion/completions/deno.bash
+. "$HOME/.local/share/../bin/env"

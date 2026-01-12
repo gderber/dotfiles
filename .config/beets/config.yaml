@@ -22,7 +22,7 @@ plugins: [
   duplicates,
   edit,
   embedart,
-  embyupdate,
+  #embyupdate,
   export,
   fetchart,
   filefilter,
@@ -55,7 +55,7 @@ plugins: [
   the,
   thumbnails,
   types,
-  zero,
+  #zero,
   #smartalternatives,
   #setlister
 ]
@@ -300,7 +300,7 @@ lastgenre:
 lyrics:
   auto: yes
   sources: lrclib
-  #synced: yes
+  synced: yes
 
 metasync:
   source: amarok
