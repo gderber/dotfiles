@@ -18,5 +18,3 @@ if [ -d ~/.profile.d ]; then
     done
     unset file
 fi
-. "/home/HOME/geoff/.deno/env"
-. "$HOME/.local/share/../bin/env"

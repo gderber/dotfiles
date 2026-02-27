@@ -70,7 +70,7 @@ function start_cli_ssh_agent() {
 		if [[ ${TERM} =~ screen ]]; then
 			eval "$(keychain --absolute --dir ${XDG_RUNTIME_DIR}/keychain --eval --agents ssh ${ssh_keys})"
 		else
-			eval "$(keychain --absolute --dir ${XDG_RUNTIME_DIR}/keychain --clear --eval --agents ssh ${ssh_keys})"
+			eval "$(keychain --absolute --dir ${XDG_RUNTIME_DIR}/keychain --clear --systemd --eval --agents ssh ${ssh_keys})"
 		fi
 	fi
 }
@@ -83,16 +83,16 @@ function cli_agents() {
 	ssh_keys=$(getsshkey)
 
 	if [[ -n "${gpg_keys}" ]]; then
-		start_gpg_agent "${gpg_key}"
+		start_gpg_agent "${gpg_keys}"
 	fi
 
 	if [[ -n "${ssh_keys}" ]]; then
 		start_cli_ssh_agent "${ssh_keys}"
 	fi
 
-	if [[ -n "${gpg_keys}" ]]; then
-		config_gpg_ssh_agent
-	fi
+	# if [[ -n "${gpg_keys}" ]]; then
+	# 	config_gpg_ssh_agent
+	# fi
 }
 
 function config_gpg_ssh_agent() {
@@ -136,4 +136,8 @@ function start_agents() {
 	else
 		cli_agents
 	fi
+}
+
+function stop_agents() {
+	keychain --stop all
 }
