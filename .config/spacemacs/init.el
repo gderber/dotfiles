@@ -40,7 +40,7 @@ This function should only modify configuration layer settings."
      ;; ----------------------------------------------------------------
      drbr-private
      drbr
-     drbr-themes
+     ;;drbr-themes
      colors
      )
 

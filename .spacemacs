@@ -1,1 +1,1 @@
-/home/HOME/geoff/.config/spacemacs/init.el
+.config/spacemacs/init.el
