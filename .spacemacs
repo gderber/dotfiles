@@ -1,1 +1,1 @@
-.config/spacemacs/init.el
+/home/watermelon/.config/spacemacs/init.el

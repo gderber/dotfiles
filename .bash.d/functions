@@ -31,12 +31,12 @@ function up() {
     cd $d
 }
 
-# move back $@ directories
+# move up $@ directories
 function back() {
-    limit="${1}"
+    limit=$1
     for ((i=1 ; i <= limit ; i++))
     do
-	      popd || exit
+	      popd
     done
 }
 
@@ -81,25 +81,26 @@ function mkdircd () {
 function _cd {
     # typing just `_cd` will take you $HOME ;)
     if [ "$1" == "" ]; then
-	      pushd "${HOME}" > /dev/null || exit
+	      pushd "$HOME" > /dev/null
 	      # use `_cd -` to visit previous directory
     elif [ "$1" == "-" ]; then
-	      pushd "${OLDPWD}" > /dev/null || exit
+	      pushd "$OLDPWD" > /dev/null
 	      # use `_cd -n` to go n directories back in history
-    elif [[ "${1}" =~ ^-[0-9]+$ ]]; then
-	      for i in $(seq 1 ${1/-/}); do
-	          popd > /dev/null || exit
+    elif [[ "$1" =~ ^-[0-9]+$ ]]; then
+	      for i in `seq 1 ${1/-/}`; do
+	          popd > /dev/null
 	      done
 	      # use `_cd -- <path>` if your path begins with a dash
     elif [ "$1" == "--" ]; then
 	      shift pushd -- "$@" > /dev/null
 	      # basic case: move to a dir and add it to history
     else
-	      pushd "$@" > /dev/null || exit
+	      pushd "$@" > /dev/null
     fi
 }
 
 # replace standard `cd` with enhanced version, ensure tab-completion works
+
 alias cd='_cd'
 complete -d cd
 
@@ -113,7 +114,7 @@ function imageloc () {
 
 function firefoxurl () {
     URL=$(imageloc)
-    /usr/bin/firefox "${URL}"
+    /usr/bin/firefox $URL
 }
 
 function update_timestamp () {
