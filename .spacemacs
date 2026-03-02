@@ -1,1 +1,0 @@
-/home/watermelon/.config/spacemacs/init.el
